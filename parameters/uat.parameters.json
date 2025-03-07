@@ -1,0 +1,29 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "factoryName": { "value": "data-modernization-uat" },
+        "MySQL_REDCap_password": { "value": "" },
+        "SecureLinkedServiceADLS_accountKey": { "value": "" },
+        "SharePointOnlineList_Jan28_servicePrincipalKey": { "value": "" },
+        "SqlServerDMBPHCETO_password": { "value": "" },
+        "SqlServerETO_password": { "value": "" },
+        "ADLSGen2_NotSelfHosted_Feb1_properties_typeProperties_url": { "value": "https://uatdatabphc.dfs.core.windows.net/" },
+        "AzureKeyVault_LinkedService_properties_typeProperties_baseUrl": { "value": "https://dmi-uat-keyvault.vault.azure.net/" },
+        "MySQL_REDCap_properties_typeProperties_server": { "value": "REDCap-BE" },
+        "MySQL_REDCap_properties_typeProperties_database": { "value": "redcap" },
+        "MySQL_REDCap_properties_typeProperties_username": { "value": "AMarkoe" },
+        "SecureLinkedServiceADLS_properties_typeProperties_url": { "value": "https://uatdatabphc.dfs.core.windows.net/" },
+        "SharePointOnlineList_Jan28_properties_typeProperties_servicePrincipalId": { "value": "afb856b0-75c5-4f53-bda2-48ef4163d6d8" },
+        "SqlServerDMBPHCETO_properties_typeProperties_server": { "value": "DC-UAT-V01" },
+        "SqlServerDMBPHCETO_properties_typeProperties_database": { "value": "DM-BPHC-ETO" },
+        "SqlServerDMBPHCETO_properties_typeProperties_userName": { "value": "SQLETO" },
+        "SqlServerETO_properties_typeProperties_server": { "value": "DC-UAT-V01" },
+        "SqlServerETO_properties_typeProperties_database": { "value": "ETO" },
+        "SqlServerETO_properties_typeProperties_userName": { "value": "SQLETO" },
+        "ADF-to-ADLSGen2-devtestbphc_properties_privateLinkResourceId": {
+            "value": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/DevTest-Network/providers/Microsoft.Storage/storageAccounts/uatdatabphc"
+        },
+        "ADF-to-ADLSGen2-devtestbphc_properties_groupId": { "value": "dfs" }
+    }
+}

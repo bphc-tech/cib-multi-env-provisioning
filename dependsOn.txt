@@ -1,0 +1,1 @@
+PS C:\Users\kschouten\Projects\cib-multi-env-provisioning> Select-String -Path ARMTemplateForFactory.bicep -Pattern '"dependsOn":' -AllMatches
