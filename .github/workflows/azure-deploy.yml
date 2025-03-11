@@ -1,0 +1,71 @@
+name: Azure Deployment
+
+# Trigger the workflow on push or pull request events for the main and prod branches.
+on:
+  push:
+    branches:
+      - main
+      - prod
+  pull_request:
+    branches:
+      - main
+      - prod
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # Step 1: Checkout the repository code.
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Step 2: Set up Azure CLI with the specified version.
+      - name: Set up Azure CLI
+        uses: azure/CLI@v1
+        with:
+          azcliversion: '2.40.0'  # Use a specific version or update as needed.
+
+      # Step 3: Set environment variables based on the branch.
+      # This step determines whether the deployment is for production or development.
+      - name: Set environment variables
+        id: setenv
+        run: |
+          if [ "${{ github.ref }}" == "refs/heads/prod" ]; then
+            echo "Production deployment"
+            # For production, use the production parameter file and credentials.
+            echo "PARAM_FILE=parameters/prod.parameters.json" >> $GITHUB_ENV
+            echo "AZURE_CREDS=${{ secrets.AZURE_CREDENTIALS_PROD }}" >> $GITHUB_ENV
+            echo "RESOURCE_GROUP=cib-demo-prod" >> $GITHUB_ENV
+          else
+            echo "Development deployment"
+            # For development, use the development parameter file and credentials.
+            echo "PARAM_FILE=parameters/dev.parameters.json" >> $GITHUB_ENV
+            echo "AZURE_CREDS=${{ secrets.AZURE_CREDENTIALS_DEV }}" >> $GITHUB_ENV
+            echo "RESOURCE_GROUP=cib-demo-dev" >> $GITHUB_ENV
+          fi
+
+      # Step 4: Log in to Azure using the credentials set in the previous step.
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ env.AZURE_CREDS }}
+
+      # Step 5: Build the Bicep template to validate its syntax.
+      - name: Build Bicep Template
+        run: az bicep build --file ARMTemplateForFactory.bicep
+
+      # Step 6: Create the resource group if it does not already exist.
+      # This ensures a valid target for the deployment.
+      - name: Create Resource Group (if needed)
+        run: az group create --name ${{ env.RESOURCE_GROUP }} --location "East US"
+
+      # Step 7: Deploy the Bicep template.
+      # The deployment uses the environment-specific parameter file and injects the SharePoint key securely.
+      - name: Deploy Bicep Template
+        run: |
+          az deployment group create \
+            --mode Complete \
+            --resource-group ${{ env.RESOURCE_GROUP }} \
+            --template-file ARMTemplateForFactory.bicep \
+            --parameters @${{ env.PARAM_FILE }} \
+            --parameters SharePointOnlineList_Jan28_servicePrincipalKey=${{ secrets.SP_KEY }}

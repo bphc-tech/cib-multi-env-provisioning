@@ -12,6 +12,9 @@
     "SqlServerDMBPHCETO_properties_typeProperties_userName": { "value": "SQLETO" },
     "SqlServerETO_properties_typeProperties_server": { "value": "DC-DEV-V01" },
     "SqlServerETO_properties_typeProperties_database": { "value": "ETO" },
-    "SqlServerETO_properties_typeProperties_userName": { "value": "SQLETO" }
+    "SqlServerETO_properties_typeProperties_userName": { "value": "SQLETO" },
+    "clientId": { "value": "26cde269-142f-44d8-b0c9-f51e4964f566" },
+    "subscriptionId": { "value": "694b4cac-9702-4274-97ff-3c3e1844a8dd" },
+    "tenantId": { "value": "ff5b5bc8-925b-471f-942a-eb176c03ab36" }
   }
 }
