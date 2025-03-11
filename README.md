@@ -1,6 +1,7 @@
+```markdown
 # CIB Multi-Environment Provisioning for Azure Data Factory (ADF)
 
-This repository contains infrastructure-as-code templates (Bicep) and parameter files used to provision Azure Data Factory (ADF) resources across multiple environments (dev, UAT, prod) for the CIB project.
+This repository contains infrastructure-as-code templates (Bicep) and environment-specific parameter files used to provision Azure Data Factory (ADF) resources across multiple environments (dev, UAT, prod) for the CIB project. The solution leverages GitHub Actions for CI/CD automation and securely manages sensitive credentials using Azure Key Vault and GitHub Secrets.
 
 ## Table of Contents
 
@@ -15,49 +16,63 @@ This repository contains infrastructure-as-code templates (Bicep) and parameter 
 - [Contributing](#contributing)
 - [License](#license)
 
+---
+
 ## Overview
 
-This project automates the provisioning of Azure Data Factory resources using Bicep templates. The goal is to deploy a consistent ADF setup across multiple environments, ensuring that all sensitive credentials are managed securely via Azure Key Vault and using managed identities wherever possible.
+This project automates the provisioning of Azure Data Factory resources using Bicep templates, ensuring a consistent and secure deployment across different environments. The key components of this solution include:
 
-Key components include:
-- **Bicep Templates:** Define the Data Factory instance, pipelines (e.g., `Raw_to_ADLS`, `ADLS_Raw_To_ADLS_Processed`), datasets, linked services, integration runtimes, and triggers.
-- **Parameter Files:** Environment-specific JSON files (located under the `parameters/` folder) that supply non-sensitive configuration values.
-- **CI/CD Pipeline:** GitHub Actions workflow that automates building, validating, and deploying the infrastructure.
+- **Bicep Templates:** Define the ADF instance, pipelines, datasets, linked services, integration runtimes, and triggers.
+- **Parameter Files:** Environment-specific JSON files (in the `parameters/` folder) that provide non-sensitive configuration values.
+- **CI/CD Pipeline:** A GitHub Actions workflow automates building, validating, and deploying the ADF resources.
+- **Secrets Management:** Sensitive credentials are stored securely in Azure Key Vault and GitHub Secrets, ensuring they are not hardcoded.
+
+[Back to Table of Contents](#table-of-contents)
+
+---
 
 ## Repository Structure
 
 ```
 cib-multi-env-provisioning/
 │
-├── ARMTemplateForFactory.bicep    # Main Bicep file for ADF deployment
-├── ARMTemplateForFactory_backup.bicep
-├── Raw_to_ADLS.json               # Legacy artifact (export/test output)
-├── azure-pipelines.yml            # (Optional) Azure DevOps pipeline YAML if used
+├── ARMTemplateForFactory.bicep          # Main Bicep file for ADF deployment
+├── ARMTemplateForFactory_backup.bicep     # Backup of the main Bicep file
+├── Raw_to_ADLS.json                     # Legacy artifact (export/test output)
+├── azure-pipelines.yml                  # (Optional) Azure DevOps pipeline YAML if used
 ├── parameters/
-│   ├── dev.parameters.json        # Parameters for development environment
-│   ├── uat.parameters.json        # Parameters for UAT environment
-│   └── prod.parameters.json       # Parameters for Production environment
-├── dependsOn.txt                  # Documentation of resource dependencies (if any)
-├── resources.txt                  # Notes on resources created by the templates
-└── verify.ps1                     # PowerShell script for post-deployment verification
+│   ├── dev.parameters.json              # Parameters for the development environment
+│   ├── uat.parameters.json              # Parameters for the UAT environment
+│   └── prod.parameters.json             # Parameters for the production environment
+├── dependsOn.txt                        # Documentation of resource dependencies (if any)
+├── resources.txt                        # Notes on resources defined by the templates
+└── verify.ps1                           # PowerShell script for post-deployment verification
 ```
+
+[Back to Table of Contents](#table-of-contents)
+
+---
 
 ## Prerequisites
 
-- **Azure Subscription:** Access to an Azure subscription (e.g., BPHC Dev/Test Subscription).
-- **Azure CLI and Bicep CLI:** Ensure you have the latest Azure CLI and Bicep installed.
-- **Key Vault:** A configured Azure Key Vault (e.g., `dmi-dev-keyvault` in the `DMI-Dev` resource group) with required secrets:
+- **Azure Subscription:** An active Azure subscription (e.g., BPHC Dev/Test Subscription).
+- **Azure CLI & Bicep CLI:** Ensure that you have the latest versions installed.
+- **Azure Key Vault:** A configured Key Vault (e.g., `dmi-dev-keyvault` in the DMI-Dev resource group) containing secrets such as:
   - `SqlServerDMBPHCETO-password`
   - `SqlServerETO-password`
   - `SharePointOnlineList-SP-key`
 - **GitHub Repository:** This repository is hosted on GitHub at [https://github.com/bphc-tech/cib-multi-env-provisioning](https://github.com/bphc-tech/cib-multi-env-provisioning).
-- **CI/CD Credentials:** A service principal with sufficient permissions to deploy resources (stored securely as GitHub Secrets).
+- **CI/CD Credentials:** Azure service principal credentials stored securely as GitHub Secrets (e.g., `AZURE_CREDENTIALS_DEV` and `AZURE_CREDENTIALS_PROD`).
+
+[Back to Table of Contents](#table-of-contents)
+
+---
 
 ## Deployment Instructions
 
 ### Local Deployment
 
-1. **Build the Bicep File:**
+1. **Build the Bicep Template:**
    ```powershell
    az bicep build --file ARMTemplateForFactory.bicep
    ```
@@ -69,85 +84,81 @@ cib-multi-env-provisioning/
    ```powershell
    az deployment group create --mode Complete --resource-group cib-demo-dev --template-file ARMTemplateForFactory.bicep --parameters @parameters/dev.parameters.json --parameters SharePointOnlineList_Jan28_servicePrincipalKey=<your-SP-key>
    ```
-   > **Note:** For full automation, the SharePoint key should be injected via CI/CD secure variables.
+   > **Note:** In an automated environment, the SharePoint key should be injected using CI/CD secure variables.
+
+[Back to Table of Contents](#table-of-contents)
 
 ### CI/CD Deployment with GitHub Actions
 
-1. **Create a Workflow File:**  
-   In the repository, create `.github/workflows/azure-deploy.yml` with content similar to:
-   ```yaml
-   name: Azure Deployment
+1. **Workflow Configuration:**
+   The GitHub Actions workflow is defined in `.github/workflows/azure-deploy.yml`. It dynamically selects the appropriate parameter file and credentials based on the branch:
+   - **DEV/UAT:** Uses `AZURE_CREDENTIALS_DEV` and `parameters/dev.parameters.json`.
+   - **PROD:** Uses `AZURE_CREDENTIALS_PROD` and `parameters/prod.parameters.json`.
+2. **Set Up GitHub Secrets:**
+   - **AZURE_CREDENTIALS_DEV:** Contains the DEV service principal credentials in JSON.
+   - **AZURE_CREDENTIALS_PROD:** Contains the production service principal credentials in JSON.
+   - **SPKey:** Contains the SharePoint service principal key.
+3. **Trigger the Deployment:**
+   Commit and push your changes. The workflow triggers automatically based on branch events (push or pull request) to `dev`, `main`, or `prod`.
 
-   on:
-     push:
-       branches: [ main ]
-     pull_request:
-       branches: [ main ]
+[Back to Table of Contents](#table-of-contents)
 
-   jobs:
-     deploy:
-       runs-on: ubuntu-latest
-       steps:
-         - name: Checkout Code
-           uses: actions/checkout@v2
-
-         - name: Set up Azure CLI
-           uses: azure/CLI@v1
-           with:
-             azcliversion: '2.40.0'
-
-         - name: Azure Login
-           uses: azure/login@v1
-           with:
-             creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-         - name: Build Bicep Template
-           run: |
-             az bicep build --file ARMTemplateForFactory.bicep
-
-         - name: Create Resource Group if not exists
-           run: |
-             az group create --name cib-demo-dev --location "East US"
-
-         - name: Deploy Bicep Template
-           run: |
-             az deployment group create --mode Complete --resource-group cib-demo-dev --template-file ARMTemplateForFactory.bicep --parameters @parameters/dev.parameters.json --parameters SharePointOnlineList_Jan28_servicePrincipalKey=${{ secrets.SPKey }}
-   ```
-2. **Set Up GitHub Secrets:**  
-   In your GitHub repository settings under **Secrets and variables > Actions**:
-   - **AZURE_CREDENTIALS:** A JSON string with your service principal credentials.
-   - **SPKey:** The SharePoint service principal key.
-
-3. **Commit and Push the Workflow:**
-   ```powershell
-   git add .github/workflows/azure-deploy.yml
-   git commit -m "Add GitHub Actions workflow for automated deployment"
-   git push
-   ```
-4. **Monitor the Pipeline:**  
-   Check the Actions tab in GitHub to verify that the deployment runs successfully.
+---
 
 ## Security & Secrets Management
 
-- **Key Vault Integration:**  
-  Sensitive credentials (SQL passwords, SharePoint key) are stored in Azure Key Vault and referenced in the Bicep file.
+- **Azure Key Vault Integration:**  
+  Sensitive data such as SQL passwords and the SharePoint key are stored in Azure Key Vault and referenced by the Bicep templates.
 - **CI/CD Secrets:**  
-  Azure service principal credentials are stored as GitHub Secrets (`AZURE_CREDENTIALS`), and the SharePoint key is passed as a secure variable (`SPKey`).
+  The Azure service principal credentials and SharePoint key are stored as GitHub Secrets (`AZURE_CREDENTIALS_DEV`, `AZURE_CREDENTIALS_PROD`, and `SPKey`), ensuring secure and auditable deployments.
+
+[Back to Table of Contents](#table-of-contents)
+
+---
 
 ## Troubleshooting
 
-- **Hardcoded URL Warnings:**  
-  Warnings about hardcoded URLs (e.g., "core.windows.net") can be addressed later using the `environment()` function.
 - **Deployment Errors:**  
-  Use:
+  If deployments fail, use the following commands to review error details:
   ```powershell
   az deployment group list --resource-group cib-demo-dev --output table
   az deployment group show --resource-group cib-demo-dev --name <deploymentName>
   ```
-  to view error details.
 - **Pipeline Logs:**  
-  Check GitHub Actions logs for detailed information if the deployment fails.
+  Check the GitHub Actions logs for detailed error messages and debugging information.
+
+[Back to Table of Contents](#table-of-contents)
+
+---
 
 ## Contributing
 
-Feel free to open issues or pull requests with improvements or bug fixes. Please follow our coding standards and include tests when possible.
+Contributions are welcome! If you have suggestions, bug fixes, or improvements, please open an issue or submit a pull request. Make sure to follow the repository guidelines and include tests when applicable.
+
+[Back to Table of Contents](#table-of-contents)
+
+---
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+[Back to Table of Contents](#table-of-contents)
+```
+
+### Next Steps
+
+1. **To Replace the Existing README:**
+   - Open the existing README file for editing:
+     ```powershell
+     notepad README.md
+     ```
+2. **Replace the Content:**  
+   Paste the improved version above over the existing content.
+3. **Save and Commit:**  
+   Save the changes, then add, commit, and push the updated README:
+   ```powershell
+   git add README.md
+   git commit -m "Improve README with detailed table of contents and updated instructions"
+   git push origin dev
+   ```
