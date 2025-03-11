@@ -1,13 +1,15 @@
 name: Azure Deployment
 
-# Trigger the workflow on push or pull request events for the main and prod branches.
+# Trigger the workflow on push or pull request events for the dev, main, and prod branches.
 on:
   push:
     branches:
+      - dev
       - main
       - prod
   pull_request:
     branches:
+      - dev
       - main
       - prod
 
