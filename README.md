@@ -1,4 +1,3 @@
-```markdown
 # CIB Multi-Environment Provisioning for Azure Data Factory (ADF)
 
 This repository contains infrastructure-as-code templates (Bicep) and environment-specific parameter files used to provision Azure Data Factory (ADF) resources across multiple environments (dev, UAT, prod) for the CIB project. The solution leverages GitHub Actions for CI/CD automation and securely manages sensitive credentials using Azure Key Vault and GitHub Secrets.
