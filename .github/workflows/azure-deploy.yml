@@ -29,20 +29,24 @@ jobs:
           inlineScript: 'echo "Azure CLI is set up"'
 
       # Step 3: Set environment variables based on the branch.
-      # This determines whether the deployment is for production or development.
+      # This step determines whether the deployment is for production or development.
       - name: Set environment variables
         id: setenv
         run: |
           if [ "${{ github.ref }}" == "refs/heads/prod" ]; then
             echo "Production deployment"
             echo "PARAM_FILE=parameters/prod.parameters.json" >> $GITHUB_ENV
-            echo "AZURE_CREDS=${{ secrets.AZURE_CREDENTIALS_PROD }}" >> $GITHUB_ENV
             echo "RESOURCE_GROUP=cib-demo-prod" >> $GITHUB_ENV
+            echo "AZURE_CREDS<<EOF" >> $GITHUB_ENV
+            echo "${{ secrets.AZURE_CREDENTIALS_PROD }}" >> $GITHUB_ENV
+            echo "EOF" >> $GITHUB_ENV
           else
             echo "Development deployment"
             echo "PARAM_FILE=parameters/dev.parameters.json" >> $GITHUB_ENV
-            echo "AZURE_CREDS=${{ secrets.AZURE_CREDENTIALS_DEV }}" >> $GITHUB_ENV
             echo "RESOURCE_GROUP=cib-demo-dev" >> $GITHUB_ENV
+            echo "AZURE_CREDS<<EOF" >> $GITHUB_ENV
+            echo "${{ secrets.AZURE_CREDENTIALS_DEV }}" >> $GITHUB_ENV
+            echo "EOF" >> $GITHUB_ENV
           fi
 
       # Step 4: Log in to Azure using the credentials set in the previous step.
