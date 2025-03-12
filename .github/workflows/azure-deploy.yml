@@ -1,17 +1,17 @@
 name: Azure Deployment
 
-# Trigger the workflow on push or pull request events for dev, uat, and prod branches.
+# Trigger the workflow on push or pull request events for dev, uat, and main branches.
 on:
   push:
     branches:
       - dev
       - uat
-      - prod
+      - main
   pull_request:
     branches:
       - dev
       - uat
-      - prod
+      - main
 
 jobs:
   build-and-deploy:
@@ -29,11 +29,11 @@ jobs:
           inlineScript: 'echo "Azure CLI is set up"'
 
       # Step 3: Set environment variables based on the branch.
-      # This sets the parameter file, resource group, and Azure credentials (minified to remove newlines)
+      # This determines which parameter file, resource group, and Azure credentials to use.
       - name: Set environment variables
         id: setenv
         run: |
-          if [ "${{ github.ref }}" == "refs/heads/prod" ]; then
+          if [ "${{ github.ref }}" == "refs/heads/main" ]; then
             echo "Production deployment"
             echo "PARAM_FILE=parameters/prod.parameters.json" >> $GITHUB_ENV
             echo "RESOURCE_GROUP=cib-demo-prod" >> $GITHUB_ENV
@@ -42,7 +42,7 @@ jobs:
             echo "UAT deployment"
             echo "PARAM_FILE=parameters/uat.parameters.json" >> $GITHUB_ENV
             echo "RESOURCE_GROUP=cib-demo-uat" >> $GITHUB_ENV
-            echo "AZURE_CREDS=$(echo '${{ secrets.AZURE_CREDENTIALS_UAT }}' | tr -d '\n')" >> $GITHUB_ENV
+            echo "AZURE_CREDS=$(echo '${{ secrets.AZURE_CREDENTIALS_DEV }}' | tr -d '\n')" >> $GITHUB_ENV
           else
             echo "Development deployment"
             echo "PARAM_FILE=parameters/dev.parameters.json" >> $GITHUB_ENV
@@ -65,7 +65,7 @@ jobs:
         run: az group create --name ${{ env.RESOURCE_GROUP }} --location "East US"
 
       # Step 7: Deploy the Bicep template.
-      # This uses the specified parameter file and injects the SharePoint key from the SP_KEY secret.
+      # Uses the environment-specific parameter file and injects the SharePoint key.
       - name: Deploy Bicep Template
         run: |
           az deployment group create \
