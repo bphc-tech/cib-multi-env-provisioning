@@ -29,7 +29,10 @@ jobs:
           inlineScript: 'echo "Azure CLI is set up"'
 
       # Step 3: Set environment variables based on the branch.
-      # Maps: main -> prod, uat -> UAT, dev -> dev.
+      # Mapping:
+      #   main  -> Production deployment
+      #   uat   -> UAT deployment (shares the same credentials as dev)
+      #   dev   -> Development deployment
       - name: Set environment variables
         id: setenv
         run: |
