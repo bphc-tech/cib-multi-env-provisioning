@@ -29,7 +29,7 @@ jobs:
           inlineScript: 'echo "Azure CLI is set up"'
 
       # Step 3: Set environment variables based on the branch.
-      # This determines which parameter file, resource group, and Azure credentials to use.
+      # Maps: main -> prod, uat -> UAT, dev -> dev.
       - name: Set environment variables
         id: setenv
         run: |
@@ -65,7 +65,6 @@ jobs:
         run: az group create --name ${{ env.RESOURCE_GROUP }} --location "East US"
 
       # Step 7: Deploy the Bicep template.
-      # Uses the environment-specific parameter file and injects the SharePoint key.
       - name: Deploy Bicep Template
         run: |
           az deployment group create \
