@@ -25,15 +25,6 @@ resource dataFactory 'Microsoft.DataFactory/factories@2018-06-01' = {
 }
 
 // ===================================================
-// Managed Virtual Network (Default)
-// ===================================================
-resource defaultVnet 'Microsoft.DataFactory/factories/managedVirtualNetworks@2018-06-01' = {
-  parent: dataFactory
-  name: 'default'
-  properties: {}
-}
-
-// ===================================================
 // Datasets - SharePoint_LTS_Clients
 // ===================================================
 resource sharePointLTSClientsDataset 'Microsoft.DataFactory/factories/datasets@2018-06-01' = {
