@@ -34,6 +34,28 @@ resource defaultVnet 'Microsoft.DataFactory/factories/managedVirtualNetworks@201
 }
 
 // ===================================================
+// Datasets - SharePoint_LTS_Clients
+// ===================================================
+resource sharePointLTSClientsDataset 'Microsoft.DataFactory/factories/datasets@2018-06-01' = {
+  name: '${factoryName}/SharePoint_LTS_Clients'
+  properties: {
+    linkedServiceName: {
+      referenceName: 'SharePointOnlineList_Jan28'
+      type: 'LinkedServiceReference'
+    }
+    type: 'SharePointOnlineListResource'
+    typeProperties: {
+      listName: 'MassCassGuestTracker'
+    }
+    annotations: []
+    schema: []
+  }
+  dependsOn: [
+    sharePointOnlineListLinkedService
+  ]
+}
+
+// ===================================================
 // Pipelines
 // ===================================================
 // Pipeline: Raw_to_ADLS
@@ -77,7 +99,7 @@ resource rawToAdlsPipeline 'Microsoft.DataFactory/factories/pipelines@2018-06-01
             type: 'DatasetReference'
             parameters: {}
           }
-        ]
+        ]        
         outputs: [
           {
             referenceName: 'raw_SpLts_Clients'
@@ -309,6 +331,12 @@ resource notSelfHostedIrForAdls 'Microsoft.DataFactory/factories/integrationRunt
   dependsOn: [
     dataFactory
   ]
+}
+
+resource defaultVnet 'Microsoft.DataFactory/factories/managedVirtualNetworks@2018-06-01' = {
+  parent: dataFactory
+  name: 'default'
+  properties: {}
 }
 
 resource integrationRuntime1 'Microsoft.DataFactory/factories/integrationRuntimes@2018-06-01' = {
