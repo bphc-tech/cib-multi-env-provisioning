@@ -1,25 +1,21 @@
 name: Azure Deployment
 
-# Trigger the workflow on push or pull request events for the dev, main, and prod branches.
+# Trigger the workflow on push or pull request events for dev, uat, and main branches.
 on:
   push:
     branches:
       - dev
+      - uat
       - main
-      - prod
   pull_request:
     branches:
       - dev
+      - uat
       - main
-      - prod
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    # Set AZURE_CREDS directly from the GitHub secret.
-    # Ensure that the secret AZURE_CREDENTIALS_DEV is stored as a single-line minified JSON.
-    env:
-      AZURE_CREDS: ${{ secrets.AZURE_CREDENTIALS_DEV }}
     steps:
       # Step 1: Checkout the repository code.
       - name: Checkout code
@@ -33,21 +29,40 @@ jobs:
           inlineScript: 'echo "Azure CLI is set up"'
 
       # Step 3: Set environment variables based on the branch.
-      # This step determines whether the deployment is for production or development.
+      # Mapping:
+      #   main -> Production deployment
+      #   uat  -> UAT deployment (uses AZURE_CREDENTIALS_DEV)
+      #   dev  -> Development deployment
       - name: Set environment variables
         id: setenv
         run: |
-          if [ "${{ github.ref }}" == "refs/heads/prod" ]; then
+          if [ "${{ github.ref }}" == "refs/heads/main" ]; then
             echo "Production deployment"
             echo "PARAM_FILE=parameters/prod.parameters.json" >> $GITHUB_ENV
             echo "RESOURCE_GROUP=cib-demo-prod" >> $GITHUB_ENV
+            echo "AZURE_CREDS=$(echo '${{ secrets.AZURE_CREDENTIALS_PROD }}' | tr -d '\n')" >> $GITHUB_ENV
+          elif [ "${{ github.ref }}" == "refs/heads/uat" ]; then
+            echo "UAT deployment"
+            echo "PARAM_FILE=parameters/uat.parameters.json" >> $GITHUB_ENV
+            echo "RESOURCE_GROUP=cib-demo-uat" >> $GITHUB_ENV
+            echo "AZURE_CREDS=$(echo '${{ secrets.AZURE_CREDENTIALS_DEV }}' | tr -d '\n')" >> $GITHUB_ENV
           else
             echo "Development deployment"
             echo "PARAM_FILE=parameters/dev.parameters.json" >> $GITHUB_ENV
             echo "RESOURCE_GROUP=cib-demo-dev" >> $GITHUB_ENV
+            echo "AZURE_CREDS=$(echo '${{ secrets.AZURE_CREDENTIALS_DEV }}' | tr -d '\n')" >> $GITHUB_ENV
           fi
 
-      # Step 4: Log in to Azure using the credentials from the AZURE_CREDS environment variable.
+      # Step 3.1: Debug step to check that AZURE_CREDS is set.
+      - name: Debug AZURE_CREDS
+        run: |
+          if [ -z "$AZURE_CREDS" ]; then
+            echo "AZURE_CREDS is empty"
+          else
+            echo "AZURE_CREDS is set"
+          fi
+
+      # Step 4: Log in to Azure using the credentials set above.
       - name: Azure Login
         uses: azure/login@v1
         with:
@@ -69,4 +84,4 @@ jobs:
             --resource-group ${{ env.RESOURCE_GROUP }} \
             --template-file ARMTemplateForFactory.bicep \
             --parameters @${{ env.PARAM_FILE }} \
-            --parameters SharePointOnlineList_Jan28_servicePrincipalKey=${{ secrets.SP_KEY }}
+            --parameters SharePointOnlineList_Jan28_servicePrincipalKey="${{ secrets.SP_KEY }}"
