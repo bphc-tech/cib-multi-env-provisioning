@@ -116,13 +116,14 @@ resource rawToAdlsPipeline 'Microsoft.DataFactory/factories/pipelines@2018-06-01
           }
         ]
         outputs: [
-  	  {
-    referenceName: 'raw_SpLts_Staff'
-    type: 'DatasetReference'
-    parameters: {}
-  	  }
-	]
+          {
+            referenceName: 'raw_SpLts_Staff'
+            type: 'DatasetReference'
+            parameters: {}
+          }
+        ]        
       }
+      
 
       {
         name: 'ETO_MHL_and_HSB_clients_To_ADLS'
