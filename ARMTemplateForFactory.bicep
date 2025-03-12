@@ -25,9 +25,17 @@ resource dataFactory 'Microsoft.DataFactory/factories@2018-06-01' = {
 }
 
 // ===================================================
+// Managed Virtual Network (Default)
+// ===================================================
+resource defaultVnet 'Microsoft.DataFactory/factories/managedVirtualNetworks@2018-06-01' = {
+  parent: dataFactory
+  name: 'default'
+  properties: {}
+}
+
+// ===================================================
 // Pipelines
 // ===================================================
-
 // Pipeline: Raw_to_ADLS
 resource rawToAdlsPipeline 'Microsoft.DataFactory/factories/pipelines@2018-06-01' = {
   name: '${factoryName}/Raw_to_ADLS'
