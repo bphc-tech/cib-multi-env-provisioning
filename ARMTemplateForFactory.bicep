@@ -170,11 +170,11 @@ resource rawToAdlsPipeline 'Microsoft.DataFactory/factories/pipelines@2018-06-01
         }
         inputs: [
           {
-            referenceName: 'SQLServerETOQuery'
+            referenceName: 'raw_SqlEto_Clients'
             type: 'DatasetReference'
             parameters: {}
           }
-        ]
+        ]        
         outputs: [
           {
             referenceName: 'SQLServer_ETO_Clients_raw_sink'
