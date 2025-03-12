@@ -30,9 +30,9 @@ jobs:
 
       # Step 3: Set environment variables based on the branch.
       # Mapping:
-      #   main  -> Production deployment
-      #   uat   -> UAT deployment (shares the same credentials as dev)
-      #   dev   -> Development deployment
+      #   main -> Production deployment
+      #   uat  -> UAT deployment (uses AZURE_CREDENTIALS_DEV)
+      #   dev  -> Development deployment
       - name: Set environment variables
         id: setenv
         run: |
@@ -51,6 +51,15 @@ jobs:
             echo "PARAM_FILE=parameters/dev.parameters.json" >> $GITHUB_ENV
             echo "RESOURCE_GROUP=cib-demo-dev" >> $GITHUB_ENV
             echo "AZURE_CREDS=$(echo '${{ secrets.AZURE_CREDENTIALS_DEV }}' | tr -d '\n')" >> $GITHUB_ENV
+          fi
+
+      # Step 3.1: Debug step to check that AZURE_CREDS is set.
+      - name: Debug AZURE_CREDS
+        run: |
+          if [ -z "$AZURE_CREDS" ]; then
+            echo "AZURE_CREDS is empty"
+          else
+            echo "AZURE_CREDS is set"
           fi
 
       # Step 4: Log in to Azure using the credentials set above.
