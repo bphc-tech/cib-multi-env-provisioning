@@ -1,17 +1,20 @@
 name: Azure Deployment
 
-# Trigger the workflow on push or pull request events for dev, uat, and main branches.
+# Trigger the workflow on push, pull request, and manual (workflow_dispatch) events.
 on:
   push:
     branches:
       - dev
       - uat
       - main
+      - prod
   pull_request:
     branches:
       - dev
       - uat
       - main
+      - prod
+  workflow_dispatch:  # Allows manual triggering from the GitHub Actions tab
 
 jobs:
   build-and-deploy:
@@ -29,13 +32,13 @@ jobs:
           inlineScript: 'echo "Azure CLI is set up"'
 
       # Step 3: Set environment variables based on the branch.
-      # - main branch: Production deployment -> resource group: CIB-DL-PROD and parameter file: prod.parameters.json
-      # - uat branch: UAT deployment -> resource group: CIB-DL-UAT and parameter file: uat.parameters.json
-      # - dev branch or others: Development deployment -> resource group: cib-demo-dev and parameter file: dev.parameters.json
+      # - main & prod branches: Production deployment -> resource group: CIB-DL-PROD, parameter file: prod.parameters.json
+      # - uat branch: UAT deployment -> resource group: CIB-DL-UAT, parameter file: uat.parameters.json
+      # - dev branch or others: Development deployment -> resource group: cib-demo-dev, parameter file: dev.parameters.json
       - name: Set environment variables
         id: setenv
         run: |
-          if [ "${{ github.ref }}" == "refs/heads/main" ]; then
+          if [ "${{ github.ref }}" == "refs/heads/main" ] || [ "${{ github.ref }}" == "refs/heads/prod" ]; then
             echo "Production deployment"
             echo "PARAM_FILE=parameters/prod.parameters.json" >> $GITHUB_ENV
             echo "RESOURCE_GROUP=CIB-DL-PROD" >> $GITHUB_ENV
@@ -68,7 +71,7 @@ jobs:
           creds: ${{ env.AZURE_CREDS }}
 
       # Step 5: Build the Bicep template to validate its syntax.
-      # Reference the file from the templates folder.
+      # The active deployment template is located in the templates folder.
       - name: Build Bicep Template
         run: az bicep build --file templates/ARMTemplateForFactory.bicep
 
@@ -76,7 +79,7 @@ jobs:
       - name: Create Resource Group (if needed)
         run: az group create --name ${{ env.RESOURCE_GROUP }} --location "East US"
 
-      # Step 7: Deploy the Bicep template.
+      # Step 7: Deploy the Bicep template using the specified parameter file.
       - name: Deploy Bicep Template
         run: |
           az deployment group create --mode Complete --resource-group ${{ env.RESOURCE_GROUP }} --template-file templates/ARMTemplateForFactory.bicep --parameters @${{ env.PARAM_FILE }} --parameters SharePointOnlineList_Jan28_servicePrincipalKey="${{ secrets.SP_KEY }}"
