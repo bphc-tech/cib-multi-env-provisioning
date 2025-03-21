@@ -21,7 +21,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # Step 2: Set up Azure CLI with the specified version.
+      # Step 2: Set up Azure CLI with a specified version.
       - name: Set up Azure CLI
         uses: azure/CLI@v1
         with:
@@ -29,22 +29,21 @@ jobs:
           inlineScript: 'echo "Azure CLI is set up"'
 
       # Step 3: Set environment variables based on the branch.
-      # Mapping:
-      #   main -> Production deployment
-      #   uat  -> UAT deployment (uses AZURE_CREDENTIALS_DEV)
-      #   dev  -> Development deployment
+      # - main branch: Production deployment -> resource group: CIB-DL-PROD and parameter file: prod.parameters.json
+      # - uat branch: UAT deployment -> resource group: CIB-DL-UAT and parameter file: uat.parameters.json
+      # - dev branch or others: Development deployment -> resource group: cib-demo-dev and parameter file: dev.parameters.json
       - name: Set environment variables
         id: setenv
         run: |
           if [ "${{ github.ref }}" == "refs/heads/main" ]; then
             echo "Production deployment"
             echo "PARAM_FILE=parameters/prod.parameters.json" >> $GITHUB_ENV
-            echo "RESOURCE_GROUP=cib-demo-prod" >> $GITHUB_ENV
+            echo "RESOURCE_GROUP=CIB-DL-PROD" >> $GITHUB_ENV
             echo "AZURE_CREDS=$(echo '${{ secrets.AZURE_CREDENTIALS_PROD }}' | tr -d '\n')" >> $GITHUB_ENV
           elif [ "${{ github.ref }}" == "refs/heads/uat" ]; then
             echo "UAT deployment"
             echo "PARAM_FILE=parameters/uat.parameters.json" >> $GITHUB_ENV
-            echo "RESOURCE_GROUP=cib-demo-uat" >> $GITHUB_ENV
+            echo "RESOURCE_GROUP=CIB-DL-UAT" >> $GITHUB_ENV
             echo "AZURE_CREDS=$(echo '${{ secrets.AZURE_CREDENTIALS_DEV }}' | tr -d '\n')" >> $GITHUB_ENV
           else
             echo "Development deployment"
@@ -53,7 +52,7 @@ jobs:
             echo "AZURE_CREDS=$(echo '${{ secrets.AZURE_CREDENTIALS_DEV }}' | tr -d '\n')" >> $GITHUB_ENV
           fi
 
-      # Step 3.1: Debug step to check that AZURE_CREDS is set.
+      # Debug step to check that AZURE_CREDS is set.
       - name: Debug AZURE_CREDS
         run: |
           if [ -z "$AZURE_CREDS" ]; then
@@ -69,8 +68,9 @@ jobs:
           creds: ${{ env.AZURE_CREDS }}
 
       # Step 5: Build the Bicep template to validate its syntax.
+      # Reference the file from the templates folder.
       - name: Build Bicep Template
-        run: az bicep build --file ARMTemplateForFactory.bicep
+        run: az bicep build --file templates/ARMTemplateForFactory.bicep
 
       # Step 6: Create the resource group if it does not already exist.
       - name: Create Resource Group (if needed)
@@ -79,9 +79,4 @@ jobs:
       # Step 7: Deploy the Bicep template.
       - name: Deploy Bicep Template
         run: |
-          az deployment group create \
-            --mode Complete \
-            --resource-group ${{ env.RESOURCE_GROUP }} \
-            --template-file ARMTemplateForFactory.bicep \
-            --parameters @${{ env.PARAM_FILE }} \
-            --parameters SharePointOnlineList_Jan28_servicePrincipalKey="${{ secrets.SP_KEY }}"
+          az deployment group create --mode Complete --resource-group ${{ env.RESOURCE_GROUP }} --template-file templates/ARMTemplateForFactory.bicep --parameters @${{ env.PARAM_FILE }} --parameters SharePointOnlineList_Jan28_servicePrincipalKey="${{ secrets.SP_KEY }}"
