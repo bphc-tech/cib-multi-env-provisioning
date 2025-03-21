@@ -12,7 +12,7 @@ on:
       - dev
       - uat
       - main
-  workflow_dispatch:
+  workflow_dispatch:  # Enables manual triggering from GitHub Actions tab
 
 jobs:
   build-and-deploy:
@@ -22,7 +22,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # Step 2: Set up Azure CLI with a specified version.
+      # Step 2: Set up Azure CLI with the specified version.
       - name: Set up Azure CLI
         uses: azure/CLI@v1
         with:
@@ -30,9 +30,9 @@ jobs:
           inlineScript: 'echo "Azure CLI is set up"'
 
       # Step 3: Set environment variables based on the branch.
-      # - main branch: Production deployment -> RESOURCE_GROUP=CIB-DL-PROD, parameter file: prod.parameters.json
-      # - uat branch: UAT deployment -> RESOURCE_GROUP=CIB-DL-UAT, parameter file: uat.parameters.json
-      # - dev branch or others: Development deployment -> RESOURCE_GROUP=cib-demo-dev, parameter file: dev.parameters.json
+      # - For the main branch (production): use prod.parameters.json and RESOURCE_GROUP=CIB-DL-PROD.
+      # - For the uat branch: use uat.parameters.json and RESOURCE_GROUP=CIB-DL-UAT.
+      # - For dev or any other branch: use dev.parameters.json and RESOURCE_GROUP=cib-demo-dev.
       - name: Set environment variables
         id: setenv
         run: |
@@ -73,7 +73,7 @@ jobs:
       - name: Build Bicep Template
         run: az bicep build --file templates/ARMTemplateForFactory.bicep
 
-      # Step 6: Create the resource group if it does not exist.
+      # Step 6: Create the resource group if it does not already exist.
       - name: Create Resource Group (if needed)
         run: az group create --name ${{ env.RESOURCE_GROUP }} --location "East US"
 
