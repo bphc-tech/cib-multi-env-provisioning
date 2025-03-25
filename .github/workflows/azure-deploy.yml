@@ -1,6 +1,6 @@
 name: Azure Deployment
 
-# Trigger the workflow on push or pull request events for dev, uat, and main branches.
+# Trigger the workflow on push, pull request, and manual (workflow_dispatch) events for dev, uat, and main branches.
 on:
   push:
     branches:
@@ -12,6 +12,7 @@ on:
       - dev
       - uat
       - main
+  workflow_dispatch:
 
 jobs:
   build-and-deploy:
@@ -21,7 +22,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # Step 2: Set up Azure CLI with a specified version.
+      # Step 2: Set up Azure CLI with the specified version.
       - name: Set up Azure CLI
         uses: azure/CLI@v1
         with:
@@ -29,9 +30,9 @@ jobs:
           inlineScript: 'echo "Azure CLI is set up"'
 
       # Step 3: Set environment variables based on the branch.
-      # - main branch: Production deployment -> resource group: CIB-DL-PROD and parameter file: prod.parameters.json
-      # - uat branch: UAT deployment -> resource group: CIB-DL-UAT and parameter file: uat.parameters.json
-      # - dev branch or others: Development deployment -> resource group: cib-demo-dev and parameter file: dev.parameters.json
+      # - main branch: Production deployment → RESOURCE_GROUP=CIB-DL-PROD, PARAM_FILE=parameters/prod.parameters.json, uses production credentials.
+      # - uat branch: UAT deployment → RESOURCE_GROUP=CIB-DL-UAT, PARAM_FILE=parameters/uat.parameters.json, uses dev credentials.
+      # - dev branch or others: Development deployment → RESOURCE_GROUP=cib-demo-dev, PARAM_FILE=parameters/dev.parameters.json, uses dev credentials.
       - name: Set environment variables
         id: setenv
         run: |
@@ -52,7 +53,7 @@ jobs:
             echo "AZURE_CREDS=$(echo '${{ secrets.AZURE_CREDENTIALS_DEV }}' | tr -d '\n')" >> $GITHUB_ENV
           fi
 
-      # Debug step to check that AZURE_CREDS is set.
+      # Debug: Verify that AZURE_CREDS is set.
       - name: Debug AZURE_CREDS
         run: |
           if [ -z "$AZURE_CREDS" ]; then
@@ -61,18 +62,17 @@ jobs:
             echo "AZURE_CREDS is set"
           fi
 
-      # Step 4: Log in to Azure using the credentials set above.
+      # Step 4: Log in to Azure using the credentials.
       - name: Azure Login
         uses: azure/login@v1
         with:
           creds: ${{ env.AZURE_CREDS }}
 
       # Step 5: Build the Bicep template to validate its syntax.
-      # Reference the file from the templates folder.
       - name: Build Bicep Template
         run: az bicep build --file templates/ARMTemplateForFactory.bicep
 
-      # Step 6: Create the resource group if it does not already exist.
+      # Step 6: Create the resource group if it doesn't exist.
       - name: Create Resource Group (if needed)
         run: az group create --name ${{ env.RESOURCE_GROUP }} --location "East US"
 
