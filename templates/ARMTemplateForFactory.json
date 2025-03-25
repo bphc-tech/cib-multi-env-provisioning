@@ -1,0 +1,557 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.34.1.11899",
+      "templateHash": "10412216352130763521"
+    }
+  },
+  "parameters": {
+    "factoryName": {
+      "type": "string",
+      "defaultValue": "data-modernization"
+    },
+    "SharePointOnlineList_Jan28_servicePrincipalKey": {
+      "type": "securestring"
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.DataFactory/factories",
+      "apiVersion": "2018-06-01",
+      "name": "[parameters('factoryName')]",
+      "location": "[resourceGroup().location]",
+      "properties": {}
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "networkDeployment",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "connections_azureblob_1_name": {
+            "value": "azureblob-1"
+          },
+          "connections_azureblob_2_name": {
+            "value": "azureblob-2"
+          },
+          "connections_azureblob_3_name": {
+            "value": "azureblob-3"
+          },
+          "connections_azureblob_4_name": {
+            "value": "azureblob-4"
+          },
+          "connections_azureblob_5_name": {
+            "value": "azureblob-5"
+          },
+          "actionGroups_Email_Alicia_name": {
+            "value": "Email_Alicia"
+          },
+          "connections_PA_DevTest_VPN_name": {
+            "value": "PA-DevTest-VPN"
+          },
+          "networkInterfaces_test_vm2_name": {
+            "value": "test-vm2"
+          },
+          "storageAccounts_devdatabphc_name": {
+            "value": "devdatabphc"
+          },
+          "routeTables_DevTest_RouteTable_name": {
+            "value": "DevTest-RouteTable"
+          },
+          "virtualNetworks_DevTest_Network_name": {
+            "value": "DevTest-Network"
+          },
+          "serverfarms_ASP_DevTestNetwork_b27f_name": {
+            "value": "ASP-DevTestNetwork-b27f"
+          },
+          "storageAccounts_devtestnetwork93cd_name": {
+            "value": "devtestnetwork93cd"
+          },
+          "sites_SharePointDataExtractionFunction_name": {
+            "value": "SharePointDataExtractionFunction"
+          },
+          "publicIPAddresses_DevTest_GatewayIP_name": {
+            "value": "DevTest-GatewayIP"
+          },
+          "metricAlerts_EmailOnADFActionFailure_name": {
+            "value": "EmailOnADFActionFailure"
+          },
+          "metricAlerts_EmailOnADFPipelineFailure_name": {
+            "value": "EmailOnADFPipelineFailure"
+          },
+          "localNetworkGateways_DevTest_LocalNetworkGateway_name": {
+            "value": "DevTest-LocalNetworkGateway"
+          },
+          "privateDnsZones_privatelink_dfs_core_windows_net_name": {
+            "value": "privatelink.dfs.core.windows.net"
+          },
+          "privateDnsZones_privatelink_blob_core_windows_net_name": {
+            "value": "privatelink.blob.core.windows.net"
+          },
+          "privateDnsZones_privatelink_datafactory_azure_net_name": {
+            "value": "privatelink.datafactory.azure.net"
+          },
+          "privateEndpoints_dmiprojectsstorage_private_endpoint_name": {
+            "value": "dmiprojectsstorage-private-endpoint"
+          },
+          "virtualNetworkGateways_DevTest_VirtualNetworkGateway1_name": {
+            "value": "DevTest-VirtualNetworkGateway1"
+          },
+          "privateEndpoints_dmi_projects_factory_private_endpoint_name": {
+            "value": "dmi-projects-factory-private-endpoint"
+          },
+          "factories_data_modernization_externalid": {
+            "value": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/DevTest-Network/providers/Microsoft.DataFactory/factories/data-modernization"
+          },
+          "factories_dmi_projects_factory_externalid": {
+            "value": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/DevTest-Network/providers/Microsoft.DataFactory/factories/dmi-projects-factory"
+          },
+          "storageAccounts_dmiprojectsstorage_externalid": {
+            "value": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/DevTest-Network/providers/Microsoft.Storage/storageAccounts/dmiprojectsstorage"
+          },
+          "virtualNetworks_Prod_VirtualNetwork_externalid": {
+            "value": "/subscriptions/2b7c117e-2dba-4c4a-9cd0-e1f0dfe74b03/resourceGroups/Prod-Network/providers/Microsoft.Network/virtualNetworks/Prod-VirtualNetwork"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.34.1.11899",
+              "templateHash": "7060493499289910362"
+            }
+          },
+          "parameters": {
+            "connections_azureblob_1_name": {
+              "type": "string",
+              "defaultValue": "azureblob-1"
+            },
+            "connections_azureblob_2_name": {
+              "type": "string",
+              "defaultValue": "azureblob-2"
+            },
+            "connections_azureblob_3_name": {
+              "type": "string",
+              "defaultValue": "azureblob-3"
+            },
+            "connections_azureblob_4_name": {
+              "type": "string",
+              "defaultValue": "azureblob-4"
+            },
+            "connections_azureblob_5_name": {
+              "type": "string",
+              "defaultValue": "azureblob-5"
+            },
+            "actionGroups_Email_Alicia_name": {
+              "type": "string",
+              "defaultValue": "Email_Alicia"
+            },
+            "connections_PA_DevTest_VPN_name": {
+              "type": "string",
+              "defaultValue": "PA-DevTest-VPN"
+            },
+            "networkInterfaces_test_vm2_name": {
+              "type": "string",
+              "defaultValue": "test-vm2"
+            },
+            "storageAccounts_devdatabphc_name": {
+              "type": "string",
+              "defaultValue": "devdatabphc"
+            },
+            "routeTables_DevTest_RouteTable_name": {
+              "type": "string",
+              "defaultValue": "DevTest-RouteTable"
+            },
+            "virtualNetworks_DevTest_Network_name": {
+              "type": "string",
+              "defaultValue": "DevTest-Network"
+            },
+            "serverfarms_ASP_DevTestNetwork_b27f_name": {
+              "type": "string",
+              "defaultValue": "ASP-DevTestNetwork-b27f"
+            },
+            "storageAccounts_devtestnetwork93cd_name": {
+              "type": "string",
+              "defaultValue": "devtestnetwork93cd"
+            },
+            "sites_SharePointDataExtractionFunction_name": {
+              "type": "string",
+              "defaultValue": "SharePointDataExtractionFunction"
+            },
+            "publicIPAddresses_DevTest_GatewayIP_name": {
+              "type": "string",
+              "defaultValue": "DevTest-GatewayIP"
+            },
+            "metricAlerts_EmailOnADFActionFailure_name": {
+              "type": "string",
+              "defaultValue": "EmailOnADFActionFailure"
+            },
+            "metricAlerts_EmailOnADFPipelineFailure_name": {
+              "type": "string",
+              "defaultValue": "EmailOnADFPipelineFailure"
+            },
+            "localNetworkGateways_DevTest_LocalNetworkGateway_name": {
+              "type": "string",
+              "defaultValue": "DevTest-LocalNetworkGateway"
+            },
+            "privateDnsZones_privatelink_dfs_core_windows_net_name": {
+              "type": "string",
+              "defaultValue": "privatelink.dfs.core.windows.net"
+            },
+            "privateDnsZones_privatelink_blob_core_windows_net_name": {
+              "type": "string",
+              "defaultValue": "privatelink.blob.core.windows.net"
+            },
+            "privateDnsZones_privatelink_datafactory_azure_net_name": {
+              "type": "string",
+              "defaultValue": "privatelink.datafactory.azure.net"
+            },
+            "privateEndpoints_dmiprojectsstorage_private_endpoint_name": {
+              "type": "string",
+              "defaultValue": "dmiprojectsstorage-private-endpoint"
+            },
+            "virtualNetworkGateways_DevTest_VirtualNetworkGateway1_name": {
+              "type": "string",
+              "defaultValue": "DevTest-VirtualNetworkGateway1"
+            },
+            "privateEndpoints_dmi_projects_factory_private_endpoint_name": {
+              "type": "string",
+              "defaultValue": "dmi-projects-factory-private-endpoint"
+            },
+            "factories_data_modernization_externalid": {
+              "type": "string",
+              "defaultValue": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/DevTest-Network/providers/Microsoft.DataFactory/factories/data-modernization"
+            },
+            "factories_dmi_projects_factory_externalid": {
+              "type": "string",
+              "defaultValue": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/DevTest-Network/providers/Microsoft.DataFactory/factories/dmi-projects-factory"
+            },
+            "storageAccounts_dmiprojectsstorage_externalid": {
+              "type": "string",
+              "defaultValue": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/DevTest-Network/providers/Microsoft.Storage/storageAccounts/dmiprojectsstorage"
+            },
+            "virtualNetworks_Prod_VirtualNetwork_externalid": {
+              "type": "string",
+              "defaultValue": "/subscriptions/2b7c117e-2dba-4c4a-9cd0-e1f0dfe74b03/resourceGroups/Prod-Network/providers/Microsoft.Network/virtualNetworks/Prod-VirtualNetwork"
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Insights/actionGroups",
+              "apiVersion": "2023-09-01-preview",
+              "name": "[parameters('actionGroups_Email_Alicia_name')]",
+              "location": "Global",
+              "properties": {
+                "groupShortName": "[parameters('actionGroups_Email_Alicia_name')]",
+                "enabled": true,
+                "emailReceivers": [
+                  {
+                    "name": "Email0_-EmailAction-",
+                    "emailAddress": "AMarkoe@bphc.org",
+                    "useCommonAlertSchema": true
+                  }
+                ],
+                "smsReceivers": [],
+                "webhookReceivers": [],
+                "eventHubReceivers": [],
+                "itsmReceivers": [],
+                "azureAppPushReceivers": [],
+                "automationRunbookReceivers": [],
+                "voiceReceivers": [],
+                "logicAppReceivers": [],
+                "azureFunctionReceivers": [],
+                "armRoleReceivers": []
+              }
+            },
+            {
+              "type": "Microsoft.Network/localNetworkGateways",
+              "apiVersion": "2024-03-01",
+              "name": "[parameters('localNetworkGateways_DevTest_LocalNetworkGateway_name')]",
+              "location": "eastus",
+              "properties": {
+                "localNetworkAddressSpace": {
+                  "addressPrefixes": [
+                    "10.68.0.0/16",
+                    "10.75.0.0/16"
+                  ]
+                },
+                "gatewayIpAddress": "140.241.253.162"
+              }
+            },
+            {
+              "type": "Microsoft.Network/privateDnsZones",
+              "apiVersion": "2024-06-01",
+              "name": "[parameters('privateDnsZones_privatelink_blob_core_windows_net_name')]",
+              "location": "global",
+              "properties": {}
+            },
+            {
+              "type": "Microsoft.Network/privateDnsZones",
+              "apiVersion": "2024-06-01",
+              "name": "[parameters('privateDnsZones_privatelink_datafactory_azure_net_name')]",
+              "location": "global",
+              "properties": {}
+            },
+            {
+              "type": "Microsoft.Network/privateDnsZones",
+              "apiVersion": "2024-06-01",
+              "name": "[parameters('privateDnsZones_privatelink_dfs_core_windows_net_name')]",
+              "location": "global",
+              "properties": {}
+            },
+            {
+              "type": "Microsoft.Network/publicIPAddresses",
+              "apiVersion": "2024-03-01",
+              "name": "[parameters('publicIPAddresses_DevTest_GatewayIP_name')]",
+              "location": "eastus",
+              "sku": {
+                "name": "Standard",
+                "tier": "Regional"
+              },
+              "properties": {
+                "ipAddress": "4.246.194.241",
+                "publicIPAddressVersion": "IPv4",
+                "publicIPAllocationMethod": "Static",
+                "idleTimeoutInMinutes": 4,
+                "ipTags": []
+              }
+            },
+            {
+              "type": "Microsoft.Network/routeTables",
+              "apiVersion": "2024-03-01",
+              "name": "[parameters('routeTables_DevTest_RouteTable_name')]",
+              "location": "eastus",
+              "properties": {
+                "disableBgpRoutePropagation": false,
+                "routes": [
+                  {
+                    "name": "AllowAzureTraffic",
+                    "properties": {
+                      "addressPrefix": "0.0.0.0/0",
+                      "nextHopType": "Internet"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "type": "Microsoft.Storage/storageAccounts",
+              "apiVersion": "2023-05-01",
+              "name": "[parameters('storageAccounts_devdatabphc_name')]",
+              "location": "eastus",
+              "sku": {
+                "name": "Standard_LRS",
+                "tier": "Standard"
+              },
+              "kind": "StorageV2",
+              "properties": {
+                "defaultToOAuthAuthentication": true,
+                "allowCrossTenantReplication": false,
+                "minimumTlsVersion": "TLS1_2",
+                "allowBlobPublicAccess": false,
+                "networkAcls": {
+                  "bypass": "AzureServices",
+                  "virtualNetworkRules": [
+                    {
+                      "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_DevTest_Network_name'), 'default')]",
+                      "action": "Allow",
+                      "state": "Succeeded"
+                    }
+                  ],
+                  "ipRules": [],
+                  "defaultAction": "Allow"
+                },
+                "supportsHttpsTrafficOnly": true,
+                "encryption": {
+                  "services": {
+                    "file": {
+                      "keyType": "Account",
+                      "enabled": true
+                    },
+                    "blob": {
+                      "keyType": "Account",
+                      "enabled": true
+                    }
+                  },
+                  "keySource": "Microsoft.Storage"
+                }
+              }
+            },
+            {
+              "type": "Microsoft.Storage/storageAccounts",
+              "apiVersion": "2023-05-01",
+              "name": "[parameters('storageAccounts_devtestnetwork93cd_name')]",
+              "location": "eastus",
+              "sku": {
+                "name": "Standard_LRS",
+                "tier": "Standard"
+              },
+              "kind": "Storage",
+              "properties": {
+                "defaultToOAuthAuthentication": true,
+                "allowCrossTenantReplication": false,
+                "minimumTlsVersion": "TLS1_2",
+                "allowBlobPublicAccess": false,
+                "networkAcls": {
+                  "bypass": "AzureServices",
+                  "virtualNetworkRules": [],
+                  "ipRules": [],
+                  "defaultAction": "Allow"
+                },
+                "supportsHttpsTrafficOnly": true,
+                "encryption": {
+                  "services": {
+                    "file": {
+                      "keyType": "Account",
+                      "enabled": true
+                    },
+                    "blob": {
+                      "keyType": "Account",
+                      "enabled": true
+                    }
+                  },
+                  "keySource": "Microsoft.Storage"
+                }
+              }
+            },
+            {
+              "type": "Microsoft.Web/connections",
+              "apiVersion": "2016-06-01",
+              "name": "[parameters('connections_azureblob_1_name')]",
+              "location": "eastus",
+              "kind": "V1",
+              "properties": {
+                "displayName": "DMI-DataLake-SP-Conn",
+                "statuses": [
+                  {
+                    "status": "Error",
+                    "target": "token",
+                    "error": {}
+                  }
+                ],
+                "customParameterValues": {},
+                "createdTime": "2025-01-16T15:17:59.0159123Z",
+                "changedTime": "2025-01-16T15:17:59.0159123Z",
+                "api": {
+                  "name": "azureblob",
+                  "displayName": "Azure Blob Storage",
+                  "description": "Connect to Azure Blob Storage to perform CRUD operations.",
+                  "iconUri": "https://conn-afd-prod-endpoint-bmc9bqahasf3grgk.b01.azurefd.net/releases/v1.0.1718/azureblob/icon.png",
+                  "brandColor": "#804998",
+                  "id": "[resourceId('Microsoft.Web/locations/managedApis', 'azureblob')]",
+                  "type": "Microsoft.Web/locations/managedApis"
+                },
+                "testLinks": [
+                  {
+                    "requestUri": "[format('https://management.azure.com/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/DevTest-Network/providers/Microsoft.Web/connections/{0}/extensions/proxy/testconnection?api-version=2016-06-01', parameters('connections_azureblob_1_name'))]",
+                    "method": "get"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "Microsoft.Network/virtualNetworks",
+              "apiVersion": "2024-03-01",
+              "name": "[parameters('virtualNetworks_DevTest_Network_name')]",
+              "location": "eastus",
+              "tags": {
+                "Factory": "dmi-projects-factory"
+              },
+              "properties": {
+                "addressSpace": {
+                  "addressPrefixes": [
+                    "10.59.40.0/24"
+                  ]
+                },
+                "subnets": [
+                  {
+                    "name": "GatewaySubnet",
+                    "properties": {
+                      "addressPrefixes": [
+                        "10.59.40.128/27"
+                      ],
+                      "serviceEndpoints": [],
+                      "delegations": [],
+                      "privateEndpointNetworkPolicies": "Disabled",
+                      "privateLinkServiceNetworkPolicies": "Enabled"
+                    }
+                  },
+                  {
+                    "name": "default",
+                    "properties": {
+                      "addressPrefixes": [
+                        "10.59.40.0/25"
+                      ],
+                      "routeTable": {
+                        "id": "[resourceId('Microsoft.Network/routeTables', parameters('routeTables_DevTest_RouteTable_name'))]"
+                      },
+                      "serviceEndpoints": [
+                        {
+                          "service": "Microsoft.Storage",
+                          "locations": [
+                            "eastus",
+                            "westus",
+                            "westus3"
+                          ]
+                        },
+                        {
+                          "service": "Microsoft.KeyVault",
+                          "locations": [
+                            "*"
+                          ]
+                        }
+                      ],
+                      "delegations": [],
+                      "privateEndpointNetworkPolicies": "Disabled",
+                      "privateLinkServiceNetworkPolicies": "Enabled"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+              "apiVersion": "2024-03-01",
+              "name": "[format('{0}/Prod-devtest-peering', parameters('virtualNetworks_DevTest_Network_name'))]",
+              "properties": {
+                "peeringState": "Connected",
+                "peeringSyncLevel": "FullyInSync",
+                "remoteVirtualNetwork": {
+                  "id": "[parameters('virtualNetworks_Prod_VirtualNetwork_externalid')]"
+                },
+                "allowVirtualNetworkAccess": true,
+                "allowForwardedTraffic": false,
+                "allowGatewayTransit": false,
+                "useRemoteGateways": false,
+                "doNotVerifyRemoteGateways": false,
+                "peerCompleteVnets": true,
+                "remoteAddressSpace": {
+                  "addressPrefixes": [
+                    "10.59.30.0/24"
+                  ]
+                },
+                "remoteVirtualNetworkAddressSpace": {
+                  "addressPrefixes": [
+                    "10.59.30.0/24"
+                  ]
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_DevTest_Network_name'))]"
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
