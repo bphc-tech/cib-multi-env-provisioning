@@ -48,7 +48,6 @@ resource actionGroup 'microsoft.insights/actionGroups@2023-09-01-preview' = {
         useCommonAlertSchema: true
       }
     ]
-    // other receiver arrays empty
     smsReceivers: []
     webhookReceivers: []
     eventHubReceivers: []
@@ -68,10 +67,7 @@ resource localNG 'Microsoft.Network/localNetworkGateways@2024-03-01' = {
   location: 'eastus'
   properties: {
     localNetworkAddressSpace: {
-      addressPrefixes: [
-        '10.68.0.0/16'
-        '10.75.0.0/16'
-      ]
+      addressPrefixes: ['10.68.0.0/16', '10.75.0.0/16']
     }
     gatewayIpAddress: '140.241.253.162'
   }
@@ -113,8 +109,7 @@ resource publicIP 'Microsoft.Network/publicIPAddresses@2024-03-01' = {
   }
 }
 
-// Route Table with a single route.
-// Note: We remove self-references by using resourceId() function directly.
+// Route Table with a single route
 resource routeTable 'Microsoft.Network/routeTables@2024-03-01' = {
   name: routeTables_DevTest_RouteTable_name
   location: 'eastus'
@@ -132,204 +127,7 @@ resource routeTable 'Microsoft.Network/routeTables@2024-03-01' = {
   }
 }
 
-// Storage Accounts (two examples)
-// Storage account for devdatabphc
-resource storageDevDatabphc 'Microsoft.Storage/storageAccounts@2023-05-01' = {
-  name: storageAccounts_devdatabphc_name
-  location: 'eastus'
-  sku: {
-    name: 'Standard_LRS'
-    tier: 'Standard'
-  }
-  kind: 'StorageV2'
-  properties: {
-    defaultToOAuthAuthentication: true
-    allowCrossTenantReplication: false
-    minimumTlsVersion: 'TLS1_2'
-    allowBlobPublicAccess: false
-    networkAcls: {
-      bypass: 'AzureServices'
-      virtualNetworkRules: [
-        {
-          id: resourceId('Microsoft.Network/virtualNetworks/subnets', virtualNetworks_DevTest_Network_name, 'default')
-          action: 'Allow'
-          state: 'Succeeded'
-        }
-      ]
-      ipRules: []
-      defaultAction: 'Allow'
-    }
-    supportsHttpsTrafficOnly: true
-    encryption: {
-      services: {
-        file: { keyType: 'Account', enabled: true }
-        blob: { keyType: 'Account', enabled: true }
-      }
-      keySource: 'Microsoft.Storage'
-    }
-  }
-}
-
-// Storage account for devtestnetwork93cd (similar structure)
-resource storageDevTestNetwork 'Microsoft.Storage/storageAccounts@2023-05-01' = {
-  name: storageAccounts_devtestnetwork93cd_name
-  location: 'eastus'
-  sku: {
-    name: 'Standard_LRS'
-    tier: 'Standard'
-  }
-  kind: 'Storage'
-  properties: {
-    defaultToOAuthAuthentication: true
-    allowCrossTenantReplication: false
-    minimumTlsVersion: 'TLS1_2'
-    allowBlobPublicAccess: false
-    networkAcls: {
-      bypass: 'AzureServices'
-      virtualNetworkRules: []
-      ipRules: []
-      defaultAction: 'Allow'
-    }
-    supportsHttpsTrafficOnly: true
-    encryption: {
-      services: {
-        file: { keyType: 'Account', enabled: true }
-        blob: { keyType: 'Account', enabled: true }
-      }
-      keySource: 'Microsoft.Storage'
-    }
-  }
-}
-
-// Web Connections for Azure Blob (example for one connection)
-resource connectionBlob1 'Microsoft.Web/connections@2016-06-01' = {
-  name: connections_azureblob_1_name
-  location: 'eastus'
-  kind: 'V1'
-  properties: {
-    displayName: 'DMI-DataLake-SP-Conn'
-    statuses: [
-      {
-        status: 'Error'
-        target: 'token'
-        error: {}
-      }
-    ]
-    customParameterValues: {}
-    createdTime: '2025-01-16T15:17:59.0159123Z'
-    changedTime: '2025-01-16T15:17:59.0159123Z'
-    api: {
-      name: 'azureblob'
-      displayName: 'Azure Blob Storage'
-      description: 'Connect to Azure Blob Storage to perform CRUD operations.'
-      iconUri: 'https://conn-afd-prod-endpoint-bmc9bqahasf3grgk.b01.azurefd.net/releases/v1.0.1718/azureblob/icon.png'
-      brandColor: '#804998'
-      id: resourceId('Microsoft.Web/locations/managedApis', 'azureblob')
-      type: 'Microsoft.Web/locations/managedApis'
-    }
-    testLinks: [
-      {
-        requestUri: 'https://management.azure.com/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/DevTest-Network/providers/Microsoft.Web/connections/${connections_azureblob_1_name}/extensions/proxy/testconnection?api-version=2016-06-01'
-        method: 'get'
-      }
-    ]
-  }
-}
-
-// (Repeat similar resource definitions for connections_azureblob_2_name_resource through connections_azureblob_5_name_resource)
-
-// Virtual Network with subnets and peering
-resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-03-01' = {
-  name: virtualNetworks_DevTest_Network_name
-  location: 'eastus'
-  tags: {
-    Factory: 'dmi-projects-factory'
-  }
-  properties: {
-    addressSpace: {
-      addressPrefixes: [
-        '10.59.40.0/24'
-      ]
-    }
-    // Note: Do not set "id" in subnets; use resourceId() in dependencies.
-    subnets: [
-      {
-        name: 'GatewaySubnet'
-        properties: {
-          addressPrefixes: [
-            '10.59.40.128/27'
-          ]
-          serviceEndpoints: []
-          delegations: []
-          privateEndpointNetworkPolicies: 'Disabled'
-          privateLinkServiceNetworkPolicies: 'Enabled'
-        }
-      }
-      {
-        name: 'default'
-        properties: {
-          addressPrefixes: [
-            '10.59.40.0/25'
-          ]
-          routeTable: {
-            id: resourceId('Microsoft.Network/routeTables', routeTables_DevTest_RouteTable_name)
-          }
-          serviceEndpoints: [
-            {
-              service: 'Microsoft.Storage'
-              locations: [
-                'eastus'
-                'westus'
-                'westus3'
-              ]
-            },            {
-              service: 'Microsoft.KeyVault'
-              locations: ['*']
-            }
-          ]
-          delegations: []
-          privateEndpointNetworkPolicies: 'Disabled'
-          privateLinkServiceNetworkPolicies: 'Enabled'
-        }
-      }
-    ]
-  }
-}
-
-// Virtual Network Peering (for production peering)
-// We reference the remote prod VNet via resourceId()
-resource vnetPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2024-03-01' = {
-  name: '${virtualNetworks_DevTest_Network_name}/Prod-devtest-peering'
-  properties: {
-    peeringState: 'Connected'
-    peeringSyncLevel: 'FullyInSync'
-    remoteVirtualNetwork: {
-      id: virtualNetworks_Prod_VirtualNetwork_externalid
-    }
-    allowVirtualNetworkAccess: true
-    allowForwardedTraffic: false
-    allowGatewayTransit: false
-    useRemoteGateways: false
-    doNotVerifyRemoteGateways: false
-    peerCompleteVnets: true
-    remoteAddressSpace: {
-      addressPrefixes: [
-        '10.59.30.0/24'
-      ]
-    }
-    remoteVirtualNetworkAddressSpace: {
-      addressPrefixes: [
-        '10.59.30.0/24'
-      ]
-    }
-  }
-  dependsOn: [
-    virtualNetwork
-  ]
-}
-
-// (Continue with the remaining resources, ensuring that any references to an "id" of a sibling resource use the resourceId() function instead of a direct property reference. Remove self–references to break cycles.)
-
-// Note: In this revised module, circular dependencies have been addressed by not using properties from sibling resources directly and by relying on resourceId() function calls.
-// You can further split this file into additional modules (e.g. storage.bicep, web.bicep, etc.) once this base module is verified.
+// Note: Continue adding other resource definitions as needed.
+// You can reference parameters using resourceId() and format your arrays inline (with commas only between items, no extra newline characters).
+// This module is now prepared to be referenced from your main template via the "module" keyword.
 
