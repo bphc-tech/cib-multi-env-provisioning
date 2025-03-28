@@ -1,6 +1,9 @@
-// =============================
-// Parameters
-// =============================
+// ==========================================================
+// Networking Module for Factory Resources
+// ==========================================================
+
+// Parameters passed from the main template
+@description('Name of the Azure Blob connection 1')
 param connections_azureblob_1_name string = 'azureblob-1'
 param connections_azureblob_2_name string = 'azureblob-2'
 param connections_azureblob_3_name string = 'azureblob-3'
@@ -30,9 +33,9 @@ param factories_dmi_projects_factory_externalid string = '/subscriptions/694b4ca
 param storageAccounts_dmiprojectsstorage_externalid string = '/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/DevTest-Network/providers/Microsoft.Storage/storageAccounts/dmiprojectsstorage'
 param virtualNetworks_Prod_VirtualNetwork_externalid string = '/subscriptions/2b7c117e-2dba-4c4a-9cd0-e1f0dfe74b03/resourceGroups/Prod-Network/providers/Microsoft.Network/virtualNetworks/Prod-VirtualNetwork'
 
-// =============================
-// Resources
-// =============================
+// ==========================================================
+// Resource Definitions
+// ==========================================================
 
 // Action Group for email alerts
 resource actionGroup 'microsoft.insights/actionGroups@2023-09-01-preview' = {
@@ -67,13 +70,16 @@ resource localNG 'Microsoft.Network/localNetworkGateways@2024-03-01' = {
   location: 'eastus'
   properties: {
     localNetworkAddressSpace: {
-      addressPrefixes: ['10.68.0.0/16', '10.75.0.0/16']
+      addressPrefixes: [
+        '10.68.0.0/16',
+        '10.75.0.0/16'
+      ]
     }
     gatewayIpAddress: '140.241.253.162'
   }
 }
 
-// Private DNS Zones
+// Private DNS Zones for Blob, DataFactory, and DFS
 resource dnsBlob 'Microsoft.Network/privateDnsZones@2024-06-01' = {
   name: privateDnsZones_privatelink_blob_core_windows_net_name
   location: 'global'
@@ -92,7 +98,7 @@ resource dnsDFS 'Microsoft.Network/privateDnsZones@2024-06-01' = {
   properties: {}
 }
 
-// Public IP for Virtual Network Gateway
+// Public IP for the Virtual Network Gateway
 resource publicIP 'Microsoft.Network/publicIPAddresses@2024-03-01' = {
   name: publicIPAddresses_DevTest_GatewayIP_name
   location: 'eastus'
@@ -109,7 +115,7 @@ resource publicIP 'Microsoft.Network/publicIPAddresses@2024-03-01' = {
   }
 }
 
-// Route Table with a single route
+// Route Table with a default route (self-contained; no circular dependency)
 resource routeTable 'Microsoft.Network/routeTables@2024-03-01' = {
   name: routeTables_DevTest_RouteTable_name
   location: 'eastus'
@@ -127,7 +133,7 @@ resource routeTable 'Microsoft.Network/routeTables@2024-03-01' = {
   }
 }
 
-// Note: Continue adding other resource definitions as needed.
-// You can reference parameters using resourceId() and format your arrays inline (with commas only between items, no extra newline characters).
-// This module is now prepared to be referenced from your main template via the "module" keyword.
-
+// Note: Additional network resources can be added here.
+// For now, this module includes the core networking resources.
+// You can later split out further resources (e.g., VNets, subnets, peerings)
+// into additional modules if needed.
