@@ -3,7 +3,6 @@
 // ==========================================================
 
 // Parameters passed from the main template
-@description('Name of the Azure Blob connection 1')
 param connections_azureblob_1_name string = 'azureblob-1'
 param connections_azureblob_2_name string = 'azureblob-2'
 param connections_azureblob_3_name string = 'azureblob-3'
@@ -70,10 +69,7 @@ resource localNG 'Microsoft.Network/localNetworkGateways@2024-03-01' = {
   location: 'eastus'
   properties: {
     localNetworkAddressSpace: {
-      addressPrefixes: [
-        '10.68.0.0/16',
-        '10.75.0.0/16'
-      ]
+      addressPrefixes: ['10.68.0.0/16', '10.75.0.0/16']
     }
     gatewayIpAddress: '140.241.253.162'
   }
@@ -115,7 +111,7 @@ resource publicIP 'Microsoft.Network/publicIPAddresses@2024-03-01' = {
   }
 }
 
-// Route Table with a default route (self-contained; no circular dependency)
+// Route Table with a default route
 resource routeTable 'Microsoft.Network/routeTables@2024-03-01' = {
   name: routeTables_DevTest_RouteTable_name
   location: 'eastus'
@@ -133,7 +129,5 @@ resource routeTable 'Microsoft.Network/routeTables@2024-03-01' = {
   }
 }
 
-// Note: Additional network resources can be added here.
-// For now, this module includes the core networking resources.
-// You can later split out further resources (e.g., VNets, subnets, peerings)
-// into additional modules if needed.
+// Note: Additional resources (e.g. Storage, Connections, VNets, etc.) would follow here.
+// For now, this module focuses on the network-related resources.
