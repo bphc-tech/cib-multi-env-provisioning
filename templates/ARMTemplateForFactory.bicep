@@ -5,9 +5,12 @@
 @description('Factory name parameter')
 param factoryName string
 
-// (Other global parameters you need go here)
+// (Include any additional global parameters here)
 
-// Network Module Parameters (passed from the main template)
+// -----------------------------
+// Network Module Parameters
+// These parameters are passed to the network module.
+// -----------------------------
 param connections_azureblob_1_name string = 'azureblob-1'
 param connections_azureblob_2_name string = 'azureblob-2'
 param connections_azureblob_3_name string = 'azureblob-3'
@@ -81,7 +84,7 @@ module networkModule 'modules/network.bicep' = {
 
 /*
 Note:
-- This main template now calls the network module and passes all the network-related parameters.
-- Ensure that your module (modules/network.bicep) uses these parameters as needed.
-- Remove or update any unused parameters as necessary.
+- This main template now calls the network module and passes all the network‑related parameters.
+- Ensure that your network module (modules/network.bicep) makes use of these parameters as needed.
+- Remove or update any unused parameters if required.
 */
