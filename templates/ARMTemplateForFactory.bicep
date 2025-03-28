@@ -21,6 +21,7 @@ param routeTables_DevTest_RouteTable_name string = 'DevTest-RouteTable'
 param virtualNetworks_DevTest_Network_name string = 'DevTest-Network'
 param serverfarms_ASP_DevTestNetwork_b27f_name string = 'ASP-DevTestNetwork-b27f'
 param storageAccounts_devtestnetwork93cd_name string = 'devtestnetwork93cd'
+param SharePointOnlineList_Jan28_servicePrincipalKey string
 param sites_SharePointDataExtractionFunction_name string = 'SharePointDataExtractionFunction'
 param publicIPAddresses_DevTest_GatewayIP_name string = 'DevTest-GatewayIP'
 param metricAlerts_EmailOnADFActionFailure_name string = 'EmailOnADFActionFailure'
