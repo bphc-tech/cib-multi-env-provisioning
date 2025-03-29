@@ -1,15 +1,12 @@
 // ==========================================================
-// Main Deployment Template for Factory Resources
+// Updated UAT Deployment Template for Factory Resources
 // ==========================================================
 
-@description('Factory name parameter')
+@description('Factory name parameter (set this to a UAT value, e.g. "data-modernization-uat")')
 param factoryName string
 
-// (Include any additional global parameters here)
-
 // -----------------------------
-// Network Module Parameters
-// These parameters are passed to the network module.
+// Network Module Parameters (inherited from DevTest)
 // -----------------------------
 param connections_azureblob_1_name string = 'azureblob-1'
 param connections_azureblob_2_name string = 'azureblob-2'
@@ -17,32 +14,32 @@ param connections_azureblob_3_name string = 'azureblob-3'
 param connections_azureblob_4_name string = 'azureblob-4'
 param connections_azureblob_5_name string = 'azureblob-5'
 param actionGroups_Email_Alicia_name string = 'Email_Alicia'
-param connections_PA_DevTest_VPN_name string = 'PA-DevTest-VPN'
-param networkInterfaces_test_vm2_name string = 'test-vm2'
-param storageAccounts_devdatabphc_name string = 'devdatabphc'
-param routeTables_DevTest_RouteTable_name string = 'DevTest-RouteTable'
-param virtualNetworks_DevTest_Network_name string = 'DevTest-Network'
-param serverfarms_ASP_DevTestNetwork_b27f_name string = 'ASP-DevTestNetwork-b27f'
-param storageAccounts_devtestnetwork93cd_name string = 'devtestnetwork93cd'
+param connections_PA_DevTest_VPN_name string = 'PA-UAT-VPN'
+param networkInterfaces_test_vm2_name string = 'uat-vm2'
+param storageAccounts_devdatabphc_name string = 'uatdatabphc'
+param routeTables_DevTest_RouteTable_name string = 'UAT-RouteTable'
+param virtualNetworks_DevTest_Network_name string = 'UAT-VNet'
+param serverfarms_ASP_DevTestNetwork_b27f_name string = 'ASP-UATNetwork'
+param storageAccounts_devtestnetwork93cd_name string = 'uattestnetwork93cd'
 param SharePointOnlineList_Jan28_servicePrincipalKey string
 param sites_SharePointDataExtractionFunction_name string = 'SharePointDataExtractionFunction'
-param publicIPAddresses_DevTest_GatewayIP_name string = 'DevTest-GatewayIP'
+param publicIPAddresses_DevTest_GatewayIP_name string = 'UAT-GatewayIP'
 param metricAlerts_EmailOnADFActionFailure_name string = 'EmailOnADFActionFailure'
 param metricAlerts_EmailOnADFPipelineFailure_name string = 'EmailOnADFPipelineFailure'
-param localNetworkGateways_DevTest_LocalNetworkGateway_name string = 'DevTest-LocalNetworkGateway'
+param localNetworkGateways_DevTest_LocalNetworkGateway_name string = 'UAT-LocalNetworkGateway'
 param privateDnsZones_privatelink_dfs_core_windows_net_name string = 'privatelink.dfs.core.windows.net'
 param privateDnsZones_privatelink_blob_core_windows_net_name string = 'privatelink.blob.core.windows.net'
 param privateDnsZones_privatelink_datafactory_azure_net_name string = 'privatelink.datafactory.azure.net'
-param privateEndpoints_dmiprojectsstorage_private_endpoint_name string = 'dmiprojectsstorage-private-endpoint'
-param virtualNetworkGateways_DevTest_VirtualNetworkGateway1_name string = 'DevTest-VirtualNetworkGateway1'
-param privateEndpoints_dmi_projects_factory_private_endpoint_name string = 'dmi-projects-factory-private-endpoint'
-param factories_data_modernization_externalid string = '/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/DevTest-Network/providers/Microsoft.DataFactory/factories/data-modernization'
-param factories_dmi_projects_factory_externalid string = '/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/DevTest-Network/providers/Microsoft.DataFactory/factories/dmi-projects-factory'
-param storageAccounts_dmiprojectsstorage_externalid string = '/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/DevTest-Network/providers/Microsoft.Storage/storageAccounts/dmiprojectsstorage'
-param virtualNetworks_Prod_VirtualNetwork_externalid string = '/subscriptions/2b7c117e-2dba-4c4a-9cd0-e1f0dfe74b03/resourceGroups/Prod-Network/providers/Microsoft.Network/virtualNetworks/Prod-VirtualNetwork'
+param privateEndpoints_dmiprojectsstorage_private_endpoint_name string = 'uat-dmiprojectsstorage-private-endpoint'
+param virtualNetworkGateways_DevTest_VirtualNetworkGateway1_name string = 'UAT-VirtualNetworkGateway1'
+param privateEndpoints_dmi_projects_factory_private_endpoint_name string = 'uat-dmi-projects-factory-private-endpoint'
+param factories_data_modernization_externalid string = '/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL-UAT/providers/Microsoft.DataFactory/factories/data-modernization-uat'
+param factories_dmi_projects_factory_externalid string = '/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL-UAT/providers/Microsoft.DataFactory/factories/dmi-projects-factory-uat'
+param storageAccounts_dmiprojectsstorage_externalid string = '/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL-UAT/providers/Microsoft.Storage/storageAccounts/uat-dmiprojectsstorage'
+param virtualNetworks_Prod_VirtualNetwork_externalid string = '/subscriptions/2b7c117e-2dba-4c4a-9cd0-e1f0dfe74b03/resourceGroups/UAT-Network/providers/Microsoft.Network/virtualNetworks/UAT-VirtualNetwork'
 
 // ==========================================================
-// Module Call for Networking Resources
+// Module Call for Extended Networking Resources
 // ==========================================================
 module networkModule 'modules/network.bicep' = {
   name: 'networkModule'
@@ -79,12 +76,149 @@ module networkModule 'modules/network.bicep' = {
 }
 
 // ==========================================================
-// (Other resource definitions can follow here)
+// Additional Application & Service Resources for UAT
 // ==========================================================
 
+// 1. Data Factory Resource
+resource dataFactory 'Microsoft.DataFactory/factories@2018-06-01' = {
+  name: factoryName
+  location: resourceGroup().location
+  properties: {
+    // Configure additional properties as required.
+  }
+}
+
+// 2. Activity Log Alert for Data Factory Failure
+resource activityLogAlert 'Microsoft.Insights/activityLogAlerts@2017-04-01' = {
+  name: 'UAT-DataFactoryAlert'
+  location: resourceGroup().location
+  properties: {
+    scopes: [
+      dataFactory.id
+    ]
+    condition: {
+      allOf: [
+        {
+          field: 'status'
+          equals: 'Failed'
+        }
+      ]
+    }
+    actions: [
+      {
+        actionGroupId: resourceId('Microsoft.Insights/actionGroups', actionGroups_Email_Alicia_name)
+      }
+    ]
+  }
+}
+
+// 3. Storage Accounts
+resource storageAccount1 'Microsoft.Storage/storageAccounts@2021-04-01' = {
+  name: storageAccounts_devdatabphc_name
+  location: resourceGroup().location
+  sku: {
+    name: 'Standard_LRS'
+  }
+  kind: 'StorageV2'
+  properties: {}
+}
+
+resource storageAccount2 'Microsoft.Storage/storageAccounts@2021-04-01' = {
+  name: storageAccounts_devtestnetwork93cd_name
+  location: resourceGroup().location
+  sku: {
+    name: 'Standard_LRS'
+  }
+  kind: 'Storage'
+  properties: {}
+}
+
+// 4. Web Connections for Azure Blob Storage
+resource azureblobConnection1 'Microsoft.Web/connections@2016-06-01' = {
+  name: connections_azureblob_1_name
+  location: resourceGroup().location
+  properties: {
+    displayName: connections_azureblob_1_name
+  }
+}
+
+resource azureblobConnection2 'Microsoft.Web/connections@2016-06-01' = {
+  name: connections_azureblob_2_name
+  location: resourceGroup().location
+  properties: {
+    displayName: connections_azureblob_2_name
+  }
+}
+
+resource azureblobConnection3 'Microsoft.Web/connections@2016-06-01' = {
+  name: connections_azureblob_3_name
+  location: resourceGroup().location
+  properties: {
+    displayName: connections_azureblob_3_name
+  }
+}
+
+resource azureblobConnection4 'Microsoft.Web/connections@2016-06-01' = {
+  name: connections_azureblob_4_name
+  location: resourceGroup().location
+  properties: {
+    displayName: connections_azureblob_4_name
+  }
+}
+
+resource azureblobConnection5 'Microsoft.Web/connections@2016-06-01' = {
+  name: connections_azureblob_5_name
+  location: resourceGroup().location
+  properties: {
+    displayName: connections_azureblob_5_name
+  }
+}
+
+// 5. App Service Plan for Web Apps
+resource appServicePlan 'Microsoft.Web/serverFarms@2021-02-01' = {
+  name: serverfarms_ASP_DevTestNetwork_b27f_name
+  location: resourceGroup().location
+  sku: {
+    name: 'S1'
+    tier: 'Standard'
+  }
+  properties: {
+    reserved: false
+  }
+}
+
+// 6. Web App for SharePoint Data Extraction
+resource webApp 'Microsoft.Web/sites@2021-02-01' = {
+  name: sites_SharePointDataExtractionFunction_name
+  location: resourceGroup().location
+  properties: {
+    serverFarmId: appServicePlan.id
+    siteConfig: {
+      linuxFxVersion: 'DOTNETCORE|3.1'
+    }
+  }
+}
+
+// ==========================================================
+// VPN Connection Resource (Temporarily Disabled)
+// ==========================================================
+// Note: The VPN connection shared key is not available yet.
+// When you obtain the actual shared key from the admin, uncomment the block below 
+// and replace 'YourSharedKeyHere' with the real value.
 /*
-Note:
-- This main template now calls the network module and passes all the network‑related parameters.
-- Ensure that your network module (modules/network.bicep) makes use of these parameters as needed.
-- Remove or update any unused parameters if required.
+resource vpnConnection 'Microsoft.Network/connections@2020-11-01' = {
+  name: connections_PA_DevTest_VPN_name
+  location: resourceGroup().location
+  properties: {
+    connectionType: 'IPSec'
+    virtualNetworkGateway1: {
+      id: virtualNetworkGateway.id
+    }
+    localNetworkGateway2: {
+      id: localNG.id
+    }
+    routingWeight: 10
+    sharedKey: 'YourSharedKeyHere' // Replace with the actual shared key when available
+  }
+}
 */

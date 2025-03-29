@@ -5,14 +5,14 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.1.11899",
-      "templateHash": "1927187852573823902"
+      "templateHash": "1618875621424921655"
     }
   },
   "parameters": {
     "factoryName": {
       "type": "string",
       "metadata": {
-        "description": "Factory name parameter"
+        "description": "Factory name parameter (set this to a UAT value, e.g. \"data-modernization-uat\")"
       }
     },
     "connections_azureblob_1_name": {
@@ -41,31 +41,31 @@
     },
     "connections_PA_DevTest_VPN_name": {
       "type": "string",
-      "defaultValue": "PA-DevTest-VPN"
+      "defaultValue": "PA-UAT-VPN"
     },
     "networkInterfaces_test_vm2_name": {
       "type": "string",
-      "defaultValue": "test-vm2"
+      "defaultValue": "uat-vm2"
     },
     "storageAccounts_devdatabphc_name": {
       "type": "string",
-      "defaultValue": "devdatabphc"
+      "defaultValue": "uatdatabphc"
     },
     "routeTables_DevTest_RouteTable_name": {
       "type": "string",
-      "defaultValue": "DevTest-RouteTable"
+      "defaultValue": "UAT-RouteTable"
     },
     "virtualNetworks_DevTest_Network_name": {
       "type": "string",
-      "defaultValue": "DevTest-Network"
+      "defaultValue": "UAT-VNet"
     },
     "serverfarms_ASP_DevTestNetwork_b27f_name": {
       "type": "string",
-      "defaultValue": "ASP-DevTestNetwork-b27f"
+      "defaultValue": "ASP-UATNetwork"
     },
     "storageAccounts_devtestnetwork93cd_name": {
       "type": "string",
-      "defaultValue": "devtestnetwork93cd"
+      "defaultValue": "uattestnetwork93cd"
     },
     "SharePointOnlineList_Jan28_servicePrincipalKey": {
       "type": "string"
@@ -76,7 +76,7 @@
     },
     "publicIPAddresses_DevTest_GatewayIP_name": {
       "type": "string",
-      "defaultValue": "DevTest-GatewayIP"
+      "defaultValue": "UAT-GatewayIP"
     },
     "metricAlerts_EmailOnADFActionFailure_name": {
       "type": "string",
@@ -88,7 +88,7 @@
     },
     "localNetworkGateways_DevTest_LocalNetworkGateway_name": {
       "type": "string",
-      "defaultValue": "DevTest-LocalNetworkGateway"
+      "defaultValue": "UAT-LocalNetworkGateway"
     },
     "privateDnsZones_privatelink_dfs_core_windows_net_name": {
       "type": "string",
@@ -104,34 +104,163 @@
     },
     "privateEndpoints_dmiprojectsstorage_private_endpoint_name": {
       "type": "string",
-      "defaultValue": "dmiprojectsstorage-private-endpoint"
+      "defaultValue": "uat-dmiprojectsstorage-private-endpoint"
     },
     "virtualNetworkGateways_DevTest_VirtualNetworkGateway1_name": {
       "type": "string",
-      "defaultValue": "DevTest-VirtualNetworkGateway1"
+      "defaultValue": "UAT-VirtualNetworkGateway1"
     },
     "privateEndpoints_dmi_projects_factory_private_endpoint_name": {
       "type": "string",
-      "defaultValue": "dmi-projects-factory-private-endpoint"
+      "defaultValue": "uat-dmi-projects-factory-private-endpoint"
     },
     "factories_data_modernization_externalid": {
       "type": "string",
-      "defaultValue": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/DevTest-Network/providers/Microsoft.DataFactory/factories/data-modernization"
+      "defaultValue": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL-UAT/providers/Microsoft.DataFactory/factories/data-modernization-uat"
     },
     "factories_dmi_projects_factory_externalid": {
       "type": "string",
-      "defaultValue": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/DevTest-Network/providers/Microsoft.DataFactory/factories/dmi-projects-factory"
+      "defaultValue": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL-UAT/providers/Microsoft.DataFactory/factories/dmi-projects-factory-uat"
     },
     "storageAccounts_dmiprojectsstorage_externalid": {
       "type": "string",
-      "defaultValue": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/DevTest-Network/providers/Microsoft.Storage/storageAccounts/dmiprojectsstorage"
+      "defaultValue": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL-UAT/providers/Microsoft.Storage/storageAccounts/uat-dmiprojectsstorage"
     },
     "virtualNetworks_Prod_VirtualNetwork_externalid": {
       "type": "string",
-      "defaultValue": "/subscriptions/2b7c117e-2dba-4c4a-9cd0-e1f0dfe74b03/resourceGroups/Prod-Network/providers/Microsoft.Network/virtualNetworks/Prod-VirtualNetwork"
+      "defaultValue": "/subscriptions/2b7c117e-2dba-4c4a-9cd0-e1f0dfe74b03/resourceGroups/UAT-Network/providers/Microsoft.Network/virtualNetworks/UAT-VirtualNetwork"
     }
   },
   "resources": [
+    {
+      "type": "Microsoft.DataFactory/factories",
+      "apiVersion": "2018-06-01",
+      "name": "[parameters('factoryName')]",
+      "location": "[resourceGroup().location]",
+      "properties": {}
+    },
+    {
+      "type": "microsoft.insights/activityLogAlerts",
+      "apiVersion": "2017-04-01",
+      "name": "UAT-DataFactoryAlert",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "scopes": [
+          "[resourceId('Microsoft.DataFactory/factories', parameters('factoryName'))]"
+        ],
+        "condition": {
+          "allOf": [
+            {
+              "field": "status",
+              "equals": "Failed"
+            }
+          ]
+        },
+        "actions": [
+          {
+            "actionGroupId": "[resourceId('Microsoft.Insights/actionGroups', parameters('actionGroups_Email_Alicia_name'))]"
+          }
+        ]
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.DataFactory/factories', parameters('factoryName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2021-04-01",
+      "name": "[parameters('storageAccounts_devdatabphc_name')]",
+      "location": "[resourceGroup().location]",
+      "sku": {
+        "name": "Standard_LRS"
+      },
+      "kind": "StorageV2",
+      "properties": {}
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2021-04-01",
+      "name": "[parameters('storageAccounts_devtestnetwork93cd_name')]",
+      "location": "[resourceGroup().location]",
+      "sku": {
+        "name": "Standard_LRS"
+      },
+      "kind": "Storage",
+      "properties": {}
+    },
+    {
+      "type": "Microsoft.Web/connections",
+      "apiVersion": "2016-06-01",
+      "name": "[parameters('connections_azureblob_1_name')]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "displayName": "[parameters('connections_azureblob_1_name')]"
+      }
+    },
+    {
+      "type": "Microsoft.Web/connections",
+      "apiVersion": "2016-06-01",
+      "name": "[parameters('connections_azureblob_2_name')]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "displayName": "[parameters('connections_azureblob_2_name')]"
+      }
+    },
+    {
+      "type": "Microsoft.Web/connections",
+      "apiVersion": "2016-06-01",
+      "name": "[parameters('connections_azureblob_3_name')]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "displayName": "[parameters('connections_azureblob_3_name')]"
+      }
+    },
+    {
+      "type": "Microsoft.Web/connections",
+      "apiVersion": "2016-06-01",
+      "name": "[parameters('connections_azureblob_4_name')]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "displayName": "[parameters('connections_azureblob_4_name')]"
+      }
+    },
+    {
+      "type": "Microsoft.Web/connections",
+      "apiVersion": "2016-06-01",
+      "name": "[parameters('connections_azureblob_5_name')]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "displayName": "[parameters('connections_azureblob_5_name')]"
+      }
+    },
+    {
+      "type": "Microsoft.Web/serverfarms",
+      "apiVersion": "2021-02-01",
+      "name": "[parameters('serverfarms_ASP_DevTestNetwork_b27f_name')]",
+      "location": "[resourceGroup().location]",
+      "sku": {
+        "name": "S1",
+        "tier": "Standard"
+      },
+      "properties": {
+        "reserved": false
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites",
+      "apiVersion": "2021-02-01",
+      "name": "[parameters('sites_SharePointDataExtractionFunction_name')]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('serverfarms_ASP_DevTestNetwork_b27f_name'))]",
+        "siteConfig": {
+          "linuxFxVersion": "DOTNETCORE|3.1"
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', parameters('serverfarms_ASP_DevTestNetwork_b27f_name'))]"
+      ]
+    },
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -234,7 +363,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.34.1.11899",
-              "templateHash": "734750315130794953"
+              "templateHash": "119618965743152139"
             }
           },
           "parameters": {
@@ -336,11 +465,11 @@
             },
             "factories_data_modernization_externalid": {
               "type": "string",
-              "defaultValue": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/DevTest-Network/providers/Microsoft.DataFactory/factories/data-modernization"
+              "defaultValue": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/DevTest-Network/providers/Microsoft.DataFactory/factories/data-modernization-uat"
             },
             "factories_dmi_projects_factory_externalid": {
               "type": "string",
-              "defaultValue": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/DevTest-Network/providers/Microsoft.DataFactory/factories/dmi-projects-factory"
+              "defaultValue": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/DevTest-Network/providers/Microsoft.DataFactory/factories/dmi-projects-factory-uat"
             },
             "storageAccounts_dmiprojectsstorage_externalid": {
               "type": "string",
@@ -445,6 +574,61 @@
                     "properties": {
                       "addressPrefix": "0.0.0.0/0",
                       "nextHopType": "Internet"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "type": "Microsoft.Network/virtualNetworks",
+              "apiVersion": "2020-11-01",
+              "name": "[parameters('virtualNetworks_DevTest_Network_name')]",
+              "location": "eastus",
+              "properties": {
+                "addressSpace": {
+                  "addressPrefixes": [
+                    "10.59.40.0/24"
+                  ]
+                },
+                "subnets": [
+                  {
+                    "name": "GatewaySubnet",
+                    "properties": {
+                      "addressPrefix": "10.59.40.128/27"
+                    }
+                  },
+                  {
+                    "name": "default",
+                    "properties": {
+                      "addressPrefix": "10.59.40.0/25"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "type": "Microsoft.Network/virtualNetworkGateways",
+              "apiVersion": "2020-11-01",
+              "name": "[parameters('virtualNetworkGateways_DevTest_VirtualNetworkGateway1_name')]",
+              "location": "eastus",
+              "properties": {
+                "sku": {
+                  "name": "VpnGw1",
+                  "tier": "VpnGw1"
+                },
+                "gatewayType": "Vpn",
+                "vpnType": "RouteBased",
+                "enableBgp": false,
+                "ipConfigurations": [
+                  {
+                    "name": "default",
+                    "properties": {
+                      "subnet": {
+                        "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_DevTest_Network_name'), 'GatewaySubnet')]"
+                      },
+                      "publicIPAddress": {
+                        "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_DevTest_GatewayIP_name'))]"
+                      }
                     }
                   }
                 ]
