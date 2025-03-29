@@ -31,8 +31,7 @@ jobs:
 
       # Step 3: Set environment variables based on the branch.
       #   - main branch: Production deployment -> RESOURCE_GROUP = CIB-DL-PROD, PARAM_FILE = parameters/prod.parameters.json
-      #   - uat branch: UAT deployment -> RESOURCE_GROUP = CIB-DL-UAT, PARAM_FILE = parameters/uat.parameters.json
-      #   - dev branch or others: Development deployment -> RESOURCE_GROUP = cib-demo-dev, PARAM_FILE = parameters/dev.parameters.json
+      #   - uat or dev branch: UAT deployment -> RESOURCE_GROUP = CIB-DL-UAT, PARAM_FILE = parameters/uat.parameters.json
       - name: Set environment variables
         id: setenv
         run: |
@@ -41,7 +40,7 @@ jobs:
             echo "PARAM_FILE=parameters/prod.parameters.json" >> $GITHUB_ENV
             echo "RESOURCE_GROUP=CIB-DL-PROD" >> $GITHUB_ENV
             echo "AZURE_CREDS=$(echo '${{ secrets.AZURE_CREDENTIALS_PROD }}' | tr -d '\n')" >> $GITHUB_ENV
-          elif [ "${{ github.ref }}" == "refs/heads/uat" ]; then
+          elif [ "${{ github.ref }}" == "refs/heads/uat" ] || [ "${{ github.ref }}" == "refs/heads/dev" ]; then
             echo "UAT deployment"
             echo "PARAM_FILE=parameters/uat.parameters.json" >> $GITHUB_ENV
             echo "RESOURCE_GROUP=CIB-DL-UAT" >> $GITHUB_ENV
@@ -69,7 +68,6 @@ jobs:
           creds: ${{ env.AZURE_CREDS }}
 
       # Step 5: Build the Bicep template to validate its syntax.
-      # The active deployment template is located in the templates folder.
       - name: Build Bicep Template
         run: az bicep build --file templates/ARMTemplateForFactory.bicep
 
