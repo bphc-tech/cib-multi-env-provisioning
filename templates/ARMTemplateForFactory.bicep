@@ -2,11 +2,11 @@
 // Updated UAT Deployment Template for Factory Resources
 // ==========================================================
 
-@description('Factory name parameter (e.g. "data-modernization-uat")')
+@description('Factory name parameter (set this to a UAT value, e.g. "data-modernization-uat")')
 param factoryName string
 
 // -----------------------------
-// Network Module Parameters
+// Network Module Parameters (inherited from DevTest)
 // -----------------------------
 param connections_azureblob_1_name string = 'azureblob-1'
 param connections_azureblob_2_name string = 'azureblob-2'
@@ -33,13 +33,13 @@ param privateDnsZones_privatelink_datafactory_azure_net_name string = 'privateli
 param privateEndpoints_dmiprojectsstorage_private_endpoint_name string = 'uat-dmiprojectsstorage-private-endpoint'
 param virtualNetworkGateways_DevTest_VirtualNetworkGateway1_name string = 'UAT-VirtualNetworkGateway1'
 param privateEndpoints_dmi_projects_factory_private_endpoint_name string = 'uat-dmi-projects-factory-private-endpoint'
-param factories_data_modernization_externalid string
-param factories_dmi_projects_factory_externalid string
-param storageAccounts_dmiprojectsstorage_externalid string
-param virtualNetworks_Prod_VirtualNetwork_externalid string
+param factories_data_modernization_externalid string = '/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL-UAT/providers/Microsoft.DataFactory/factories/data-modernization-uat'
+param factories_dmi_projects_factory_externalid string = '/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL-UAT/providers/Microsoft.DataFactory/factories/dmi-projects-factory-uat'
+param storageAccounts_dmiprojectsstorage_externalid string = '/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL-UAT/providers/Microsoft.Storage/storageAccounts/uat-dmiprojectsstorage'
+param virtualNetworks_Prod_VirtualNetwork_externalid string = '/subscriptions/2b7c117e-2dba-4c4a-9cd0-e1f0dfe74b03/resourceGroups/UAT-Network/providers/Microsoft.Network/virtualNetworks/UAT-VirtualNetwork'
 
 // ==========================================================
-// Network Module Invocation
+// Module Call for Extended Networking Resources
 // ==========================================================
 module networkModule 'modules/network.bicep' = {
   name: 'networkModule'
@@ -76,11 +76,11 @@ module networkModule 'modules/network.bicep' = {
 }
 
 // ==========================================================
-// App Service Plan (Basic SKU for quota compliance)
+// App Service Plan for Web Apps
 // ==========================================================
 resource appServicePlan 'Microsoft.Web/serverFarms@2021-02-01' = {
   name: serverfarms_ASP_DevTestNetwork_b27f_name
-  location: resourceGroup().location
+  location: 'centralus'
   sku: {
     name: 'B1'
     tier: 'Basic'
@@ -91,105 +91,15 @@ resource appServicePlan 'Microsoft.Web/serverFarms@2021-02-01' = {
 }
 
 // ==========================================================
-// Other Supporting Resources
+// Web App for SharePoint Data Extraction
 // ==========================================================
-
 resource webApp 'Microsoft.Web/sites@2021-02-01' = {
   name: sites_SharePointDataExtractionFunction_name
-  location: resourceGroup().location
+  location: 'centralus'
   properties: {
     serverFarmId: appServicePlan.id
     siteConfig: {
       linuxFxVersion: 'DOTNETCORE|3.1'
     }
-  }
-}
-
-resource azureblobConnection1 'Microsoft.Web/connections@2016-06-01' = {
-  name: connections_azureblob_1_name
-  location: resourceGroup().location
-  properties: {
-    displayName: connections_azureblob_1_name
-  }
-}
-
-resource azureblobConnection2 'Microsoft.Web/connections@2016-06-01' = {
-  name: connections_azureblob_2_name
-  location: resourceGroup().location
-  properties: {
-    displayName: connections_azureblob_2_name
-  }
-}
-
-resource azureblobConnection3 'Microsoft.Web/connections@2016-06-01' = {
-  name: connections_azureblob_3_name
-  location: resourceGroup().location
-  properties: {
-    displayName: connections_azureblob_3_name
-  }
-}
-
-resource azureblobConnection4 'Microsoft.Web/connections@2016-06-01' = {
-  name: connections_azureblob_4_name
-  location: resourceGroup().location
-  properties: {
-    displayName: connections_azureblob_4_name
-  }
-}
-
-resource azureblobConnection5 'Microsoft.Web/connections@2016-06-01' = {
-  name: connections_azureblob_5_name
-  location: resourceGroup().location
-  properties: {
-    displayName: connections_azureblob_5_name
-  }
-}
-
-resource storageAccount1 'Microsoft.Storage/storageAccounts@2021-04-01' = {
-  name: storageAccounts_devdatabphc_name
-  location: resourceGroup().location
-  sku: {
-    name: 'Standard_LRS'
-  }
-  kind: 'StorageV2'
-  properties: {}
-}
-
-resource storageAccount2 'Microsoft.Storage/storageAccounts@2021-04-01' = {
-  name: storageAccounts_devtestnetwork93cd_name
-  location: resourceGroup().location
-  sku: {
-    name: 'Standard_LRS'
-  }
-  kind: 'Storage'
-  properties: {}
-}
-
-resource dataFactory 'Microsoft.DataFactory/factories@2018-06-01' = {
-  name: factoryName
-  location: resourceGroup().location
-  properties: {}
-}
-
-resource activityLogAlert 'Microsoft.Insights/activityLogAlerts@2017-04-01' = {
-  name: 'UAT-DataFactoryAlert'
-  location: 'global'
-  properties: {
-    scopes: [
-      dataFactory.id
-    ]
-    condition: {
-      allOf: [
-        {
-          field: 'status'
-          equals: 'Failed'
-        }
-      ]
-    }
-    actions: [
-      {
-        actionGroupId: resourceId('microsoft.insights/actionGroups', actionGroups_Email_Alicia_name)
-      }
-    ]
   }
 }
