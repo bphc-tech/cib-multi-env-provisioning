@@ -1,5 +1,5 @@
 // ==========================================================
-// Extended Networking Module for Factory Resources
+// Extended Networking Module for Factory Resources (UAT)
 // ==========================================================
 
 // Parameters passed from the main template
@@ -27,17 +27,17 @@ param privateDnsZones_privatelink_datafactory_azure_net_name string = 'privateli
 param privateEndpoints_dmiprojectsstorage_private_endpoint_name string = 'dmiprojectsstorage-private-endpoint'
 param virtualNetworkGateways_DevTest_VirtualNetworkGateway1_name string = 'DevTest-VirtualNetworkGateway1'
 param privateEndpoints_dmi_projects_factory_private_endpoint_name string = 'dmi-projects-factory-private-endpoint'
-param factories_data_modernization_externalid string = '/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/DevTest-Network/providers/Microsoft.DataFactory/factories/data-modernization'
-param factories_dmi_projects_factory_externalid string = '/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/DevTest-Network/providers/Microsoft.DataFactory/factories/dmi-projects-factory'
+param factories_data_modernization_externalid string = '/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/DevTest-Network/providers/Microsoft.DataFactory/factories/data-modernization-uat'
+param factories_dmi_projects_factory_externalid string = '/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/DevTest-Network/providers/Microsoft.DataFactory/factories/dmi-projects-factory-uat'
 param storageAccounts_dmiprojectsstorage_externalid string = '/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/DevTest-Network/providers/Microsoft.Storage/storageAccounts/dmiprojectsstorage'
 param virtualNetworks_Prod_VirtualNetwork_externalid string = '/subscriptions/2b7c117e-2dba-4c4a-9cd0-e1f0dfe74b03/resourceGroups/Prod-Network/providers/Microsoft.Network/virtualNetworks/Prod-VirtualNetwork'
 
 // ==========================================================
-// Existing Network Resources
+// Resource Definitions
 // ==========================================================
 
 // Action Group for email alerts
-resource actionGroup 'microsoft.insights/actionGroups@2023-09-01-preview' = {
+resource actionGroup 'Microsoft.Insights/actionGroups@2023-09-01-preview' = {
   name: actionGroups_Email_Alicia_name
   location: 'Global'
   properties: {
@@ -135,7 +135,7 @@ resource routeTable 'Microsoft.Network/routeTables@2024-03-01' = {
 // Extended Network Resources
 // ==========================================================
 
-// 1. Virtual Network Resource
+// Virtual Network Resource
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2020-11-01' = {
   name: virtualNetworks_DevTest_Network_name
   location: 'eastus'
@@ -161,7 +161,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2020-11-01' = {
   }
 }
 
-// 2. Virtual Network Gateway Resource
+// Virtual Network Gateway Resource
 resource virtualNetworkGateway 'Microsoft.Network/virtualNetworkGateways@2020-11-01' = {
   name: virtualNetworkGateways_DevTest_VirtualNetworkGateway1_name
   location: 'eastus'
@@ -189,7 +189,7 @@ resource virtualNetworkGateway 'Microsoft.Network/virtualNetworkGateways@2020-11
   }
 }
 
-// 3. VPN Connection Resource (Temporarily Disabled)
+// VPN Connection Resource (Temporarily Disabled)
 // Note: The shared key for this VPN connection is not currently available.
 // When you obtain the shared key, uncomment the block below and replace 'YourSharedKeyHere' with the actual key.
 /*
