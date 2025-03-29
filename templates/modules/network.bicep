@@ -1,5 +1,5 @@
 // ==========================================================
-// Networking Module for Factory Resources
+// Extended Networking Module for Factory Resources
 // ==========================================================
 
 // Parameters passed from the main template
@@ -33,7 +33,7 @@ param storageAccounts_dmiprojectsstorage_externalid string = '/subscriptions/694
 param virtualNetworks_Prod_VirtualNetwork_externalid string = '/subscriptions/2b7c117e-2dba-4c4a-9cd0-e1f0dfe74b03/resourceGroups/Prod-Network/providers/Microsoft.Network/virtualNetworks/Prod-VirtualNetwork'
 
 // ==========================================================
-// Resource Definitions
+// Existing Network Resources
 // ==========================================================
 
 // Action Group for email alerts
@@ -69,7 +69,9 @@ resource localNG 'Microsoft.Network/localNetworkGateways@2024-03-01' = {
   location: 'eastus'
   properties: {
     localNetworkAddressSpace: {
-      addressPrefixes: ['10.68.0.0/16', '10.75.0.0/16']
+      addressPrefixes: [
+        '10.68.0.0/16',        '10.75.0.0/16'
+      ]
     }
     gatewayIpAddress: '140.241.253.162'
   }
@@ -129,5 +131,81 @@ resource routeTable 'Microsoft.Network/routeTables@2024-03-01' = {
   }
 }
 
-// Note: Additional resources (e.g. Storage, Connections, VNets, etc.) would follow here.
-// For now, this module focuses on the network-related resources.
+// ==========================================================
+// Extended Network Resources
+// ==========================================================
+
+// 1. Virtual Network Resource
+resource virtualNetwork 'Microsoft.Network/virtualNetworks@2020-11-01' = {
+  name: virtualNetworks_DevTest_Network_name
+  location: 'eastus'
+  properties: {
+    addressSpace: {
+      addressPrefixes: [
+        '10.59.40.0/24'
+      ]
+    }
+    subnets: [
+      {
+        name: 'GatewaySubnet'
+        properties: {
+          addressPrefix: '10.59.40.128/27'
+        }
+      },      {
+        name: 'default'
+        properties: {
+          addressPrefix: '10.59.40.0/25'
+        }
+      }
+    ]
+  }
+}
+
+// 2. Virtual Network Gateway Resource
+resource virtualNetworkGateway 'Microsoft.Network/virtualNetworkGateways@2020-11-01' = {
+  name: virtualNetworkGateways_DevTest_VirtualNetworkGateway1_name
+  location: 'eastus'
+  properties: {
+    sku: {
+      name: 'VpnGw1'
+      tier: 'VpnGw1'
+    }
+    gatewayType: 'Vpn'
+    vpnType: 'RouteBased'
+    enableBgp: false
+    ipConfigurations: [
+      {
+        name: 'default'
+        properties: {
+          subnet: {
+            id: resourceId('Microsoft.Network/virtualNetworks/subnets', virtualNetworks_DevTest_Network_name, 'GatewaySubnet')
+          }
+          publicIPAddress: {
+            id: resourceId('Microsoft.Network/publicIPAddresses', publicIPAddresses_DevTest_GatewayIP_name)
+          }
+        }
+      }
+    ]
+  }
+}
+
+// 3. VPN Connection Resource (Temporarily Disabled)
+// Note: The shared key for this VPN connection is not currently available.
+// When you obtain the shared key, uncomment the block below and replace 'YourSharedKeyHere' with the actual key.
+/*
+resource vpnConnection 'Microsoft.Network/connections@2020-11-01' = {
+  name: connections_PA_DevTest_VPN_name
+  location: 'eastus'
+  properties: {
+    connectionType: 'IPSec'
+    virtualNetworkGateway1: {
+      id: virtualNetworkGateway.id
+    }
+    localNetworkGateway2: {
+      id: localNG.id
+    }
+    routingWeight: 10
+    sharedKey: 'YourSharedKeyHere' // Replace with the actual shared key when available
+  }
+}
+*/
