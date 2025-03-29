@@ -2,11 +2,11 @@
 // Updated UAT Deployment Template for Factory Resources
 // ==========================================================
 
-@description('Factory name parameter (set this to a UAT value, e.g. "data-modernization-uat")')
+@description('Factory name parameter (e.g. "data-modernization-uat")')
 param factoryName string
 
 // -----------------------------
-// Network Module Parameters (inherited from DevTest)
+// Network Module Parameters
 // -----------------------------
 param connections_azureblob_1_name string = 'azureblob-1'
 param connections_azureblob_2_name string = 'azureblob-2'
@@ -39,7 +39,7 @@ param storageAccounts_dmiprojectsstorage_externalid string
 param virtualNetworks_Prod_VirtualNetwork_externalid string
 
 // ==========================================================
-// Module Call for Extended Networking Resources
+// Network Module Invocation
 // ==========================================================
 module networkModule 'modules/network.bicep' = {
   name: 'networkModule'
@@ -76,55 +76,33 @@ module networkModule 'modules/network.bicep' = {
 }
 
 // ==========================================================
-// Additional Application & Service Resources for UAT
+// App Service Plan (Basic SKU for quota compliance)
 // ==========================================================
-resource dataFactory 'Microsoft.DataFactory/factories@2018-06-01' = {
-  name: factoryName
+resource appServicePlan 'Microsoft.Web/serverFarms@2021-02-01' = {
+  name: serverfarms_ASP_DevTestNetwork_b27f_name
   location: resourceGroup().location
-  properties: {}
-}
-
-resource activityLogAlert 'Microsoft.Insights/activityLogAlerts@2017-04-01' = {
-  name: 'UAT-DataFactoryAlert'
-  location: 'global'
+  sku: {
+    name: 'B1'
+    tier: 'Basic'
+  }
   properties: {
-    scopes: [
-      dataFactory.id
-    ]
-    condition: {
-      allOf: [
-        {
-          field: 'status'
-          equals: 'Failed'
-        }
-      ]
+    reserved: false
+  }
+}
+
+// ==========================================================
+// Other Supporting Resources
+// ==========================================================
+
+resource webApp 'Microsoft.Web/sites@2021-02-01' = {
+  name: sites_SharePointDataExtractionFunction_name
+  location: resourceGroup().location
+  properties: {
+    serverFarmId: appServicePlan.id
+    siteConfig: {
+      linuxFxVersion: 'DOTNETCORE|3.1'
     }
-    actions: [
-      {
-        actionGroupId: resourceId('Microsoft.Insights/actionGroups', actionGroups_Email_Alicia_name)
-      }
-    ]
   }
-}
-
-resource storageAccount1 'Microsoft.Storage/storageAccounts@2021-04-01' = {
-  name: storageAccounts_devdatabphc_name
-  location: resourceGroup().location
-  sku: {
-    name: 'Standard_LRS'
-  }
-  kind: 'StorageV2'
-  properties: {}
-}
-
-resource storageAccount2 'Microsoft.Storage/storageAccounts@2021-04-01' = {
-  name: storageAccounts_devtestnetwork93cd_name
-  location: resourceGroup().location
-  sku: {
-    name: 'Standard_LRS'
-  }
-  kind: 'Storage'
-  properties: {}
 }
 
 resource azureblobConnection1 'Microsoft.Web/connections@2016-06-01' = {
@@ -167,49 +145,51 @@ resource azureblobConnection5 'Microsoft.Web/connections@2016-06-01' = {
   }
 }
 
-resource appServicePlan 'Microsoft.Web/serverFarms@2021-02-01' = {
-  name: serverfarms_ASP_DevTestNetwork_b27f_name
+resource storageAccount1 'Microsoft.Storage/storageAccounts@2021-04-01' = {
+  name: storageAccounts_devdatabphc_name
   location: resourceGroup().location
   sku: {
-    name: 'S1'
-    tier: 'Standard'
+    name: 'Standard_LRS'
   }
-  properties: {
-    reserved: false
-  }
+  kind: 'StorageV2'
+  properties: {}
 }
 
-resource webApp 'Microsoft.Web/sites@2021-02-01' = {
-  name: sites_SharePointDataExtractionFunction_name
+resource storageAccount2 'Microsoft.Storage/storageAccounts@2021-04-01' = {
+  name: storageAccounts_devtestnetwork93cd_name
   location: resourceGroup().location
-  properties: {
-    serverFarmId: appServicePlan.id
-    siteConfig: {
-      linuxFxVersion: 'DOTNETCORE|3.1'
-    }
+  sku: {
+    name: 'Standard_LRS'
   }
+  kind: 'Storage'
+  properties: {}
 }
 
-// ==========================================================
-// VPN Connection Resource (Temporarily Disabled)
-// ==========================================================
-// Note: The VPN connection shared key is not available yet.
-// When you obtain the actual shared key from the admin, uncomment the block below 
-// and replace 'YourSharedKeyHere' with the real value.
-/*
-resource vpnConnection 'Microsoft.Network/connections@2020-11-01' = {
-  name: connections_PA_DevTest_VPN_name
+resource dataFactory 'Microsoft.DataFactory/factories@2018-06-01' = {
+  name: factoryName
   location: resourceGroup().location
+  properties: {}
+}
+
+resource activityLogAlert 'Microsoft.Insights/activityLogAlerts@2017-04-01' = {
+  name: 'UAT-DataFactoryAlert'
+  location: 'global'
   properties: {
-    connectionType: 'IPSec'
-    virtualNetworkGateway1: {
-      id: virtualNetworkGateway.id
+    scopes: [
+      dataFactory.id
+    ]
+    condition: {
+      allOf: [
+        {
+          field: 'status'
+          equals: 'Failed'
+        }
+      ]
     }
-    localNetworkGateway2: {
-      id: localNG.id
-    }
-    routingWeight: 10
-    sharedKey: 'YourSharedKeyHere'
+    actions: [
+      {
+        actionGroupId: resourceId('microsoft.insights/actionGroups', actionGroups_Email_Alicia_name)
+      }
+    ]
   }
 }
-*/
