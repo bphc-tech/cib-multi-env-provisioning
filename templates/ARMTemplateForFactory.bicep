@@ -33,10 +33,10 @@ param privateDnsZones_privatelink_datafactory_azure_net_name string = 'privateli
 param privateEndpoints_dmiprojectsstorage_private_endpoint_name string = 'uat-dmiprojectsstorage-private-endpoint'
 param virtualNetworkGateways_DevTest_VirtualNetworkGateway1_name string = 'UAT-VirtualNetworkGateway1'
 param privateEndpoints_dmi_projects_factory_private_endpoint_name string = 'uat-dmi-projects-factory-private-endpoint'
-param factories_data_modernization_externalid string = '/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL-UAT/providers/Microsoft.DataFactory/factories/data-modernization-uat'
-param factories_dmi_projects_factory_externalid string = '/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL-UAT/providers/Microsoft.DataFactory/factories/dmi-projects-factory-uat'
-param storageAccounts_dmiprojectsstorage_externalid string = '/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL-UAT/providers/Microsoft.Storage/storageAccounts/uat-dmiprojectsstorage'
-param virtualNetworks_Prod_VirtualNetwork_externalid string = '/subscriptions/2b7c117e-2dba-4c4a-9cd0-e1f0dfe74b03/resourceGroups/UAT-Network/providers/Microsoft.Network/virtualNetworks/UAT-VirtualNetwork'
+param factories_data_modernization_externalid string
+param factories_dmi_projects_factory_externalid string
+param storageAccounts_dmiprojectsstorage_externalid string
+param virtualNetworks_Prod_VirtualNetwork_externalid string
 
 // ==========================================================
 // Module Call for Extended Networking Resources
@@ -78,20 +78,15 @@ module networkModule 'modules/network.bicep' = {
 // ==========================================================
 // Additional Application & Service Resources for UAT
 // ==========================================================
-
-// 1. Data Factory Resource
 resource dataFactory 'Microsoft.DataFactory/factories@2018-06-01' = {
   name: factoryName
   location: resourceGroup().location
-  properties: {
-    // Configure additional properties as required.
-  }
+  properties: {}
 }
 
-// 2. Activity Log Alert for Data Factory Failure
 resource activityLogAlert 'Microsoft.Insights/activityLogAlerts@2017-04-01' = {
   name: 'UAT-DataFactoryAlert'
-  location: resourceGroup().location
+  location: 'global'
   properties: {
     scopes: [
       dataFactory.id
@@ -112,7 +107,6 @@ resource activityLogAlert 'Microsoft.Insights/activityLogAlerts@2017-04-01' = {
   }
 }
 
-// 3. Storage Accounts
 resource storageAccount1 'Microsoft.Storage/storageAccounts@2021-04-01' = {
   name: storageAccounts_devdatabphc_name
   location: resourceGroup().location
@@ -133,7 +127,6 @@ resource storageAccount2 'Microsoft.Storage/storageAccounts@2021-04-01' = {
   properties: {}
 }
 
-// 4. Web Connections for Azure Blob Storage
 resource azureblobConnection1 'Microsoft.Web/connections@2016-06-01' = {
   name: connections_azureblob_1_name
   location: resourceGroup().location
@@ -174,7 +167,6 @@ resource azureblobConnection5 'Microsoft.Web/connections@2016-06-01' = {
   }
 }
 
-// 5. App Service Plan for Web Apps
 resource appServicePlan 'Microsoft.Web/serverFarms@2021-02-01' = {
   name: serverfarms_ASP_DevTestNetwork_b27f_name
   location: resourceGroup().location
@@ -187,7 +179,6 @@ resource appServicePlan 'Microsoft.Web/serverFarms@2021-02-01' = {
   }
 }
 
-// 6. Web App for SharePoint Data Extraction
 resource webApp 'Microsoft.Web/sites@2021-02-01' = {
   name: sites_SharePointDataExtractionFunction_name
   location: resourceGroup().location
@@ -218,7 +209,7 @@ resource vpnConnection 'Microsoft.Network/connections@2020-11-01' = {
       id: localNG.id
     }
     routingWeight: 10
-    sharedKey: 'YourSharedKeyHere' // Replace with the actual shared key when available
+    sharedKey: 'YourSharedKeyHere'
   }
 }
 */
