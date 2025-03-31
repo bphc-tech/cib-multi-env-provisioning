@@ -33,10 +33,10 @@ param privateDnsZones_privatelink_datafactory_azure_net_name string = 'privateli
 param privateEndpoints_dmiprojectsstorage_private_endpoint_name string = 'uat-dmiprojectsstorage-private-endpoint'
 param virtualNetworkGateways_DevTest_VirtualNetworkGateway1_name string = 'UAT-VirtualNetworkGateway1'
 param privateEndpoints_dmi_projects_factory_private_endpoint_name string = 'uat-dmi-projects-factory-private-endpoint'
-param factories_data_modernization_externalid string = '/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL-UAT/providers/Microsoft.DataFactory/factories/data-modernization-uat'
-param factories_dmi_projects_factory_externalid string = '/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL-UAT/providers/Microsoft.DataFactory/factories/dmi-projects-factory-uat'
-param storageAccounts_dmiprojectsstorage_externalid string = '/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL-UAT/providers/Microsoft.Storage/storageAccounts/uat-dmiprojectsstorage'
-param virtualNetworks_Prod_VirtualNetwork_externalid string = '/subscriptions/2b7c117e-2dba-4c4a-9cd0-e1f0dfe74b03/resourceGroups/UAT-Network/providers/Microsoft.Network/virtualNetworks/UAT-VirtualNetwork'
+param factories_data_modernization_externalid string
+param factories_dmi_projects_factory_externalid string
+param storageAccounts_dmiprojectsstorage_externalid string
+param virtualNetworks_Prod_VirtualNetwork_externalid string
 
 // ==========================================================
 // Module Call for Extended Networking Resources
@@ -76,7 +76,7 @@ module networkModule 'modules/network.bicep' = {
 }
 
 // ==========================================================
-// App Service Plan for Web Apps
+// App Service Plan for Web Apps (adjusted to avoid quota errors)
 // ==========================================================
 resource appServicePlan 'Microsoft.Web/serverFarms@2021-02-01' = {
   name: serverfarms_ASP_DevTestNetwork_b27f_name
@@ -91,7 +91,7 @@ resource appServicePlan 'Microsoft.Web/serverFarms@2021-02-01' = {
 }
 
 // ==========================================================
-// Web App for SharePoint Data Extraction
+// Web App for SharePoint Data Extraction (in centralus)
 // ==========================================================
 resource webApp 'Microsoft.Web/sites@2021-02-01' = {
   name: sites_SharePointDataExtractionFunction_name

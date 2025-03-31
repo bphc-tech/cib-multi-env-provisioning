@@ -1,7 +1,23 @@
-```markdown
 # cib-multi-env-provisioning
 
 **cib-multi-env-provisioning** is an Azure resource provisioning project that uses Bicep templates and ARM parameters. The project is managed in Git and employs GitHub Actions for continuous integration and continuous deployment (CI/CD).
+
+---
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Project Structure](#project-structure)
+- [Environments & Branches](#environments--branches)
+- [Deployment Process](#deployment-process)
+- [Resource Quotas & SKU Awareness](#resource-quotas--sku-awareness)
+- [Conditional Resource Management](#conditional-resource-management)
+- [Resource Deletion Guidance](#resource-deletion-guidance)
+- [Local Validation & Deployment](#local-validation--deployment)
+- [Troubleshooting](#troubleshooting)
+- [Contributing](#contributing)
+
+---
 
 ## Overview
 
@@ -58,6 +74,48 @@ This project provisions Azure resources (such as Data Factory, networking, and D
    - The networking resources are grouped into an extended module (`modules/network.bicep`), which centralizes network configurations.
    - The VPN connection block in the networking module is currently disabled (commented out) due to the missing shared key. Once the key is provided by the administrator, you can uncomment and update that block.
 
+## Resource Quotas & SKU Awareness
+
+Before deploying resources, check your region's quota limits and availability using:
+
+```bash
+az vm list-usage --location <region> --output table
+```
+
+Some SKUs (e.g., `B1`, `S1`) may not be available or may exceed quota limits. Adjust the SKU in your Bicep file or request a quota increase if necessary.
+
+Ensure your chosen region supports the resource types you need. For example, some resource types like `Microsoft.Insights/activityLogAlerts` are only supported in `global`, `westeurope`, and `northeurope`.
+
+## Conditional Resource Management
+
+Currently, Bicep does not support skipping deployment of an existing resource natively.
+Options:
+- Use `existing` keyword in Bicep if you reference a resource but don't need to redeploy it.
+- Use deployment parameters to control resource creation.
+- Use conditional deployment logic (`if` blocks).
+
+## Resource Deletion Guidance
+
+If a deployment fails due to naming collisions (resource already exists), and you're mirroring another environment like devnet:
+
+1. Identify the conflicting resource:
+   ```bash
+   az resource list --resource-group <resource-group> --output table
+   ```
+
+2. Delete it:
+   ```bash
+   az resource delete --ids <resource-id>
+   ```
+   Or use specific delete commands like:
+   ```bash
+   az network vnet delete --name <name> --resource-group <rg>
+   ```
+
+3. Confirm deletion before redeploying via GitHub Actions.
+
+Be cautious: Only delete resources if you're certain they're safe to remove.
+
 ## Local Validation & Deployment
 
 - **Validating the Bicep Templates:**
@@ -81,7 +139,7 @@ This project provisions Azure resources (such as Data Factory, networking, and D
 
 - **Role & Permissions:**  
   Ensure the service principal used in the workflow has sufficient permissions in the target subscription.
-  
+
 - **Parameter File Consistency:**  
   Verify that the parameter file referenced in the workflow (e.g., `uat.parameters.json`) exists and matches the environment settings.
 
@@ -94,15 +152,5 @@ Feel free to open issues or submit pull requests if you have suggestions or impr
 
 ---
 
-This revised README should help your team understand the deployment strategy, branch mappings, and how to modify the environment if a separate development environment is desired. Let me know if any additional details are needed or if further modifications are required.
-```
+[Back to Top](#table-of-contents)
 
----
-
-Feel free to open the README file in Notepad using:
-
-```powershell
-notepad README.md
-```
-
-and then modify it as needed.
