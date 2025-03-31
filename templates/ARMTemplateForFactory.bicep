@@ -91,10 +91,9 @@ resource appServicePlan 'Microsoft.Web/serverFarms@2021-02-01' = {
 }
 
 // ==========================================================
-// Web App for SharePoint Data Extraction (centralus)
-// Added condition to prevent deployment if already exists
+// Web App for SharePoint Data Extraction (in centralus)
 // ==========================================================
-resource webApp 'Microsoft.Web/sites@2021-02-01' = if (!exists(resourceId('Microsoft.Web/sites', sites_SharePointDataExtractionFunction_name))) {
+resource webApp 'Microsoft.Web/sites@2021-02-01' = {
   name: sites_SharePointDataExtractionFunction_name
   location: 'centralus'
   properties: {
