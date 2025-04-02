@@ -545,23 +545,6 @@
               "properties": {}
             },
             {
-              "type": "Microsoft.Network/publicIPAddresses",
-              "apiVersion": "2024-03-01",
-              "name": "[parameters('publicIPAddresses_DevTest_GatewayIP_name')]",
-              "location": "eastus",
-              "sku": {
-                "name": "Standard",
-                "tier": "Regional"
-              },
-              "properties": {
-                "ipAddress": "4.246.194.241",
-                "publicIPAddressVersion": "IPv4",
-                "publicIPAllocationMethod": "Static",
-                "idleTimeoutInMinutes": 4,
-                "ipTags": []
-              }
-            },
-            {
               "type": "Microsoft.Network/routeTables",
               "apiVersion": "2024-03-01",
               "name": "[parameters('routeTables_DevTest_RouteTable_name')]",
