@@ -1,12 +1,14 @@
 // ==========================================================
 // Updated UAT Deployment Template for Factory Resources
+// Deploying everything to eastus2 to avoid quota limits in eastus.
+// Uses B1 tier for the App Service Plan in eastus2.
 // ==========================================================
 
-@description('Factory name parameter (set this to a UAT value, e.g. "data-modernization-uat")')
+@description('Factory name parameter (e.g. "data-modernization-uat")')
 param factoryName string
 
 // -----------------------------
-// Network Module Parameters (inherited from DevTest)
+// Existing Parameters
 // -----------------------------
 param connections_azureblob_1_name string = 'azureblob-1'
 param connections_azureblob_2_name string = 'azureblob-2'
@@ -38,11 +40,14 @@ param factories_dmi_projects_factory_externalid string
 param storageAccounts_dmiprojectsstorage_externalid string
 param virtualNetworks_Prod_VirtualNetwork_externalid string
 
-// ==========================================================
-// Module Call for Extended Networking Resources
-// ==========================================================
+// -----------------------------
+// Module Call: Extended Networking Resources
+// -----------------------------
 module networkModule 'modules/network.bicep' = {
   name: 'networkModule'
+  // The network module might still internally deploy resources to eastus.
+  // If you want the network in eastus2 as well, open network.bicep
+  // and set location: 'eastus2' for each resource.
   params: {
     connections_azureblob_1_name: connections_azureblob_1_name
     connections_azureblob_2_name: connections_azureblob_2_name
@@ -75,14 +80,98 @@ module networkModule 'modules/network.bicep' = {
   }
 }
 
-// ==========================================================
-// App Service Plan for Web Apps (adjusted to avoid quota errors)
-// ==========================================================
+// -----------------------------
+// Module Call: Storage Accounts
+// -----------------------------
+module storageModule 'modules/storage.bicep' = {
+  name: 'storageModule'
+  params: {
+    storageAccount1Name: storageAccounts_devdatabphc_name
+    storageAccount2Name: storageAccounts_devtestnetwork93cd_name
+    location: 'eastus2'
+  }
+}
+
+// -----------------------------
+// Module Call: Data Factory
+// -----------------------------
+module dataFactoryModule 'modules/datafactory.bicep' = {
+  name: 'dataFactoryModule'
+  params: {
+    dataFactoryName: 'data-modernization-uat'
+    location: 'eastus2'
+  }
+}
+
+// -----------------------------
+// Module Call: Web Connections
+// -----------------------------
+module webConnectionsModule 'modules/webconnections.bicep' = {
+  name: 'webConnectionsModule'
+  params: {
+    connectionNames: [
+      connections_azureblob_1_name
+      connections_azureblob_2_name
+      connections_azureblob_3_name
+      connections_azureblob_4_name
+      connections_azureblob_5_name
+    ]
+    location: 'eastus2'
+  }
+}
+
+// -----------------------------
+// Module Call: Private Endpoints
+// -----------------------------
+module privateEndpointsModule 'modules/privateEndpoints.bicep' = {
+  name: 'privateEndpointsModule'
+  params: {
+    privateEndpoint1Name: privateEndpoints_dmi_projects_factory_private_endpoint_name
+    privateEndpoint2Name: privateEndpoints_dmiprojectsstorage_private_endpoint_name
+    subnetId: resourceId('Microsoft.Network/virtualNetworks/subnets', virtualNetworks_DevTest_Network_name, 'default')
+    targetResourceId1: factories_dmi_projects_factory_externalid
+    targetResourceId2: storageAccounts_dmiprojectsstorage_externalid
+    location: 'eastus2'
+  }
+}
+
+// -----------------------------
+// Module Call: Monitoring & Alerts
+// -----------------------------
+module monitoringModule 'modules/monitoring.bicep' = {
+  name: 'monitoringModule'
+  params: {
+    metricAlertADFActionFailureName: metricAlerts_EmailOnADFActionFailure_name
+    metricAlertADFPipelineFailureName: metricAlerts_EmailOnADFPipelineFailure_name
+    activityLogAlertDevdatabphcName: 'AdmAct_devdatabphc'
+    activityLogAlertSaName: 'sa_AdmAct'
+    activityLogAlertDevTestVNetName: 'AdmAct_DevTest_vNet'
+    location: 'global'
+    // references the UAT-VNet, if that's in eastus you may want to unify that to eastus2
+    alertScope: resourceId('Microsoft.Network/virtualNetworks', virtualNetworks_DevTest_Network_name)
+  }
+}
+
+// -----------------------------
+// Module Call: Network Interfaces
+// -----------------------------
+module networkInterfacesModule 'modules/networkInterfaces.bicep' = {
+  name: 'networkInterfacesModule'
+  params: {
+    networkInterfaceName: networkInterfaces_test_vm2_name
+    subnetId: resourceId('Microsoft.Network/virtualNetworks/subnets', virtualNetworks_DevTest_Network_name, 'default')
+    location: 'eastus2'
+  }
+}
+
+// -----------------------------
+// App Service Plan for Web Apps
+// -----------------------------
 resource appServicePlan 'Microsoft.Web/serverFarms@2021-02-01' = {
   name: serverfarms_ASP_DevTestNetwork_b27f_name
-  location: 'centralus'
+  location: 'eastus2'
   sku: {
-    name: 'B1'
+    name: 'B1'         // or S1, F1, or D1 -- whichever your subscription supports in eastus2
     tier: 'Basic'
   }
   properties: {
@@ -90,12 +179,12 @@ resource appServicePlan 'Microsoft.Web/serverFarms@2021-02-01' = {
   }
 }
 
-// ==========================================================
-// Web App for SharePoint Data Extraction (in centralus)
-// ==========================================================
+// -----------------------------
+// Web App for SharePoint Data Extraction
+// -----------------------------
 resource webApp 'Microsoft.Web/sites@2021-02-01' = {
   name: sites_SharePointDataExtractionFunction_name
-  location: 'centralus'
+  location: 'eastus2'
   properties: {
     serverFarmId: appServicePlan.id
     siteConfig: {

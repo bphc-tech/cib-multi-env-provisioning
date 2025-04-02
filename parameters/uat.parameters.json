@@ -2,9 +2,6 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "factoryName": {
-      "value": "data-modernization-uat"
-    },
     "connections_azureblob_1_name": {
       "value": "azureblob-1"
     },
@@ -45,7 +42,7 @@
       "value": "uattestnetwork93cd"
     },
     "sites_SharePointDataExtractionFunction_name": {
-      "value": "SharePointDataExtractionFunction"
+      "value": "SharePointDataExtractionFunction-uat"
     },
     "publicIPAddresses_DevTest_GatewayIP_name": {
       "value": "UAT-GatewayIP"
@@ -87,7 +84,7 @@
       "value": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL-UAT/providers/Microsoft.Storage/storageAccounts/uat-dmiprojectsstorage"
     },
     "virtualNetworks_Prod_VirtualNetwork_externalid": {
-      "value": "/subscriptions/2b7c117e-2dba-4c4a-9cd0-e1f0dfe74b03/resourceGroups/UAT-Network/providers/Microsoft.Network/virtualNetworks/UAT-VirtualNetwork"
+      "value": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL-UAT/providers/Microsoft.Network/virtualNetworks/UAT-VNet"
     }
   }
 }
