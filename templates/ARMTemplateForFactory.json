@@ -543,6 +543,7 @@
               "name": "[parameters('privateDnsZones_privatelink_dfs_core_windows_net_name')]",
               "location": "global",
               "properties": {}
+
             },
             {
               "type": "Microsoft.Network/routeTables",
