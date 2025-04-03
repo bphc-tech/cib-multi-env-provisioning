@@ -85,6 +85,12 @@
     },
     "virtualNetworks_Prod_VirtualNetwork_externalid": {
       "value": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL/providers/Microsoft.Network/virtualNetworks/VNet"
+    },
+    "activityLogAlertVNetName": {
+      "value": "ActivityLogAlert-UAT-VNet"
+    },
+    "activityLogAlertDevTestVNetName": {
+      "value": "ActivityLogAlert-UAT-DevTestVNet"
     }
   }
 }
