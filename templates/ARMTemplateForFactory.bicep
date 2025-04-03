@@ -167,18 +167,6 @@ resource azureblobConnection5 'Microsoft.Web/connections@2016-06-01' = {
   }
 }
 
-resource appServicePlan 'Microsoft.Web/serverFarms@2021-02-01' = {
-  name: serverfarms_ASP_DevTestNetwork_b27f_name
-  location: resourceGroup().location
-  sku: {
-    name: 'S1'
-    tier: 'Standard'
-  }
-  properties: {
-    reserved: false
-  }
-}
-
 resource webApp 'Microsoft.Web/sites@2021-02-01' = {
   name: sites_SharePointDataExtractionFunction_name
   location: resourceGroup().location
