@@ -15,7 +15,7 @@ param connections_azureblob_3_name string = 'azureblob-3'
 param connections_azureblob_4_name string = 'azureblob-4'
 param connections_azureblob_5_name string = 'azureblob-5'
 param actionGroups_Email_Alicia_name string = 'Email_Alicia'
-param connections_PA_DevTest_VPN_name string = 'PA-UAT-VPN'
+param connections_PA_VPN_name string = 'PA-UAT-VPN' // Updated to a common VPN reference
 param networkInterfaces_test_vm2_name string = 'uat-vm2'
 param storageAccounts_devdatabphc_name string = 'uatdatabphc'
 param routeTables_DevTest_RouteTable_name string = 'UAT-RouteTable'
@@ -56,7 +56,7 @@ module networkModule 'modules/network.bicep' = {
     connections_azureblob_4_name: connections_azureblob_4_name
     connections_azureblob_5_name: connections_azureblob_5_name
     actionGroups_Email_Alicia_name: actionGroups_Email_Alicia_name
-    connections_PA_DevTest_VPN_name: connections_PA_DevTest_VPN_name
+    connections_PA_VPN_name: connections_PA_VPN_name
     networkInterfaces_test_vm2_name: networkInterfaces_test_vm2_name
     storageAccounts_devdatabphc_name: storageAccounts_devdatabphc_name
     routeTables_DevTest_RouteTable_name: routeTables_DevTest_RouteTable_name

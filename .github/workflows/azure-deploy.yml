@@ -45,11 +45,6 @@ jobs:
             echo "RESOURCE_GROUP=CIB-DL-UAT" >> $GITHUB_ENV
             echo "AZURE_CREDS=$(echo '${{ secrets.AZURE_CREDENTIALS_DEV }}' | tr -d '\n')" >> $GITHUB_ENV
             echo "factoryName=data-modernization-uat" >> $GITHUB_ENV
-          else
-            echo "Development deployment"
-            echo "RESOURCE_GROUP=cib-demo-dev" >> $GITHUB_ENV
-            echo "AZURE_CREDS=$(echo '${{ secrets.AZURE_CREDENTIALS_DEV }}' | tr -d '\n')" >> $GITHUB_ENV
-            echo "factoryName=data-modernization-dev" >> $GITHUB_ENV
           fi
 
       # Debug: Verify that AZURE_CREDS is set.
