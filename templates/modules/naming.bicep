@@ -1,13 +1,12 @@
-// naming.bicep
 // =====================================
-// Module to generate standardized names
+// Module to generate standardized names for CIB-DL-UAT
 // =====================================
 
 @description('Environment name (e.g. dev, uat, prod)')
-param env string
+param env string = 'uat'
 
 @description('Azure region short name (e.g. eus for East US)')
-param region string
+param region string = 'eastus'
 
 @description('Service or app name (e.g. sharepoint, datalake)')
 param service string

@@ -1,9 +1,12 @@
 // ==========================================================
-// Network Interfaces Module (Optional)
-// This module creates a network interface, for example for test-vm2.
+// Network Interfaces Module
+// This module creates a network interface for the specified VM.
 // ==========================================================
 
-@description('Name for the network interface (e.g., test-vm2)')
+@description('Environment name (e.g. dev, uat, prod)')
+param env string
+
+@description('Name for the network interface (e.g., test-vm)') 
 param networkInterfaceName string
 
 @description('Subnet resource ID for the NIC')
@@ -12,11 +15,14 @@ param subnetId string
 @description('Location for the NIC. Defaulting to eastus to match the VNet region.')
 param location string = 'eastus'
 
+// Compose network interface name based on environment
+var nicName = '${env}-${networkInterfaceName}'
+
 // ----------------------------------------------------------
 // Create the Network Interface
 // ----------------------------------------------------------
 resource nic 'Microsoft.Network/networkInterfaces@2021-08-01' = {
-  name: networkInterfaceName
+  name: nicName
   location: location
   properties: {
     ipConfigurations: [

@@ -33,41 +33,41 @@
       "type": "string",
       "defaultValue": "Email_Alicia"
     },
-    "connections_PA_DevTest_VPN_name": {
+    "connections_PA_VPN_name": {
       "type": "string",
-      "defaultValue": "PA-DevTest-VPN"
+      "defaultValue": "PA-VPN"
     },
-    "networkInterfaces_test_vm2_name": {
+    "networkInterfaces_test_vm_name": {
       "type": "string",
-      "defaultValue": "test-vm2"
+      "defaultValue": "test-vm"
     },
     "storageAccounts_devdatabphc_name": {
       "type": "string",
       "defaultValue": "devdatabphc"
     },
-    "routeTables_DevTest_RouteTable_name": {
+    "routeTables_RouteTable_name": {
       "type": "string",
-      "defaultValue": "DevTest-RouteTable"
+      "defaultValue": "RouteTable"
     },
-    "virtualNetworks_DevTest_Network_name": {
+    "virtualNetworks_Network_name": {
       "type": "string",
-      "defaultValue": "DevTest-Network"
+      "defaultValue": "Network"
     },
-    "serverfarms_ASP_DevTestNetwork_b27f_name": {
+    "serverfarms_ASP_Network_name": {
       "type": "string",
-      "defaultValue": "ASP-DevTestNetwork-b27f"
+      "defaultValue": "ASP-Network"
     },
-    "storageAccounts_devtestnetwork93cd_name": {
+    "storageAccounts_network93cd_name": {
       "type": "string",
-      "defaultValue": "devtestnetwork93cd"
+      "defaultValue": "network93cd"
     },
     "sites_SharePointDataExtractionFunction_name": {
       "type": "string",
       "defaultValue": "SharePointDataExtractionFunction"
     },
-    "publicIPAddresses_DevTest_GatewayIP_name": {
+    "publicIPAddresses_GatewayIP_name": {
       "type": "string",
-      "defaultValue": "DevTest-GatewayIP"
+      "defaultValue": "GatewayIP"
     },
     "metricAlerts_EmailOnADFActionFailure_name": {
       "type": "string",
@@ -77,9 +77,9 @@
       "type": "string",
       "defaultValue": "EmailOnADFPipelineFailure"
     },
-    "localNetworkGateways_DevTest_LocalNetworkGateway_name": {
+    "localNetworkGateways_LocalNetworkGateway_name": {
       "type": "string",
-      "defaultValue": "DevTest-LocalNetworkGateway"
+      "defaultValue": "LocalNetworkGateway"
     },
     "privateDnsZones_privatelink_dfs_core_windows_net_name": {
       "type": "string",
@@ -97,9 +97,9 @@
       "type": "string",
       "defaultValue": "dmiprojectsstorage-private-endpoint"
     },
-    "virtualNetworkGateways_DevTest_VirtualNetworkGateway1_name": {
+    "virtualNetworkGateways_VirtualNetworkGateway_name": {
       "type": "string",
-      "defaultValue": "DevTest-VirtualNetworkGateway1"
+      "defaultValue": "VirtualNetworkGateway"
     },
     "privateEndpoints_dmi_projects_factory_private_endpoint_name": {
       "type": "string",
@@ -107,19 +107,19 @@
     },
     "factories_data_modernization_externalid": {
       "type": "string",
-      "defaultValue": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/DevTest-Network/providers/Microsoft.DataFactory/factories/data-modernization-uat"
+      "defaultValue": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/Network/providers/Microsoft.DataFactory/factories/data-modernization"
     },
     "factories_dmi_projects_factory_externalid": {
       "type": "string",
-      "defaultValue": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/DevTest-Network/providers/Microsoft.DataFactory/factories/dmi-projects-factory-uat"
+      "defaultValue": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/Network/providers/Microsoft.DataFactory/factories/dmi-projects-factory"
     },
     "storageAccounts_dmiprojectsstorage_externalid": {
       "type": "string",
-      "defaultValue": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/DevTest-Network/providers/Microsoft.Storage/storageAccounts/dmiprojectsstorage"
+      "defaultValue": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/Network/providers/Microsoft.Storage/storageAccounts/dmiprojectsstorage"
     },
     "virtualNetworks_Prod_VirtualNetwork_externalid": {
       "type": "string",
-      "defaultValue": "/subscriptions/2b7c117e-2dba-4c4a-9cd0-e1f0dfe74b03/resourceGroups/Prod-Network/providers/Microsoft.Network/virtualNetworks/Prod-VirtualNetwork"
+      "defaultValue": "/subscriptions/2b7c117e-2dba-4c4a-9cd0-e1f0dfe74b03/resourceGroups/Network/providers/Microsoft.Network/virtualNetworks/Prod-VirtualNetwork"
     }
   },
   "resources": [
@@ -153,7 +153,7 @@
     {
       "type": "Microsoft.Network/localNetworkGateways",
       "apiVersion": "2024-03-01",
-      "name": "[parameters('localNetworkGateways_DevTest_LocalNetworkGateway_name')]",
+      "name": "[parameters('localNetworkGateways_LocalNetworkGateway_name')]",
       "location": "eastus",
       "properties": {
         "localNetworkAddressSpace": {
@@ -189,7 +189,7 @@
     {
       "type": "Microsoft.Network/publicIPAddresses",
       "apiVersion": "2024-03-01",
-      "name": "[parameters('publicIPAddresses_DevTest_GatewayIP_name')]",
+      "name": "[parameters('publicIPAddresses_GatewayIP_name')]",
       "location": "eastus",
       "sku": {
         "name": "Standard",
@@ -206,7 +206,7 @@
     {
       "type": "Microsoft.Network/routeTables",
       "apiVersion": "2024-03-01",
-      "name": "[parameters('routeTables_DevTest_RouteTable_name')]",
+      "name": "[parameters('routeTables_RouteTable_name')]",
       "location": "eastus",
       "properties": {
         "disableBgpRoutePropagation": false,
@@ -224,7 +224,7 @@
     {
       "type": "Microsoft.Network/virtualNetworks",
       "apiVersion": "2020-11-01",
-      "name": "[parameters('virtualNetworks_DevTest_Network_name')]",
+      "name": "[parameters('virtualNetworks_Network_name')]",
       "location": "eastus",
       "properties": {
         "addressSpace": {
@@ -251,7 +251,7 @@
     {
       "type": "Microsoft.Network/virtualNetworkGateways",
       "apiVersion": "2020-11-01",
-      "name": "[parameters('virtualNetworkGateways_DevTest_VirtualNetworkGateway1_name')]",
+      "name": "[parameters('virtualNetworkGateways_VirtualNetworkGateway_name')]",
       "location": "eastus",
       "properties": {
         "sku": {
@@ -266,10 +266,10 @@
             "name": "default",
             "properties": {
               "subnet": {
-                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_DevTest_Network_name'), 'GatewaySubnet')]"
+                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_Network_name'), 'GatewaySubnet')]"
               },
               "publicIPAddress": {
-                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_DevTest_GatewayIP_name'))]"
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_GatewayIP_name'))]"
               }
             }
           }

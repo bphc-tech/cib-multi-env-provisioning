@@ -5,10 +5,10 @@
 // with the actual values from your environment.
 // ==========================================================
 
-@description('Name for the first private endpoint (e.g., dmi-projects-factory-private-endpoint)')
+@description('Name for the first private endpoint')
 param privateEndpoint1Name string
 
-@description('Name for the second private endpoint (e.g., dmiprojectsstorage-private-endpoint)')
+@description('Name for the second private endpoint')
 param privateEndpoint2Name string
 
 @description('Subnet ID for the private endpoints')

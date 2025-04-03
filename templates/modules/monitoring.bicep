@@ -18,8 +18,8 @@ param activityLogAlertDevdatabphcName string
 @description('Name for the activity log alert sa_AdmAct')
 param activityLogAlertSaName string
 
-@description('Name for the activity log alert AdmAct_DevTest_vNet')
-param activityLogAlertDevTestVNetName string
+@description('Name for the activity log alert AdmAct_VNet')
+param activityLogAlertVNetName string
 
 @description('Location for alerts (typically global)')
 param location string = 'global'
@@ -118,10 +118,10 @@ resource activityLogAlertSa 'microsoft.insights/activityLogAlerts@2017-04-01' = 
 }
 
 // ----------------------------------------------------------
-// Activity Log Alert: AdmAct_DevTest_vNet (Example configuration)
+// Activity Log Alert: AdmAct_VNet (Example configuration)
 // ----------------------------------------------------------
-resource activityLogAlertDevTestVNet 'microsoft.insights/activityLogAlerts@2017-04-01' = {
-  name: activityLogAlertDevTestVNetName
+resource activityLogAlertVNet 'microsoft.insights/activityLogAlerts@2017-04-01' = {
+  name: activityLogAlertVNetName
   location: location
   properties: {
     scopes: [

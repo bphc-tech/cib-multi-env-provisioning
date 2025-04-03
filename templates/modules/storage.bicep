@@ -1,13 +1,13 @@
 // ==========================================================
 // Storage Module
-// This module creates two Storage Accounts to mirror those in DevTest-Network.
+// This module creates two Storage Accounts.
 // Update parameter values in your parameters file accordingly.
 // ==========================================================
 
-@description('Name for storage account 1 (e.g., devdatabphc)')
+@description('Name for storage account 1')
 param storageAccount1Name string
 
-@description('Name for storage account 2 (e.g., devtestnetwork93cd)')
+@description('Name for storage account 2')
 param storageAccount2Name string
 
 @description('Location for storage accounts (defaults to the resource group location)')
