@@ -167,17 +167,6 @@ resource azureblobConnection5 'Microsoft.Web/connections@2016-06-01' = {
   }
 }
 
-resource webApp 'Microsoft.Web/sites@2021-02-01' = {
-  name: sites_SharePointDataExtractionFunction_name
-  location: resourceGroup().location
-  properties: {
-    serverFarmId: appServicePlan.id
-    siteConfig: {
-      linuxFxVersion: 'DOTNETCORE|3.1'
-    }
-  }
-}
-
 // ==========================================================
 // VPN Connection Resource (Temporarily Disabled)
 // ==========================================================
