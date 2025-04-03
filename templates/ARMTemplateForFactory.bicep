@@ -1,7 +1,6 @@
 // ==========================================================
 // Updated UAT Deployment Template for Factory Resources
-// Deploying everything to eastus2 to avoid quota limits in eastus.
-// Uses B1 tier for the App Service Plan in eastus2.
+// Deploying everything to East US to ensure consistency with the existing resources.
 // ==========================================================
 
 @description('Factory name parameter (e.g. "data-modernization-uat")')
@@ -45,9 +44,7 @@ param virtualNetworks_Prod_VirtualNetwork_externalid string
 // -----------------------------
 module networkModule 'modules/network.bicep' = {
   name: 'networkModule'
-  // The network module might still internally deploy resources to eastus.
-  // If you want the network in eastus2 as well, open network.bicep
-  // and set location: 'eastus2' for each resource.
+  // The network module might still internally deploy resources to East US.
   params: {
     connections_azureblob_1_name: connections_azureblob_1_name
     connections_azureblob_2_name: connections_azureblob_2_name
@@ -88,7 +85,7 @@ module storageModule 'modules/storage.bicep' = {
   params: {
     storageAccount1Name: storageAccounts_devdatabphc_name
     storageAccount2Name: storageAccounts_devtestnetwork93cd_name
-    location: 'eastus2'
+    location: 'eastus'
   }
 }
 
@@ -99,7 +96,7 @@ module dataFactoryModule 'modules/datafactory.bicep' = {
   name: 'dataFactoryModule'
   params: {
     dataFactoryName: 'data-modernization-uat'
-    location: 'eastus2'
+    location: 'eastus'
   }
 }
 
@@ -116,7 +113,7 @@ module webConnectionsModule 'modules/webconnections.bicep' = {
       connections_azureblob_4_name
       connections_azureblob_5_name
     ]
-    location: 'eastus2'
+    location: 'eastus'
   }
 }
 
@@ -131,7 +128,7 @@ module privateEndpointsModule 'modules/privateEndpoints.bicep' = {
     subnetId: resourceId('Microsoft.Network/virtualNetworks/subnets', virtualNetworks_DevTest_Network_name, 'default')
     targetResourceId1: factories_dmi_projects_factory_externalid
     targetResourceId2: storageAccounts_dmiprojectsstorage_externalid
-    location: 'eastus2'
+    location: 'eastus'
   }
 }
 
@@ -147,7 +144,6 @@ module monitoringModule 'modules/monitoring.bicep' = {
     activityLogAlertSaName: 'sa_AdmAct'
     activityLogAlertDevTestVNetName: 'AdmAct_DevTest_vNet'
     location: 'global'
-    // references the UAT-VNet, if that's in eastus you may want to unify that to eastus2
     alertScope: resourceId('Microsoft.Network/virtualNetworks', virtualNetworks_DevTest_Network_name)
   }
 }
@@ -160,7 +156,7 @@ module networkInterfacesModule 'modules/networkInterfaces.bicep' = {
   params: {
     networkInterfaceName: networkInterfaces_test_vm2_name
     subnetId: resourceId('Microsoft.Network/virtualNetworks/subnets', virtualNetworks_DevTest_Network_name, 'default')
-    location: 'eastus2'
+    location: 'eastus'
   }
 }
 
@@ -169,9 +165,9 @@ module networkInterfacesModule 'modules/networkInterfaces.bicep' = {
 // -----------------------------
 resource appServicePlan 'Microsoft.Web/serverFarms@2021-02-01' = {
   name: serverfarms_ASP_DevTestNetwork_b27f_name
-  location: 'eastus2'
+  location: 'eastus'
   sku: {
-    name: 'B1'         // or S1, F1, or D1 -- whichever your subscription supports in eastus2
+    name: 'B1'         // or S1, F1, or D1 -- whichever your subscription supports in East US
     tier: 'Basic'
   }
   properties: {
@@ -184,7 +180,7 @@ resource appServicePlan 'Microsoft.Web/serverFarms@2021-02-01' = {
 // -----------------------------
 resource webApp 'Microsoft.Web/sites@2021-02-01' = {
   name: sites_SharePointDataExtractionFunction_name
-  location: 'eastus2'
+  location: 'eastus'
   properties: {
     serverFarmId: appServicePlan.id
     siteConfig: {
