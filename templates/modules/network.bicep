@@ -1,5 +1,5 @@
 // ==========================================================
-// Extended Networking Module for Factory Resources (UAT)
+// Extended Networking Module for Factory Resources
 // ==========================================================
 
 // Parameters passed from the main template
@@ -9,28 +9,28 @@ param connections_azureblob_3_name string = 'azureblob-3'
 param connections_azureblob_4_name string = 'azureblob-4'
 param connections_azureblob_5_name string = 'azureblob-5'
 param actionGroups_Email_Alicia_name string = 'Email_Alicia'
-param connections_PA_DevTest_VPN_name string = 'PA-DevTest-VPN'
-param networkInterfaces_test_vm2_name string = 'test-vm2'
-param storageAccounts_devdatabphc_name string = 'devdatabphc'
-param routeTables_DevTest_RouteTable_name string = 'DevTest-RouteTable'
-param virtualNetworks_DevTest_Network_name string = 'DevTest-Network'
-param serverfarms_ASP_DevTestNetwork_b27f_name string = 'ASP-DevTestNetwork-b27f'
-param storageAccounts_devtestnetwork93cd_name string = 'devtestnetwork93cd'
+param connections_PA_VPN_name string = 'PA-VPN'
+param networkInterfaces_vm2_name string = 'vm2'
+param storageAccounts_devdatabphc_name string = 'databphc'
+param routeTables_RouteTable_name string = 'RouteTable'
+param virtualNetworks_Network_name string = 'Network'
+param serverfarms_ASP_Network_name string = 'ASP-Network'
+param storageAccounts_testnetwork93cd_name string = 'testnetwork93cd'
 param sites_SharePointDataExtractionFunction_name string = 'SharePointDataExtractionFunction'
-param publicIPAddresses_DevTest_GatewayIP_name string = 'DevTest-GatewayIP'
+param publicIPAddresses_GatewayIP_name string = 'GatewayIP'
 param metricAlerts_EmailOnADFActionFailure_name string = 'EmailOnADFActionFailure'
 param metricAlerts_EmailOnADFPipelineFailure_name string = 'EmailOnADFPipelineFailure'
-param localNetworkGateways_DevTest_LocalNetworkGateway_name string = 'DevTest-LocalNetworkGateway'
+param localNetworkGateways_LocalNetworkGateway_name string = 'LocalNetworkGateway'
 param privateDnsZones_privatelink_dfs_core_windows_net_name string = 'privatelink.dfs.core.windows.net'
 param privateDnsZones_privatelink_blob_core_windows_net_name string = 'privatelink.blob.core.windows.net'
 param privateDnsZones_privatelink_datafactory_azure_net_name string = 'privatelink.datafactory.azure.net'
 param privateEndpoints_dmiprojectsstorage_private_endpoint_name string = 'dmiprojectsstorage-private-endpoint'
-param virtualNetworkGateways_DevTest_VirtualNetworkGateway1_name string = 'DevTest-VirtualNetworkGateway1'
+param virtualNetworkGateways_VirtualNetworkGateway1_name string = 'VirtualNetworkGateway1'
 param privateEndpoints_dmi_projects_factory_private_endpoint_name string = 'dmi-projects-factory-private-endpoint'
-param factories_data_modernization_externalid string = '/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/DevTest-Network/providers/Microsoft.DataFactory/factories/data-modernization-uat'
-param factories_dmi_projects_factory_externalid string = '/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/DevTest-Network/providers/Microsoft.DataFactory/factories/dmi-projects-factory-uat'
-param storageAccounts_dmiprojectsstorage_externalid string = '/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/DevTest-Network/providers/Microsoft.Storage/storageAccounts/dmiprojectsstorage'
-param virtualNetworks_Prod_VirtualNetwork_externalid string = '/subscriptions/2b7c117e-2dba-4c4a-9cd0-e1f0dfe74b03/resourceGroups/Prod-Network/providers/Microsoft.Network/virtualNetworks/Prod-VirtualNetwork'
+param factories_data_modernization_externalid string = '/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/Network/providers/Microsoft.DataFactory/factories/data-modernization'
+param factories_dmi_projects_factory_externalid string = '/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/Network/providers/Microsoft.DataFactory/factories/dmi-projects-factory'
+param storageAccounts_dmiprojectsstorage_externalid string = '/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/Network/providers/Microsoft.Storage/storageAccounts/dmiprojectsstorage'
+param virtualNetworks_Prod_VirtualNetwork_externalid string = '/subscriptions/2b7c117e-2dba-4c4a-9cd0-e1f0dfe74b03/resourceGroups/Prod-Network/providers/Microsoft.Network/virtualNetworks/VirtualNetwork'
 
 // ==========================================================
 // Resource Definitions
@@ -65,7 +65,7 @@ resource actionGroup 'Microsoft.Insights/actionGroups@2023-09-01-preview' = {
 
 // Local Network Gateway
 resource localNG 'Microsoft.Network/localNetworkGateways@2024-03-01' = {
-  name: localNetworkGateways_DevTest_LocalNetworkGateway_name
+  name: localNetworkGateways_LocalNetworkGateway_name
   location: 'eastus'
   properties: {
     localNetworkAddressSpace: {
@@ -98,7 +98,7 @@ resource dnsDFS 'Microsoft.Network/privateDnsZones@2024-06-01' = {
 
 // Public IP for the Virtual Network Gateway
 resource publicIP 'Microsoft.Network/publicIPAddresses@2024-03-01' = {
-  name: publicIPAddresses_DevTest_GatewayIP_name
+  name: publicIPAddresses_GatewayIP_name
   location: 'eastus'
   sku: {
     name: 'Standard'
@@ -115,7 +115,7 @@ resource publicIP 'Microsoft.Network/publicIPAddresses@2024-03-01' = {
 
 // Route Table with a default route
 resource routeTable 'Microsoft.Network/routeTables@2024-03-01' = {
-  name: routeTables_DevTest_RouteTable_name
+  name: routeTables_RouteTable_name
   location: 'eastus'
   properties: {
     disableBgpRoutePropagation: false
@@ -137,7 +137,7 @@ resource routeTable 'Microsoft.Network/routeTables@2024-03-01' = {
 
 // Virtual Network Resource
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2020-11-01' = {
-  name: virtualNetworks_DevTest_Network_name
+  name: virtualNetworks_Network_name
   location: 'eastus'
   properties: {
     addressSpace: {
@@ -163,7 +163,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2020-11-01' = {
 
 // Virtual Network Gateway Resource
 resource virtualNetworkGateway 'Microsoft.Network/virtualNetworkGateways@2020-11-01' = {
-  name: virtualNetworkGateways_DevTest_VirtualNetworkGateway1_name
+  name: virtualNetworkGateways_VirtualNetworkGateway1_name
   location: 'eastus'
   properties: {
     sku: {
@@ -178,10 +178,10 @@ resource virtualNetworkGateway 'Microsoft.Network/virtualNetworkGateways@2020-11
         name: 'default'
         properties: {
           subnet: {
-            id: resourceId('Microsoft.Network/virtualNetworks/subnets', virtualNetworks_DevTest_Network_name, 'GatewaySubnet')
+            id: resourceId('Microsoft.Network/virtualNetworks/subnets', virtualNetworks_Network_name, 'GatewaySubnet')
           }
           publicIPAddress: {
-            id: resourceId('Microsoft.Network/publicIPAddresses', publicIPAddresses_DevTest_GatewayIP_name)
+            id: resourceId('Microsoft.Network/publicIPAddresses', publicIPAddresses_GatewayIP_name)
           }
         }
       }

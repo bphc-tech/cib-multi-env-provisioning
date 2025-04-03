@@ -3,7 +3,7 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "factoryName": {
-      "value": "data-modernization-uat"
+      "value": "data-modernization"
     },
     "connections_azureblob_1_name": {
       "value": "azureblob-1"
@@ -24,31 +24,31 @@
       "value": "Email_Alicia"
     },
     "connections_PA_DevTest_VPN_name": {
-      "value": "PA-UAT-VPN"
+      "value": "PA-VPN"
     },
     "networkInterfaces_test_vm2_name": {
-      "value": "uat-vm2"
+      "value": "vm2"
     },
     "storageAccounts_devdatabphc_name": {
-      "value": "uatdatabphc"
+      "value": "databphc"
     },
     "routeTables_DevTest_RouteTable_name": {
-      "value": "UAT-RouteTable"
+      "value": "RouteTable"
     },
     "virtualNetworks_DevTest_Network_name": {
-      "value": "UAT-VNet"
+      "value": "VNet"
     },
     "serverfarms_ASP_DevTestNetwork_b27f_name": {
-      "value": "ASP-UATNetwork"
+      "value": "ASP-Network"
     },
     "storageAccounts_devtestnetwork93cd_name": {
-      "value": "uattestnetwork93cd"
+      "value": "testnetwork93cd"
     },
     "sites_SharePointDataExtractionFunction_name": {
       "value": "SharePointDataExtractionFunction"
     },
     "publicIPAddresses_DevTest_GatewayIP_name": {
-      "value": "UAT-GatewayIP"
+      "value": "GatewayIP"
     },
     "metricAlerts_EmailOnADFActionFailure_name": {
       "value": "EmailOnADFActionFailure"
@@ -57,7 +57,7 @@
       "value": "EmailOnADFPipelineFailure"
     },
     "localNetworkGateways_DevTest_LocalNetworkGateway_name": {
-      "value": "UAT-LocalNetworkGateway"
+      "value": "LocalNetworkGateway"
     },
     "privateDnsZones_privatelink_dfs_core_windows_net_name": {
       "value": "privatelink.dfs.core.windows.net"
@@ -69,25 +69,25 @@
       "value": "privatelink.datafactory.azure.net"
     },
     "privateEndpoints_dmiprojectsstorage_private_endpoint_name": {
-      "value": "uat-dmiprojectsstorage-private-endpoint"
+      "value": "dmiprojectsstorage-private-endpoint"
     },
     "virtualNetworkGateways_DevTest_VirtualNetworkGateway1_name": {
-      "value": "UAT-VirtualNetworkGateway1"
+      "value": "VirtualNetworkGateway1"
     },
     "privateEndpoints_dmi_projects_factory_private_endpoint_name": {
-      "value": "uat-dmi-projects-factory-private-endpoint"
+      "value": "dmi-projects-factory-private-endpoint"
     },
     "factories_data_modernization_externalid": {
-      "value": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL-UAT/providers/Microsoft.DataFactory/factories/data-modernization-uat"
+      "value": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL/providers/Microsoft.DataFactory/factories/data-modernization"
     },
     "factories_dmi_projects_factory_externalid": {
-      "value": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL-UAT/providers/Microsoft.DataFactory/factories/dmi-projects-factory-uat"
+      "value": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL/providers/Microsoft.DataFactory/factories/dmi-projects-factory"
     },
     "storageAccounts_dmiprojectsstorage_externalid": {
-      "value": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL-UAT/providers/Microsoft.Storage/storageAccounts/uat-dmiprojectsstorage"
+      "value": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL/providers/Microsoft.Storage/storageAccounts/dmiprojectsstorage"
     },
     "virtualNetworks_Prod_VirtualNetwork_externalid": {
-      "value": "/subscriptions/2b7c117e-2dba-4c4a-9cd0-e1f0dfe74b03/resourceGroups/UAT-Network/providers/Microsoft.Network/virtualNetworks/UAT-VirtualNetwork"
+      "value": "/subscriptions/2b7c117e-2dba-4c4a-9cd0-e1f0dfe74b03/resourceGroups/Network/providers/Microsoft.Network/virtualNetworks/VirtualNetwork"
     }
   }
 }
