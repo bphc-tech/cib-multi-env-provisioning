@@ -46,6 +46,12 @@ param routeTables_RouteTable_name string
 @description('Name for the virtual network')
 param virtualNetworks_Network_name string
 
+@description('Name for the app service plan')
+param serverfarms_ASP_Network_name string
+
+@description('Name for the web app')
+param sites_SharePointDataExtractionFunction_name string
+
 @description('Name for the public IP address for the gateway')
 param publicIPAddresses_GatewayIP_name string
 
@@ -103,16 +109,6 @@ resource actionGroup 'Microsoft.Insights/actionGroups@2023-09-01-preview' = {
         useCommonAlertSchema: true
       }
     ]
-    smsReceivers: []
-    webhookReceivers: []
-    eventHubReceivers: []
-    itsmReceivers: []
-    azureAppPushReceivers: []
-    automationRunbookReceivers: []
-    voiceReceivers: []
-    logicAppReceivers: []
-    azureFunctionReceivers: []
-    armRoleReceivers: []
   }
 }
 
@@ -123,14 +119,15 @@ resource localNG 'Microsoft.Network/localNetworkGateways@2024-03-01' = {
   properties: {
     localNetworkAddressSpace: {
       addressPrefixes: [
-        '10.68.0.0/16', '10.75.0.0/16'
+        '10.68.0.0/16'
+        '10.75.0.0/16'
       ]
     }
     gatewayIpAddress: '140.241.253.162'
   }
 }
 
-// Private DNS Zones for Blob, DataFactory, and DFS
+// Private DNS Zones
 resource dnsBlob 'Microsoft.Network/privateDnsZones@2024-06-01' = {
   name: privateDnsZones_privatelink_blob_core_windows_net_name
   location: 'global'
@@ -162,7 +159,6 @@ resource publicIP 'Microsoft.Network/publicIPAddresses@2024-03-01' = {
     publicIPAddressVersion: 'IPv4'
     publicIPAllocationMethod: 'Static'
     idleTimeoutInMinutes: 4
-    ipTags: []
   }
 }
 
@@ -200,7 +196,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2020-11-01' = {
         properties: {
           addressPrefix: '10.59.40.128/27'
         }
-      },
+      }
       {
         name: 'default'
         properties: {
@@ -239,10 +235,10 @@ resource virtualNetworkGateway 'Microsoft.Network/virtualNetworkGateways@2020-11
   }
 }
 
-// VPN Connection Resource (Temporarily Disabled)
-// When you obtain the shared key, uncomment and update this block.
+// VPN Connection Resource (optional)
+// Uncomment and configure when ready
 // resource vpnConnection 'Microsoft.Network/connections@2020-11-01' = {
-//   name: connections_PA_DevTest_VPN_name
+//   name: connections_PA_VPN_name
 //   location: 'eastus'
 //   properties: {
 //     connectionType: 'IPSec'

@@ -5,8 +5,14 @@
 @description('Factory name parameter (e.g. "data-modernization")')
 param factoryName string
 
+@description('Key for SharePoint Online List access')
+param SharePointOnlineList_Jan28_servicePrincipalKey string
+
+@description('Optional: Activity Log Alert for VNet')
+param activityLogAlertVNetName string = 'ActivityLogAlert-VNet'
+
 // -----------------------------
-// Parameters
+// Parameters for Named Resources
 // -----------------------------
 param connections_azureblob_1_name string = 'azureblob-1'
 param connections_azureblob_2_name string = 'azureblob-2'
@@ -17,10 +23,9 @@ param actionGroups_Email_Alicia_name string = 'Email_Alicia'
 param connections_PA_VPN_name string = 'PA-VPN'
 param networkInterfaces_vm2_name string = 'vm2'
 param storageAccounts_devdatabphc_name string = 'databphc'
+param storageAccounts_testnetwork93cd_name string = 'testnetwork93cd'
 param routeTables_RouteTable_name string = 'RouteTable'
 param virtualNetworks_Network_name string = 'VNet'
-param storageAccounts_testnetwork93cd_name string = 'testnetwork93cd'
-param SharePointOnlineList_Jan28_servicePrincipalKey string
 param publicIPAddresses_GatewayIP_name string = 'GatewayIP'
 param metricAlerts_EmailOnADFActionFailure_name string = 'EmailOnADFActionFailure'
 param metricAlerts_EmailOnADFPipelineFailure_name string = 'EmailOnADFPipelineFailure'
@@ -29,15 +34,15 @@ param privateDnsZones_privatelink_dfs_core_windows_net_name string = 'privatelin
 param privateDnsZones_privatelink_blob_core_windows_net_name string = 'privatelink.blob.core.windows.net'
 param privateDnsZones_privatelink_datafactory_azure_net_name string = 'privatelink.datafactory.azure.net'
 param privateEndpoints_dmiprojectsstorage_private_endpoint_name string = 'dmiprojectsstorage-private-endpoint'
-param virtualNetworkGateways_VirtualNetworkGateway1_name string = 'VirtualNetworkGateway1'
 param privateEndpoints_dmi_projects_factory_private_endpoint_name string = 'dmi-projects-factory-private-endpoint'
+param virtualNetworkGateways_VirtualNetworkGateway1_name string = 'VirtualNetworkGateway1'
 param factories_data_modernization_externalid string
 param factories_dmi_projects_factory_externalid string
 param storageAccounts_dmiprojectsstorage_externalid string
 param virtualNetworks_Prod_VirtualNetwork_externalid string
 
 // -----------------------------
-// Module Call: Extended Networking Resources
+// Module Call: Extended Networking
 // -----------------------------
 module networkModule 'modules/network.bicep' = {
   name: 'networkModule'
@@ -136,13 +141,14 @@ module monitoringModule 'modules/monitoring.bicep' = {
     metricAlertADFPipelineFailureName: metricAlerts_EmailOnADFPipelineFailure_name
     activityLogAlertDevdatabphcName: 'AdmAct_devdatabphc'
     activityLogAlertSaName: 'sa_AdmAct'
+    activityLogAlertVNetName: activityLogAlertVNetName
     location: 'global'
     alertScope: resourceId('Microsoft.Network/virtualNetworks', virtualNetworks_Network_name)
   }
 }
 
 // -----------------------------
-// Module Call: Network Interfaces
+// Module Call: Network Interfaces (Optional - now separated)
 // -----------------------------
 module networkInterfacesModule 'modules/networkInterfaces.bicep' = {
   name: 'networkInterfacesModule'
