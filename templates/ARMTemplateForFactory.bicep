@@ -5,44 +5,42 @@
 @description('Factory name parameter (e.g. "data-modernization")')
 param factoryName string
 
-@description('Key for SharePoint Online List access')
+@secure()
 param SharePointOnlineList_Jan28_servicePrincipalKey string
 
-@description('Optional: Activity Log Alert for VNet')
-param activityLogAlertVNetName string = 'ActivityLogAlert-VNet'
+@description('Activity Log Alert VNet name')
+param activityLogAlertVNetName string
 
-// -----------------------------
-// Parameters for Named Resources
-// -----------------------------
-param connections_azureblob_1_name string = 'azureblob-1'
-param connections_azureblob_2_name string = 'azureblob-2'
-param connections_azureblob_3_name string = 'azureblob-3'
-param connections_azureblob_4_name string = 'azureblob-4'
-param connections_azureblob_5_name string = 'azureblob-5'
-param actionGroups_Email_Alicia_name string = 'Email_Alicia'
-param connections_PA_VPN_name string = 'PA-VPN'
-param networkInterfaces_vm2_name string = 'vm2'
-param storageAccounts_devdatabphc_name string = 'databphc'
-param storageAccounts_testnetwork93cd_name string = 'testnetwork93cd'
-param routeTables_RouteTable_name string = 'RouteTable'
-param virtualNetworks_Network_name string = 'VNet'
-param publicIPAddresses_GatewayIP_name string = 'GatewayIP'
-param metricAlerts_EmailOnADFActionFailure_name string = 'EmailOnADFActionFailure'
-param metricAlerts_EmailOnADFPipelineFailure_name string = 'EmailOnADFPipelineFailure'
-param localNetworkGateways_LocalNetworkGateway_name string = 'LocalNetworkGateway'
-param privateDnsZones_privatelink_dfs_core_windows_net_name string = 'privatelink.dfs.core.windows.net'
-param privateDnsZones_privatelink_blob_core_windows_net_name string = 'privatelink.blob.core.windows.net'
-param privateDnsZones_privatelink_datafactory_azure_net_name string = 'privatelink.datafactory.azure.net'
-param privateEndpoints_dmiprojectsstorage_private_endpoint_name string = 'dmiprojectsstorage-private-endpoint'
-param privateEndpoints_dmi_projects_factory_private_endpoint_name string = 'dmi-projects-factory-private-endpoint'
-param virtualNetworkGateways_VirtualNetworkGateway1_name string = 'VirtualNetworkGateway1'
+// Networking Parameters
+param connections_azureblob_1_name string
+param connections_azureblob_2_name string
+param connections_azureblob_3_name string
+param connections_azureblob_4_name string
+param connections_azureblob_5_name string
+param actionGroups_Email_Alicia_name string
+param connections_PA_VPN_name string
+param networkInterfaces_vm2_name string
+param storageAccounts_devdatabphc_name string
+param storageAccounts_testnetwork93cd_name string
+param localNetworkGateways_LocalNetworkGateway_name string
+param routeTables_RouteTable_name string
+param virtualNetworks_Network_name string
+param publicIPAddresses_GatewayIP_name string
+param metricAlerts_EmailOnADFActionFailure_name string
+param metricAlerts_EmailOnADFPipelineFailure_name string
+param privateDnsZones_privatelink_dfs_core_windows_net_name string
+param privateDnsZones_privatelink_blob_core_windows_net_name string
+param privateDnsZones_privatelink_datafactory_azure_net_name string
+param privateEndpoints_dmiprojectsstorage_private_endpoint_name string
+param virtualNetworkGateways_VirtualNetworkGateway1_name string
+param privateEndpoints_dmi_projects_factory_private_endpoint_name string
 param factories_data_modernization_externalid string
 param factories_dmi_projects_factory_externalid string
 param storageAccounts_dmiprojectsstorage_externalid string
 param virtualNetworks_Prod_VirtualNetwork_externalid string
 
 // -----------------------------
-// Module Call: Extended Networking
+// Module: Network
 // -----------------------------
 module networkModule 'modules/network.bicep' = {
   name: 'networkModule'
@@ -77,7 +75,7 @@ module networkModule 'modules/network.bicep' = {
 }
 
 // -----------------------------
-// Module Call: Storage Accounts
+// Module: Storage Accounts
 // -----------------------------
 module storageModule 'modules/storage.bicep' = {
   name: 'storageModule'
@@ -89,7 +87,7 @@ module storageModule 'modules/storage.bicep' = {
 }
 
 // -----------------------------
-// Module Call: Data Factory
+// Module: Data Factory
 // -----------------------------
 module dataFactoryModule 'modules/datafactory.bicep' = {
   name: 'dataFactoryModule'
@@ -100,7 +98,7 @@ module dataFactoryModule 'modules/datafactory.bicep' = {
 }
 
 // -----------------------------
-// Module Call: Web Connections
+// Module: Web Connections
 // -----------------------------
 module webConnectionsModule 'modules/webconnections.bicep' = {
   name: 'webConnectionsModule'
@@ -117,7 +115,7 @@ module webConnectionsModule 'modules/webconnections.bicep' = {
 }
 
 // -----------------------------
-// Module Call: Private Endpoints
+// Module: Private Endpoints
 // -----------------------------
 module privateEndpointsModule 'modules/privateEndpoints.bicep' = {
   name: 'privateEndpointsModule'
@@ -132,7 +130,7 @@ module privateEndpointsModule 'modules/privateEndpoints.bicep' = {
 }
 
 // -----------------------------
-// Module Call: Monitoring & Alerts
+// Module: Monitoring
 // -----------------------------
 module monitoringModule 'modules/monitoring.bicep' = {
   name: 'monitoringModule'
@@ -141,14 +139,13 @@ module monitoringModule 'modules/monitoring.bicep' = {
     metricAlertADFPipelineFailureName: metricAlerts_EmailOnADFPipelineFailure_name
     activityLogAlertDevdatabphcName: 'AdmAct_devdatabphc'
     activityLogAlertSaName: 'sa_AdmAct'
-    activityLogAlertVNetName: activityLogAlertVNetName
     location: 'global'
     alertScope: resourceId('Microsoft.Network/virtualNetworks', virtualNetworks_Network_name)
   }
 }
 
 // -----------------------------
-// Module Call: Network Interfaces (Optional - now separated)
+// Module: Network Interfaces
 // -----------------------------
 module networkInterfacesModule 'modules/networkInterfaces.bicep' = {
   name: 'networkInterfacesModule'
