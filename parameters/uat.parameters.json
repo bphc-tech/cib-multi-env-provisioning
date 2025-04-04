@@ -2,12 +2,6 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "factoryName": {
-      "value": "data-modernization"
-    },
-    "SharePointOnlineList_Jan28_servicePrincipalKey": {
-      "value": "your-service-principal-key"
-    },
     "connections_azureblob_1_name": {
       "value": "azureblob-1"
     },
@@ -38,11 +32,20 @@
     "storageAccounts_testnetwork93cd_name": {
       "value": "testnetwork93cd"
     },
+    "localNetworkGateways_LocalNetworkGateway_name": {
+      "value": "LocalNetworkGateway"
+    },
     "routeTables_RouteTable_name": {
       "value": "RouteTable"
     },
     "virtualNetworks_Network_name": {
       "value": "VNet"
+    },
+    "serverfarms_ASP_Network_name": {
+      "value": "ASP-Network"
+    },
+    "sites_SharePointDataExtractionFunction_name": {
+      "value": "SharePointDataExtractionFunction"
     },
     "publicIPAddresses_GatewayIP_name": {
       "value": "GatewayIP"
@@ -52,9 +55,6 @@
     },
     "metricAlerts_EmailOnADFPipelineFailure_name": {
       "value": "EmailOnADFPipelineFailure"
-    },
-    "localNetworkGateways_LocalNetworkGateway_name": {
-      "value": "LocalNetworkGateway"
     },
     "privateDnsZones_privatelink_dfs_core_windows_net_name": {
       "value": "privatelink.dfs.core.windows.net"
@@ -75,27 +75,15 @@
       "value": "dmi-projects-factory-private-endpoint"
     },
     "factories_data_modernization_externalid": {
-      "value": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL/providers/Microsoft.DataFactory/factories/data-modernization"
+      "value": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL-UAT/providers/Microsoft.DataFactory/factories/data-modernization"
     },
     "factories_dmi_projects_factory_externalid": {
-      "value": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL/providers/Microsoft.DataFactory/factories/dmi-projects-factory"
+      "value": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL-UAT/providers/Microsoft.DataFactory/factories/dmi-projects-factory"
     },
     "storageAccounts_dmiprojectsstorage_externalid": {
-      "value": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL/providers/Microsoft.Storage/storageAccounts/dmiprojectsstorage"
+      "value": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL-UAT/providers/Microsoft.Storage/storageAccounts/dmiprojectsstorage"
     },
     "virtualNetworks_Prod_VirtualNetwork_externalid": {
-      "value": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL/providers/Microsoft.Network/virtualNetworks/VNet"
-    },
-    "activityLogAlertDevdatabphcName": {
-      "value": "AdmAct_devdatabphc"
-    },
-    "activityLogAlertSaName": {
-      "value": "sa_AdmAct"
-    },
-    "activityLogAlertVNetName": {
-      "value": "AdmAct_VNet"
-    },
-    "alertScope": {
       "value": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL-UAT/providers/Microsoft.Network/virtualNetworks/VNet"
     }
   }
