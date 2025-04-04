@@ -41,7 +41,7 @@ param virtualNetworks_Prod_VirtualNetwork_externalid string
 
 // If you need them:
 param activityLogAlertVNetName string = 'ActivityLogAlert-UAT-VNet'
-param env string = 'uat'
+param env string = 'uat' // Environment parameter set to 'uat'
 
 // -----------------------------
 // Module Call: Extended Networking Resources
@@ -49,6 +49,7 @@ param env string = 'uat'
 module networkModule 'modules/network.bicep' = {
   name: 'networkModule'
   params: {
+    env: env // Pass the 'env' parameter to the network module
     connections_azureblob_1_name: connections_azureblob_1_name
     connections_azureblob_2_name: connections_azureblob_2_name
     connections_azureblob_3_name: connections_azureblob_3_name
@@ -145,8 +146,7 @@ module monitoringModule 'modules/monitoring.bicep' = {
     metricAlertADFPipelineFailureName: metricAlerts_EmailOnADFPipelineFailure_name
     activityLogAlertDevdatabphcName: 'AdmAct_devdatabphc'
     activityLogAlertSaName: 'sa_AdmAct'
-    // unify references: remove activityLogAlertDevTestVNetName and use only activityLogAlertVNetName if needed
-    activityLogAlertVNetName: 'AdmAct_UAT_VNet' // or whichever name you prefer
+    activityLogAlertVNetName: activityLogAlertVNetName // Fix the reference here
     location: 'global'
     alertScope: resourceId('Microsoft.Network/virtualNetworks', virtualNetworks_Network_name)
   }
