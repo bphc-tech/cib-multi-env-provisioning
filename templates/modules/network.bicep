@@ -55,8 +55,7 @@ resource localNG 'Microsoft.Network/localNetworkGateways@2024-03-01' = {
   properties: {
     localNetworkAddressSpace: {
       addressPrefixes: [
-        '10.68.0.0/16',  // Added commas between address prefixes
-        '10.75.0.0/16'
+        '10.68.0.0/16',          '10.75.0.0/16'
       ]
     }
     gatewayIpAddress: '140.241.253.162'
