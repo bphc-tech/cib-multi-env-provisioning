@@ -13,10 +13,10 @@ param subnetId string
 param location string = 'eastus'
 
 @description('Network Security Group (NSG) to associate with the NIC (Optional)')
-param networkSecurityGroupId string = null
+param networkSecurityGroupId string = ''
 
 @description('Public IP address resource ID to associate with the NIC (Optional)')
-param publicIpId string = null
+param publicIpId string = ''
 
 // ----------------------------------------------------------
 // Create the Network Interface
@@ -33,14 +33,14 @@ resource nic 'Microsoft.Network/networkInterfaces@2021-08-01' = {
             id: subnetId
           }
           privateIPAllocationMethod: 'Dynamic' // Dynamic IP allocation
-          publicIPAddress: publicIpId ? {
+          publicIPAddress: publicIpId != '' ? {
             id: publicIpId
           } : null  // Conditionally associate Public IP if provided
         }
       }
     ]
     // Associate NSG if provided
-    networkSecurityGroup: networkSecurityGroupId ? {
+    networkSecurityGroup: networkSecurityGroupId != '' ? {
       id: networkSecurityGroupId
     } : null
   }

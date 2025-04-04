@@ -127,8 +127,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2020-11-01' = {
         properties: {
           addressPrefix: '10.59.40.128/27'
         }
-      },
-      {
+      },      {
         name: 'default'
         properties: {
           addressPrefix: '10.59.40.0/25'
