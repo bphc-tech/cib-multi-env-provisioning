@@ -29,14 +29,14 @@
     "storageAccounts_devdatabphc_name": {
       "value": "databphc"
     },
+    "storageAccounts_testnetwork93cd_name": {
+      "value": "testnetwork93cd"
+    },
     "routeTables_RouteTable_name": {
       "value": "RouteTable"
     },
     "virtualNetworks_Network_name": {
       "value": "VNet"
-    },
-    "storageAccounts_testnetwork93cd_name": {
-      "value": "testnetwork93cd"
     },
     "publicIPAddresses_GatewayIP_name": {
       "value": "GatewayIP"
@@ -46,6 +46,18 @@
     },
     "metricAlerts_EmailOnADFPipelineFailure_name": {
       "value": "EmailOnADFPipelineFailure"
+    },
+    "activityLogAlertDevdatabphcName": {
+      "value": "AdmAct_devdatabphc"
+    },
+    "activityLogAlertSaName": {
+      "value": "sa_AdmAct"
+    },
+    "activityLogAlertVNetName": {
+      "value": "AdmAct_VNet"
+    },
+    "alertScope": {
+      "value": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL-UAT"
     },
     "localNetworkGateways_LocalNetworkGateway_name": {
       "value": "LocalNetworkGateway"

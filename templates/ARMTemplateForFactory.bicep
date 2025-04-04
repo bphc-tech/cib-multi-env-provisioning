@@ -1,17 +1,13 @@
 // ==========================================================
-// Simplified Factory Deployment Template (Vanilla Resources)
+// Factory Deployment Template (Modularized)
 // ==========================================================
 
 @description('Factory name parameter (e.g. "data-modernization")')
 param factoryName string
 
-@secure()
 param SharePointOnlineList_Jan28_servicePrincipalKey string
 
-@description('Activity Log Alert VNet name')
-param activityLogAlertVNetName string
-
-// Networking Parameters
+// Networking-related parameters
 param connections_azureblob_1_name string
 param connections_azureblob_2_name string
 param connections_azureblob_3_name string
@@ -40,7 +36,7 @@ param storageAccounts_dmiprojectsstorage_externalid string
 param virtualNetworks_Prod_VirtualNetwork_externalid string
 
 // -----------------------------
-// Module: Network
+// Module Call: Extended Networking Resources
 // -----------------------------
 module networkModule 'modules/network.bicep' = {
   name: 'networkModule'
@@ -75,7 +71,7 @@ module networkModule 'modules/network.bicep' = {
 }
 
 // -----------------------------
-// Module: Storage Accounts
+// Module Call: Storage Accounts
 // -----------------------------
 module storageModule 'modules/storage.bicep' = {
   name: 'storageModule'
@@ -87,7 +83,7 @@ module storageModule 'modules/storage.bicep' = {
 }
 
 // -----------------------------
-// Module: Data Factory
+// Module Call: Data Factory
 // -----------------------------
 module dataFactoryModule 'modules/datafactory.bicep' = {
   name: 'dataFactoryModule'
@@ -98,7 +94,7 @@ module dataFactoryModule 'modules/datafactory.bicep' = {
 }
 
 // -----------------------------
-// Module: Web Connections
+// Module Call: Web Connections
 // -----------------------------
 module webConnectionsModule 'modules/webconnections.bicep' = {
   name: 'webConnectionsModule'
@@ -115,7 +111,7 @@ module webConnectionsModule 'modules/webconnections.bicep' = {
 }
 
 // -----------------------------
-// Module: Private Endpoints
+// Module Call: Private Endpoints
 // -----------------------------
 module privateEndpointsModule 'modules/privateEndpoints.bicep' = {
   name: 'privateEndpointsModule'
@@ -130,7 +126,7 @@ module privateEndpointsModule 'modules/privateEndpoints.bicep' = {
 }
 
 // -----------------------------
-// Module: Monitoring
+// Module Call: Monitoring & Alerts
 // -----------------------------
 module monitoringModule 'modules/monitoring.bicep' = {
   name: 'monitoringModule'
@@ -141,11 +137,12 @@ module monitoringModule 'modules/monitoring.bicep' = {
     activityLogAlertSaName: 'sa_AdmAct'
     location: 'global'
     alertScope: resourceId('Microsoft.Network/virtualNetworks', virtualNetworks_Network_name)
+    activityLogAlertVNetName: virtualNetworks_Network_name
   }
 }
 
 // -----------------------------
-// Module: Network Interfaces
+// Module Call: Network Interfaces
 // -----------------------------
 module networkInterfacesModule 'modules/networkInterfaces.bicep' = {
   name: 'networkInterfacesModule'

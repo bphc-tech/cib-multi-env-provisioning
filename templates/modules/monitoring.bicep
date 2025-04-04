@@ -1,9 +1,7 @@
 // ==========================================================
 // Monitoring Module
-// This module creates metric alerts and activity log alerts
-// to mirror those in DevTest-Network.
-// In this revision, we replace "Percentage CPU" with "CpuTime"
-// so the metric alerts won't fail if you're targeting an App Service Plan.
+// Creates metric alerts and activity log alerts.
+// Replaces "Percentage CPU" with "CpuTime" for compatibility.
 // ==========================================================
 
 @description('Name for the metric alert EmailOnADFActionFailure')
@@ -27,12 +25,7 @@ param location string = 'global'
 @description('Resource ID to use as the scope for alerts')
 param alertScope string
 
-// ----------------------------------------------------------
-// Define a dummy criteria object for metric alerts,
-// including the required properties. We use "CpuTime"
-// rather than "Percentage CPU", as "Percentage CPU" may
-// not be valid on your target resource.
-// ----------------------------------------------------------
+// Dummy metric alert criteria
 var dummyCriteria = {
   'odata.type': 'Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria'
   allOf: [
@@ -48,35 +41,28 @@ var dummyCriteria = {
 }
 
 // ----------------------------------------------------------
-// Metric Alert: EmailOnADFActionFailure (Example configuration)
+// Metric Alerts
 // ----------------------------------------------------------
-resource metricAlertADFActionFailure 'microsoft.insights/metricalerts@2018-03-01' = {
+resource metricAlertADFActionFailure 'Microsoft.Insights/metricAlerts@2018-03-01' = {
   name: metricAlertADFActionFailureName
   location: location
   properties: {
     severity: 3
     enabled: true
-    scopes: [
-      alertScope
-    ]
+    scopes: [alertScope]
     evaluationFrequency: 'PT5M'
     windowSize: 'PT15M'
     criteria: dummyCriteria
   }
 }
 
-// ----------------------------------------------------------
-// Metric Alert: EmailOnADFPipelineFailure (Example configuration)
-// ----------------------------------------------------------
-resource metricAlertADFPipelineFailure 'microsoft.insights/metricalerts@2018-03-01' = {
+resource metricAlertADFPipelineFailure 'Microsoft.Insights/metricAlerts@2018-03-01' = {
   name: metricAlertADFPipelineFailureName
   location: location
   properties: {
     severity: 3
     enabled: true
-    scopes: [
-      alertScope
-    ]
+    scopes: [alertScope]
     evaluationFrequency: 'PT5M'
     windowSize: 'PT15M'
     criteria: dummyCriteria
@@ -84,58 +70,46 @@ resource metricAlertADFPipelineFailure 'microsoft.insights/metricalerts@2018-03-
 }
 
 // ----------------------------------------------------------
-// Activity Log Alert: AdmAct_devdatabphc (Example configuration)
+// Activity Log Alerts
 // ----------------------------------------------------------
-resource activityLogAlertDevdatabphc 'microsoft.insights/activityLogAlerts@2017-04-01' = {
+resource activityLogAlertDevdatabphc 'Microsoft.Insights/activityLogAlerts@2017-04-01' = {
   name: activityLogAlertDevdatabphcName
   location: location
   properties: {
-    scopes: [
-      alertScope
-    ]
+    scopes: [alertScope]
     condition: {
       allOf: []
     }
-    actions: []  // Update with valid actions if needed.
+    actions: []
   }
 }
 
-// ----------------------------------------------------------
-// Activity Log Alert: sa_AdmAct (Example configuration)
-// ----------------------------------------------------------
-resource activityLogAlertSa 'microsoft.insights/activityLogAlerts@2017-04-01' = {
+resource activityLogAlertSa 'Microsoft.Insights/activityLogAlerts@2017-04-01' = {
   name: activityLogAlertSaName
   location: location
   properties: {
-    scopes: [
-      alertScope
-    ]
+    scopes: [alertScope]
     condition: {
       allOf: []
     }
-    actions: []  // Update with valid actions if needed.
+    actions: []
   }
 }
 
-// ----------------------------------------------------------
-// Activity Log Alert: AdmAct_VNet (Example configuration)
-// ----------------------------------------------------------
-resource activityLogAlertVNet 'microsoft.insights/activityLogAlerts@2017-04-01' = {
+resource activityLogAlertVNet 'Microsoft.Insights/activityLogAlerts@2017-04-01' = {
   name: activityLogAlertVNetName
   location: location
   properties: {
-    scopes: [
-      alertScope
-    ]
+    scopes: [alertScope]
     condition: {
       allOf: []
     }
-    actions: []  // Update with valid actions if needed.
+    actions: []
   }
 }
 
 // ----------------------------------------------------------
-// Outputs (optional)
+// Outputs
 // ----------------------------------------------------------
 output metricAlertADFActionFailureId string = metricAlertADFActionFailure.id
 output metricAlertADFPipelineFailureId string = metricAlertADFPipelineFailure.id

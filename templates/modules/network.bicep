@@ -2,75 +2,35 @@
 // Extended Networking Module for Factory Resources
 // ==========================================================
 
-// ----------------------------------------------------------
 // Parameters
-// ----------------------------------------------------------
-
-@description('Azure blob connection name 1')
 param connections_azureblob_1_name string
-
-@description('Azure blob connection name 2')
 param connections_azureblob_2_name string
-
-@description('Azure blob connection name 3')
 param connections_azureblob_3_name string
-
-@description('Azure blob connection name 4')
 param connections_azureblob_4_name string
-
-@description('Azure blob connection name 5')
 param connections_azureblob_5_name string
-
-@description('Action group name for email alerts')
 param actionGroups_Email_Alicia_name string
-
-@description('VPN connection name')
 param connections_PA_VPN_name string
-
-@description('Name for the network interface')
 param networkInterfaces_vm2_name string
-
-@description('Storage Account names')
 param storageAccounts_devdatabphc_name string
 param storageAccounts_testnetwork93cd_name string
-
-@description('Local Network Gateway name')
 param localNetworkGateways_LocalNetworkGateway_name string
-
-@description('Route Table name')
 param routeTables_RouteTable_name string
-
-@description('Virtual Network name')
 param virtualNetworks_Network_name string
-
-@description('Public IP name')
 param publicIPAddresses_GatewayIP_name string
-
-@description('Metric alert names')
 param metricAlerts_EmailOnADFActionFailure_name string
 param metricAlerts_EmailOnADFPipelineFailure_name string
-
-@description('Private DNS Zone names')
 param privateDnsZones_privatelink_dfs_core_windows_net_name string
 param privateDnsZones_privatelink_blob_core_windows_net_name string
 param privateDnsZones_privatelink_datafactory_azure_net_name string
-
-@description('Private Endpoint names')
 param privateEndpoints_dmiprojectsstorage_private_endpoint_name string
 param privateEndpoints_dmi_projects_factory_private_endpoint_name string
-
-@description('Virtual Network Gateway name')
 param virtualNetworkGateways_VirtualNetworkGateway1_name string
-
-@description('External IDs')
 param factories_data_modernization_externalid string
 param factories_dmi_projects_factory_externalid string
 param storageAccounts_dmiprojectsstorage_externalid string
 param virtualNetworks_Prod_VirtualNetwork_externalid string
 
-// ----------------------------------------------------------
-// Resources
-// ----------------------------------------------------------
+// -------- Resources --------
 
 resource actionGroup 'Microsoft.Insights/actionGroups@2023-09-01-preview' = {
   name: actionGroups_Email_Alicia_name
@@ -128,7 +88,6 @@ resource publicIP 'Microsoft.Network/publicIPAddresses@2024-03-01' = {
     tier: 'Regional'
   }
   properties: {
-    ipAddress: '4.246.194.241'
     publicIPAddressVersion: 'IPv4'
     publicIPAllocationMethod: 'Static'
     idleTimeoutInMinutes: 4
@@ -178,7 +137,8 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2020-11-01' = {
   }
 }
 
-var gatewaySubnetId = virtualNetwork::subnets[0].id
+var gatewaySubnetId = resourceId('Microsoft.Network/virtualNetworks/subnets', virtualNetworks_Network_name, 'GatewaySubnet')
+var publicIPId = resourceId('Microsoft.Network/publicIPAddresses', publicIPAddresses_GatewayIP_name)
 
 resource virtualNetworkGateway 'Microsoft.Network/virtualNetworkGateways@2020-11-01' = {
   name: virtualNetworkGateways_VirtualNetworkGateway1_name
@@ -199,7 +159,7 @@ resource virtualNetworkGateway 'Microsoft.Network/virtualNetworkGateways@2020-11
             id: gatewaySubnetId
           }
           publicIPAddress: {
-            id: publicIP.id
+            id: publicIPId
           }
         }
       }
