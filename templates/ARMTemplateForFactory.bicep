@@ -1,13 +1,12 @@
 // ==========================================================
-// Updated UAT Deployment Template for Factory Resources
-// Deploying everything to East US to ensure consistency with the existing resources.
+// Simplified Factory Deployment Template (Vanilla Resources)
 // ==========================================================
 
-@description('Factory name parameter (e.g. "data-modernization-uat")')
+@description('Factory name parameter (e.g. "data-modernization")')
 param factoryName string
 
 // -----------------------------
-// Updated / Unified Parameters
+// Parameters
 // -----------------------------
 param connections_azureblob_1_name string = 'azureblob-1'
 param connections_azureblob_2_name string = 'azureblob-2'
@@ -20,10 +19,8 @@ param networkInterfaces_vm2_name string = 'vm2'
 param storageAccounts_devdatabphc_name string = 'databphc'
 param routeTables_RouteTable_name string = 'RouteTable'
 param virtualNetworks_Network_name string = 'VNet'
-param serverfarms_ASP_Network_name string = 'ASP-Network'
 param storageAccounts_testnetwork93cd_name string = 'testnetwork93cd'
 param SharePointOnlineList_Jan28_servicePrincipalKey string
-param sites_SharePointDataExtractionFunction_name string = 'SharePointDataExtractionFunction'
 param publicIPAddresses_GatewayIP_name string = 'GatewayIP'
 param metricAlerts_EmailOnADFActionFailure_name string = 'EmailOnADFActionFailure'
 param metricAlerts_EmailOnADFPipelineFailure_name string = 'EmailOnADFPipelineFailure'
@@ -38,10 +35,6 @@ param factories_data_modernization_externalid string
 param factories_dmi_projects_factory_externalid string
 param storageAccounts_dmiprojectsstorage_externalid string
 param virtualNetworks_Prod_VirtualNetwork_externalid string
-
-// If you need them:
-param activityLogAlertVNetName string = 'ActivityLogAlert-UAT-VNet'
-param env string = 'uat' // Environment parameter set to 'uat'
 
 // -----------------------------
 // Module Call: Extended Networking Resources
@@ -62,8 +55,6 @@ module networkModule 'modules/network.bicep' = {
     localNetworkGateways_LocalNetworkGateway_name: localNetworkGateways_LocalNetworkGateway_name
     routeTables_RouteTable_name: routeTables_RouteTable_name
     virtualNetworks_Network_name: virtualNetworks_Network_name
-    serverfarms_ASP_Network_name: serverfarms_ASP_Network_name
-    sites_SharePointDataExtractionFunction_name: sites_SharePointDataExtractionFunction_name
     publicIPAddresses_GatewayIP_name: publicIPAddresses_GatewayIP_name
     metricAlerts_EmailOnADFActionFailure_name: metricAlerts_EmailOnADFActionFailure_name
     metricAlerts_EmailOnADFPipelineFailure_name: metricAlerts_EmailOnADFPipelineFailure_name
@@ -98,7 +89,7 @@ module storageModule 'modules/storage.bicep' = {
 module dataFactoryModule 'modules/datafactory.bicep' = {
   name: 'dataFactoryModule'
   params: {
-    dataFactoryName: 'data-modernization-uat'
+    dataFactoryName: factoryName
     location: 'eastus'
   }
 }
@@ -145,7 +136,6 @@ module monitoringModule 'modules/monitoring.bicep' = {
     metricAlertADFPipelineFailureName: metricAlerts_EmailOnADFPipelineFailure_name
     activityLogAlertDevdatabphcName: 'AdmAct_devdatabphc'
     activityLogAlertSaName: 'sa_AdmAct'
-    activityLogAlertVNetName: activityLogAlertVNetName
     location: 'global'
     alertScope: resourceId('Microsoft.Network/virtualNetworks', virtualNetworks_Network_name)
   }
@@ -160,34 +150,5 @@ module networkInterfacesModule 'modules/networkInterfaces.bicep' = {
     networkInterfaceName: networkInterfaces_vm2_name
     subnetId: resourceId('Microsoft.Network/virtualNetworks/subnets', virtualNetworks_Network_name, 'default')
     location: 'eastus'
-  }
-}
-
-// -----------------------------
-// App Service Plan for Web Apps
-// -----------------------------
-resource appServicePlan 'Microsoft.Web/serverFarms@2021-02-01' = {
-  name: serverfarms_ASP_Network_name
-  location: 'eastus'
-  sku: {
-    name: 'B1'
-    tier: 'Basic'
-  }
-  properties: {
-    reserved: false
-  }
-}
-
-// -----------------------------
-// Web App for SharePoint Data Extraction
-// -----------------------------
-resource webApp 'Microsoft.Web/sites@2021-02-01' = {
-  name: sites_SharePointDataExtractionFunction_name
-  location: 'eastus'
-  properties: {
-    serverFarmId: appServicePlan.id
-    siteConfig: {
-      linuxFxVersion: 'DOTNETCORE|3.1'
-    }
   }
 }

@@ -46,12 +46,6 @@ param routeTables_RouteTable_name string
 @description('Name for the virtual network')
 param virtualNetworks_Network_name string
 
-@description('Name for the app service plan')
-param serverfarms_ASP_Network_name string
-
-@description('Name for the web app')
-param sites_SharePointDataExtractionFunction_name string
-
 @description('Name for the public IP address for the gateway')
 param publicIPAddresses_GatewayIP_name string
 
@@ -206,7 +200,8 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2020-11-01' = {
         properties: {
           addressPrefix: '10.59.40.128/27'
         }
-      },      {
+      },
+      {
         name: 'default'
         properties: {
           addressPrefix: '10.59.40.0/25'
@@ -248,7 +243,7 @@ resource virtualNetworkGateway 'Microsoft.Network/virtualNetworkGateways@2020-11
 // When you obtain the shared key, uncomment and update this block.
 // resource vpnConnection 'Microsoft.Network/connections@2020-11-01' = {
 //   name: connections_PA_DevTest_VPN_name
-//   location: 'eastus'  // Reverted back to eastus
+//   location: 'eastus'
 //   properties: {
 //     connectionType: 'IPSec'
 //     virtualNetworkGateway1: {
