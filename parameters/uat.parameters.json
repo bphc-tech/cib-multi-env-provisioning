@@ -89,9 +89,6 @@
     "activityLogAlertVNetName": {
       "value": "ActivityLogAlert-UAT-VNet"
     },
-    "activityLogAlertDevTestVNetName": {
-      "value": "ActivityLogAlert-UAT-DevTestVNet"
-    },
     "env": {
       "value": "uat"
     }
