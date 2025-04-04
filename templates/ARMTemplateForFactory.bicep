@@ -2,6 +2,7 @@
 // Updated Deployment Template for Factory Resources
 // Deploying everything to East US for consistency.
 // Removed env references and simplified naming conventions.
+// Includes VPN connection with shared key.
 // ==========================================================
 
 @description('Factory name parameter (e.g. "data-modernization")')
@@ -39,6 +40,10 @@ param factories_data_modernization_externalid string
 param factories_dmi_projects_factory_externalid string
 param storageAccounts_dmiprojectsstorage_externalid string
 param virtualNetworks_Prod_VirtualNetwork_externalid string
+
+@secure()
+@description('Shared key for the VPN connection')
+param vpnSharedKey string
 
 // -----------------------------
 // Module Calls
@@ -162,5 +167,21 @@ resource webApp 'Microsoft.Web/sites@2021-02-01' = {
     siteConfig: {
       linuxFxVersion: 'DOTNETCORE|3.1'
     }
+  }
+}
+
+resource vpnConnection 'Microsoft.Network/connections@2020-11-01' = {
+  name: connections_PA_VPN_name
+  location: 'eastus'
+  properties: {
+    connectionType: 'IPSec'
+    virtualNetworkGateway1: {
+      id: resourceId('Microsoft.Network/virtualNetworkGateways', virtualNetworkGateways_VirtualNetworkGateway1_name)
+    }
+    localNetworkGateway2: {
+      id: resourceId('Microsoft.Network/localNetworkGateways', localNetworkGateways_LocalNetworkGateway_name)
+    }
+    routingWeight: 10
+    sharedKey: vpnSharedKey
   }
 }

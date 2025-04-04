@@ -78,4 +78,5 @@ jobs:
             --template-file templates/ARMTemplateForFactory.bicep \
             --parameters @$paramFile \
             --parameters SharePointOnlineList_Jan28_servicePrincipalKey="${{ secrets.SP_KEY }}" \
-            --parameters factoryName="${{ env.factoryName }}"
+            --parameters factoryName="${{ env.factoryName }}" \
+            --parameters vpnSharedKey="${{ secrets.VPN_SHARED_KEY }}"

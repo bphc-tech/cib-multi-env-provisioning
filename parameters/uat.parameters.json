@@ -29,12 +29,6 @@
     "storageAccounts_devdatabphc_name": {
       "value": "databphc"
     },
-    "storageAccounts_testnetwork93cd_name": {
-      "value": "testnetwork93cd"
-    },
-    "localNetworkGateways_LocalNetworkGateway_name": {
-      "value": "LocalNetworkGateway"
-    },
     "routeTables_RouteTable_name": {
       "value": "RouteTable"
     },
@@ -43,6 +37,9 @@
     },
     "serverfarms_ASP_Network_name": {
       "value": "ASP-Network"
+    },
+    "storageAccounts_testnetwork93cd_name": {
+      "value": "testnetwork93cd"
     },
     "sites_SharePointDataExtractionFunction_name": {
       "value": "SharePointDataExtractionFunction"
@@ -55,6 +52,9 @@
     },
     "metricAlerts_EmailOnADFPipelineFailure_name": {
       "value": "EmailOnADFPipelineFailure"
+    },
+    "localNetworkGateways_LocalNetworkGateway_name": {
+      "value": "LocalNetworkGateway"
     },
     "privateDnsZones_privatelink_dfs_core_windows_net_name": {
       "value": "privatelink.dfs.core.windows.net"
@@ -75,16 +75,16 @@
       "value": "dmi-projects-factory-private-endpoint"
     },
     "factories_data_modernization_externalid": {
-      "value": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL-UAT/providers/Microsoft.DataFactory/factories/data-modernization"
+      "value": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL/providers/Microsoft.DataFactory/factories/data-modernization"
     },
     "factories_dmi_projects_factory_externalid": {
-      "value": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL-UAT/providers/Microsoft.DataFactory/factories/dmi-projects-factory"
+      "value": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL/providers/Microsoft.DataFactory/factories/dmi-projects-factory"
     },
     "storageAccounts_dmiprojectsstorage_externalid": {
-      "value": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL-UAT/providers/Microsoft.Storage/storageAccounts/dmiprojectsstorage"
+      "value": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL/providers/Microsoft.Storage/storageAccounts/dmiprojectsstorage"
     },
     "virtualNetworks_Prod_VirtualNetwork_externalid": {
-      "value": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL-UAT/providers/Microsoft.Network/virtualNetworks/VNet"
+      "value": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL/providers/Microsoft.Network/virtualNetworks/VNet"
     }
   }
 }
