@@ -1,7 +1,7 @@
 // ==========================================================
 // Web Connections Module
-// This module creates Microsoft.Web/connections resources for azureblob connections.
-// It accepts an array of connection names and deploys a connection for each.
+// Creates Microsoft.Web/connections resources for azureblob connections.
+// Uses managed identity and secure runtime variables for authentication.
 // ==========================================================
 
 @description('Array of connection names for azureblob connections')
@@ -10,6 +10,15 @@ param connectionNames array
 @description('Location for the connections (defaults to eastus)')
 param location string = 'eastus'
 
+@description('Azure Active Directory Tenant ID')
+param tenantId string
+
+@description('Client ID of the managed identity or service principal')
+param clientId string
+
+@description('Client secret for the service principal (use secure pipeline secret)')
+param clientSecret string
+
 // ----------------------------------------------------------
 // Create a connection resource for each provided connection name
 // ----------------------------------------------------------
@@ -17,17 +26,17 @@ resource webConnections 'Microsoft.Web/connections@2021-02-01' = [for name in co
   name: name
   location: location
   properties: {
-    // Define connection-specific properties here.
     displayName: name
     api: {
-      id: '/subscriptions/{subscriptionId}/providers/Microsoft.Web/locations/{location}/managedApis/azureblob'
+      id: format('/subscriptions/{0}/providers/Microsoft.Web/locations/{1}/managedApis/azureblob', subscription().subscriptionId, location)
     }
     authentication: {
-      type: 'ActiveDirectoryOAuth'  // Adjust auth type as needed
+      type: 'ActiveDirectoryOAuth'
       parameters: {
-        clientId: 'your-client-id'  // Replace with actual client ID
-        clientSecret: 'your-client-secret'  // Replace with actual secret
-        tenant: 'your-tenant-id'  // Replace with actual tenant ID
+        clientId: clientId
+        clientSecret: clientSecret
+        tenantId: tenantId
+        audience: 'https://management.azure.com/'
       }
     }
   }

@@ -1,7 +1,7 @@
 // ==========================================================
-// Monitoring Module
-// Creates metric alerts and activity log alerts.
-// Replaces "Percentage CPU" with "CpuTime" for compatibility.
+// Revised Monitoring Module
+// This module creates metric alerts and activity log alerts.
+// Updated to use valid metrics for Azure Data Factory.
 // ==========================================================
 
 @description('Name for the metric alert EmailOnADFActionFailure')
@@ -25,15 +25,17 @@ param location string = 'global'
 @description('Resource ID to use as the scope for alerts')
 param alertScope string
 
-// Dummy metric alert criteria for compatibility
-var dummyCriteria = {
+// ----------------------------------------------------------
+// Define valid ADF metric alert criteria (Pipeline Failed Runs)
+// ----------------------------------------------------------
+var adfFailureCriteria = {
   'odata.type': 'Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria'
   allOf: [
     {
-      name: 'DefaultCriterion'
-      metricName: 'CpuTime'
+      name: 'PipelineFailedRuns'
+      metricName: 'PipelineFailedRuns'
       operator: 'GreaterThan'
-      threshold: 1000
+      threshold: 0
       timeAggregation: 'Total'
       criterionType: 'StaticThresholdCriterion'
     }
@@ -52,7 +54,7 @@ resource metricAlertADFActionFailure 'Microsoft.Insights/metricAlerts@2018-03-01
     scopes: [alertScope]
     evaluationFrequency: 'PT5M'
     windowSize: 'PT15M'
-    criteria: dummyCriteria
+    criteria: adfFailureCriteria
   }
 }
 
@@ -65,7 +67,7 @@ resource metricAlertADFPipelineFailure 'Microsoft.Insights/metricAlerts@2018-03-
     scopes: [alertScope]
     evaluationFrequency: 'PT5M'
     windowSize: 'PT15M'
-    criteria: dummyCriteria
+    criteria: adfFailureCriteria
   }
 }
 
@@ -78,9 +80,9 @@ resource activityLogAlertDevdatabphc 'Microsoft.Insights/activityLogAlerts@2017-
   properties: {
     scopes: [alertScope]
     condition: {
-      allOf: [] // You can define specific conditions here if needed
+      allOf: [] // Define actual conditions if needed
     }
-    actions: [] // Ensure actions are defined if necessary
+    actions: [] // Define actual actions if needed
   }
 }
 
@@ -90,9 +92,9 @@ resource activityLogAlertSa 'Microsoft.Insights/activityLogAlerts@2017-04-01' = 
   properties: {
     scopes: [alertScope]
     condition: {
-      allOf: [] // You can define specific conditions here if needed
+      allOf: []
     }
-    actions: [] // Ensure actions are defined if necessary
+    actions: []
   }
 }
 
@@ -102,9 +104,9 @@ resource activityLogAlertVNet 'Microsoft.Insights/activityLogAlerts@2017-04-01' 
   properties: {
     scopes: [alertScope]
     condition: {
-      allOf: [] // You can define specific conditions here if needed
+      allOf: []
     }
-    actions: [] // Ensure actions are defined if necessary
+    actions: []
   }
 }
 

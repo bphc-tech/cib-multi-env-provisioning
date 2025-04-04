@@ -1,6 +1,7 @@
 // ==========================================================
 // Extended Networking Module for Factory Resources
 // This module creates networking resources for the environment.
+// Revised to support secret-based VPN shared key.
 // ==========================================================
 
 // Parameters
@@ -30,6 +31,7 @@ param factories_data_modernization_externalid string
 param factories_dmi_projects_factory_externalid string
 param storageAccounts_dmiprojectsstorage_externalid string
 param virtualNetworks_Prod_VirtualNetwork_externalid string
+param vpnSharedKey string // NEW: Secure VPN shared key passed from workflow
 
 // -------- Resources --------
 
@@ -55,7 +57,8 @@ resource localNG 'Microsoft.Network/localNetworkGateways@2024-03-01' = {
   properties: {
     localNetworkAddressSpace: {
       addressPrefixes: [
-        '10.68.0.0/16',          '10.75.0.0/16'
+        '10.68.0.0/16',
+        '10.75.0.0/16'
       ]
     }
     gatewayIpAddress: '140.241.253.162'
@@ -117,7 +120,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2020-11-01' = {
   properties: {
     addressSpace: {
       addressPrefixes: [
-        '10.59.40.0/24' // Added comma
+        '10.59.40.0/24'
       ]
     }
     subnets: [
@@ -126,7 +129,8 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2020-11-01' = {
         properties: {
           addressPrefix: '10.59.40.128/27'
         }
-      },      {
+      },
+      {
         name: 'default'
         properties: {
           addressPrefix: '10.59.40.0/25'
@@ -163,5 +167,21 @@ resource virtualNetworkGateway 'Microsoft.Network/virtualNetworkGateways@2020-11
         }
       }
     ]
+  }
+}
+
+resource vpnConnection 'Microsoft.Network/connections@2020-11-01' = {
+  name: connections_PA_VPN_name
+  location: 'eastus'
+  properties: {
+    connectionType: 'IPSec'
+    virtualNetworkGateway1: {
+      id: virtualNetworkGateway.id
+    }
+    localNetworkGateway2: {
+      id: localNG.id
+    }
+    routingWeight: 10
+    sharedKey: vpnSharedKey // Secure shared key passed as param
   }
 }
