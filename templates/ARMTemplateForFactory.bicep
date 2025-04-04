@@ -49,7 +49,6 @@ param env string = 'uat' // Environment parameter set to 'uat'
 module networkModule 'modules/network.bicep' = {
   name: 'networkModule'
   params: {
-    env: env // Pass the 'env' parameter to the network module
     connections_azureblob_1_name: connections_azureblob_1_name
     connections_azureblob_2_name: connections_azureblob_2_name
     connections_azureblob_3_name: connections_azureblob_3_name
