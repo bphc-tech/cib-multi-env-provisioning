@@ -100,11 +100,7 @@ module webConnectionsModule 'modules/webconnections.bicep' = {
   name: 'webConnectionsModule'
   params: {
     connectionNames: [
-      connections_azureblob_1_name
-      connections_azureblob_2_name
-      connections_azureblob_3_name
-      connections_azureblob_4_name
-      connections_azureblob_5_name
+      connections_azureblob_1_name,      connections_azureblob_2_name,      connections_azureblob_3_name,      connections_azureblob_4_name,      connections_azureblob_5_name
     ]
     location: 'eastus'
   }
