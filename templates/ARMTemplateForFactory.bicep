@@ -5,6 +5,7 @@
 @description('Factory name parameter (e.g. "data-modernization")')
 param factoryName string
 
+@description('Service Principal Key for SharePoint Online List Jan 28')
 param SharePointOnlineList_Jan28_servicePrincipalKey string
 
 // Networking-related parameters
@@ -34,6 +35,19 @@ param factories_data_modernization_externalid string
 param factories_dmi_projects_factory_externalid string
 param storageAccounts_dmiprojectsstorage_externalid string
 param virtualNetworks_Prod_VirtualNetwork_externalid string
+
+// Parameters for activity log alerts and alert scope
+@description('Name for the activity log alert Devdatabphc')
+param activityLogAlertDevdatabphcName string
+
+@description('Name for the activity log alert sa_AdmAct')
+param activityLogAlertSaName string
+
+@description('Name for the activity log alert VNet')
+param activityLogAlertVNetName string
+
+@description('Scope for the alerts')
+param alertScope string
 
 // -----------------------------
 // Module Call: Extended Networking Resources
@@ -100,7 +114,11 @@ module webConnectionsModule 'modules/webconnections.bicep' = {
   name: 'webConnectionsModule'
   params: {
     connectionNames: [
-      connections_azureblob_1_name, connections_azureblob_2_name, connections_azureblob_3_name, connections_azureblob_4_name, connections_azureblob_5_name
+      connections_azureblob_1_name
+      connections_azureblob_2_name
+      connections_azureblob_3_name
+      connections_azureblob_4_name
+      connections_azureblob_5_name
     ]
     location: 'eastus'
   }
@@ -129,11 +147,11 @@ module monitoringModule 'modules/monitoring.bicep' = {
   params: {
     metricAlertADFActionFailureName: metricAlerts_EmailOnADFActionFailure_name
     metricAlertADFPipelineFailureName: metricAlerts_EmailOnADFPipelineFailure_name
-    activityLogAlertDevdatabphcName: 'AdmAct_devdatabphc'
-    activityLogAlertSaName: 'sa_AdmAct'
+    activityLogAlertDevdatabphcName: activityLogAlertDevdatabphcName
+    activityLogAlertSaName: activityLogAlertSaName
     location: 'global'
-    alertScope: resourceId('Microsoft.Network/virtualNetworks', virtualNetworks_Network_name)
-    activityLogAlertVNetName: virtualNetworks_Network_name
+    alertScope: alertScope
+    activityLogAlertVNetName: activityLogAlertVNetName
   }
 }
 
