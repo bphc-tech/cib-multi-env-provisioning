@@ -1,101 +1,60 @@
 // ==========================================================
 // Extended Networking Module for Factory Resources
-// This module creates networking resources for the environment,
-// mirroring DevTest-Network but in eastus for all resources.
+// This module creates networking resources for the environment.
 // ==========================================================
 
 // ----------------------------------------------------------
-// Parameters passed from the main template
+// Parameters
 // ----------------------------------------------------------
 @description('Azure blob connection name 1')
 param connections_azureblob_1_name string
-
 @description('Azure blob connection name 2')
 param connections_azureblob_2_name string
-
 @description('Azure blob connection name 3')
 param connections_azureblob_3_name string
-
 @description('Azure blob connection name 4')
 param connections_azureblob_4_name string
-
 @description('Azure blob connection name 5')
 param connections_azureblob_5_name string
-
 @description('Action group name for email alerts')
 param actionGroups_Email_Alicia_name string
-
 @description('VPN connection name')
 param connections_PA_VPN_name string
-
-@description('Name for the network interface (e.g., vm2)')
+@description('Name for the network interface')
 param networkInterfaces_vm2_name string
-
-@description('Name for the first storage account')
+@description('Storage Account names')
 param storageAccounts_devdatabphc_name string
-
-@description('Name for the second storage account')
 param storageAccounts_testnetwork93cd_name string
-
-@description('Name for the local network gateway')
+@description('Local Network Gateway name')
 param localNetworkGateways_LocalNetworkGateway_name string
-
-@description('Name for the route table')
+@description('Route Table name')
 param routeTables_RouteTable_name string
-
-@description('Name for the virtual network')
+@description('Virtual Network name')
 param virtualNetworks_Network_name string
-
-@description('Name for the app service plan')
-param serverfarms_ASP_Network_name string
-
-@description('Name for the web app')
-param sites_SharePointDataExtractionFunction_name string
-
-@description('Name for the public IP address for the gateway')
+@description('Public IP name')
 param publicIPAddresses_GatewayIP_name string
-
-@description('Name for the metric alert for ADF Action Failure')
+@description('Metric alert names')
 param metricAlerts_EmailOnADFActionFailure_name string
-
-@description('Name for the metric alert for ADF Pipeline Failure')
 param metricAlerts_EmailOnADFPipelineFailure_name string
-
-@description('Name for the private DNS zone for DFS')
+@description('Private DNS Zone names')
 param privateDnsZones_privatelink_dfs_core_windows_net_name string
-
-@description('Name for the private DNS zone for Blob')
 param privateDnsZones_privatelink_blob_core_windows_net_name string
-
-@description('Name for the private DNS zone for DataFactory')
 param privateDnsZones_privatelink_datafactory_azure_net_name string
-
-@description('Name for the private endpoint for dmiprojectsstorage')
+@description('Private Endpoint names')
 param privateEndpoints_dmiprojectsstorage_private_endpoint_name string
-
-@description('Name for the virtual network gateway')
-param virtualNetworkGateways_VirtualNetworkGateway1_name string
-
-@description('Name for the private endpoint for dmi projects factory')
 param privateEndpoints_dmi_projects_factory_private_endpoint_name string
-
-@description('External ID for the DataFactory (data-modernization) - full resource ID')
+@description('Virtual Network Gateway name')
+param virtualNetworkGateways_VirtualNetworkGateway1_name string
+@description('External IDs')
 param factories_data_modernization_externalid string
-
-@description('External ID for the DataFactory (dmi-projects-factory) - full resource ID')
 param factories_dmi_projects_factory_externalid string
-
-@description('External ID for the storage account for dmiprojectsstorage - full resource ID')
 param storageAccounts_dmiprojectsstorage_externalid string
-
-@description('External ID for the production virtual network (if used) - full resource ID')
 param virtualNetworks_Prod_VirtualNetwork_externalid string
 
 // ==========================================================
-// Resource Definitions
+// Resources
 // ==========================================================
 
-// Action Group for email alerts
 resource actionGroup 'Microsoft.Insights/actionGroups@2023-09-01-preview' = {
   name: actionGroups_Email_Alicia_name
   location: 'Global'
@@ -112,7 +71,6 @@ resource actionGroup 'Microsoft.Insights/actionGroups@2023-09-01-preview' = {
   }
 }
 
-// Local Network Gateway
 resource localNG 'Microsoft.Network/localNetworkGateways@2024-03-01' = {
   name: localNetworkGateways_LocalNetworkGateway_name
   location: 'eastus'
@@ -127,7 +85,6 @@ resource localNG 'Microsoft.Network/localNetworkGateways@2024-03-01' = {
   }
 }
 
-// Private DNS Zones
 resource dnsBlob 'Microsoft.Network/privateDnsZones@2024-06-01' = {
   name: privateDnsZones_privatelink_blob_core_windows_net_name
   location: 'global'
@@ -146,7 +103,6 @@ resource dnsDFS 'Microsoft.Network/privateDnsZones@2024-06-01' = {
   properties: {}
 }
 
-// Public IP for the Virtual Network Gateway
 resource publicIP 'Microsoft.Network/publicIPAddresses@2024-03-01' = {
   name: publicIPAddresses_GatewayIP_name
   location: 'eastus'
@@ -162,7 +118,6 @@ resource publicIP 'Microsoft.Network/publicIPAddresses@2024-03-01' = {
   }
 }
 
-// Route Table with a default route
 resource routeTable 'Microsoft.Network/routeTables@2024-03-01' = {
   name: routeTables_RouteTable_name
   location: 'eastus'
@@ -180,7 +135,6 @@ resource routeTable 'Microsoft.Network/routeTables@2024-03-01' = {
   }
 }
 
-// Virtual Network Resource
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2020-11-01' = {
   name: virtualNetworks_Network_name
   location: 'eastus'
@@ -207,7 +161,6 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2020-11-01' = {
   }
 }
 
-// Virtual Network Gateway Resource
 resource virtualNetworkGateway 'Microsoft.Network/virtualNetworkGateways@2020-11-01' = {
   name: virtualNetworkGateways_VirtualNetworkGateway1_name
   location: 'eastus'
@@ -234,21 +187,3 @@ resource virtualNetworkGateway 'Microsoft.Network/virtualNetworkGateways@2020-11
     ]
   }
 }
-
-// VPN Connection Resource (optional)
-// Uncomment and configure when ready
-// resource vpnConnection 'Microsoft.Network/connections@2020-11-01' = {
-//   name: connections_PA_VPN_name
-//   location: 'eastus'
-//   properties: {
-//     connectionType: 'IPSec'
-//     virtualNetworkGateway1: {
-//       id: virtualNetworkGateway.id
-//     }
-//     localNetworkGateway2: {
-//       id: localNG.id
-//     }
-//     routingWeight: 10
-//     sharedKey: 'YourSharedKeyHere'
-//   }
-// }
