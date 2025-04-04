@@ -145,7 +145,7 @@ module monitoringModule 'modules/monitoring.bicep' = {
     metricAlertADFPipelineFailureName: metricAlerts_EmailOnADFPipelineFailure_name
     activityLogAlertDevdatabphcName: 'AdmAct_devdatabphc'
     activityLogAlertSaName: 'sa_AdmAct'
-    activityLogAlertVNetName: activityLogAlertVNetName // Fix the reference here
+    activityLogAlertVNetName: activityLogAlertVNetName
     location: 'global'
     alertScope: resourceId('Microsoft.Network/virtualNetworks', virtualNetworks_Network_name)
   }
