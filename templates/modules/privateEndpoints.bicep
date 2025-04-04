@@ -39,7 +39,7 @@ resource privateEndpoint1 'Microsoft.Network/privateEndpoints@2021-03-01' = {
         properties: {
           privateLinkServiceId: targetResourceId1
           groupIds: [
-            'default'
+            'default'  // Ensure 'default' is correct for the service you're using (e.g., Azure Data Factory).
           ]
         }
       }
@@ -63,7 +63,7 @@ resource privateEndpoint2 'Microsoft.Network/privateEndpoints@2021-03-01' = {
         properties: {
           privateLinkServiceId: targetResourceId2
           groupIds: [
-            'blob'
+            'blob'  // Ensure 'blob' is correct for the storage service you're connecting to (e.g., Azure Blob Storage).
           ]
         }
       }

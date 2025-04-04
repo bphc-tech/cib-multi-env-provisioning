@@ -23,7 +23,12 @@ resource storage1 'Microsoft.Storage/storageAccounts@2022-09-01' = {
     name: 'Standard_LRS'
   }
   kind: 'StorageV2'
-  properties: {}
+  properties: {
+    // Enable soft delete for blob containers (optional)
+    deleteRetentionPolicy: {
+      days: 7 // Soft delete for 7 days
+    }
+  }
 }
 
 // ----------------------------------------------------------
@@ -36,7 +41,12 @@ resource storage2 'Microsoft.Storage/storageAccounts@2022-09-01' = {
     name: 'Standard_LRS'
   }
   kind: 'StorageV2'
-  properties: {}
+  properties: {
+    // Enable soft delete for blob containers (optional)
+    deleteRetentionPolicy: {
+      days: 7 // Soft delete for 7 days
+    }
+  }
 }
 
 // ----------------------------------------------------------

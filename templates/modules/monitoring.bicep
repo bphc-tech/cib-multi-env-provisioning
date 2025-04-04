@@ -25,7 +25,7 @@ param location string = 'global'
 @description('Resource ID to use as the scope for alerts')
 param alertScope string
 
-// Dummy metric alert criteria
+// Dummy metric alert criteria for compatibility
 var dummyCriteria = {
   'odata.type': 'Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria'
   allOf: [
@@ -78,9 +78,9 @@ resource activityLogAlertDevdatabphc 'Microsoft.Insights/activityLogAlerts@2017-
   properties: {
     scopes: [alertScope]
     condition: {
-      allOf: []
+      allOf: [] // You can define specific conditions here if needed
     }
-    actions: []
+    actions: [] // Ensure actions are defined if necessary
   }
 }
 
@@ -90,9 +90,9 @@ resource activityLogAlertSa 'Microsoft.Insights/activityLogAlerts@2017-04-01' = 
   properties: {
     scopes: [alertScope]
     condition: {
-      allOf: []
+      allOf: [] // You can define specific conditions here if needed
     }
-    actions: []
+    actions: [] // Ensure actions are defined if necessary
   }
 }
 
@@ -102,9 +102,9 @@ resource activityLogAlertVNet 'Microsoft.Insights/activityLogAlerts@2017-04-01' 
   properties: {
     scopes: [alertScope]
     condition: {
-      allOf: []
+      allOf: [] // You can define specific conditions here if needed
     }
-    actions: []
+    actions: [] // Ensure actions are defined if necessary
   }
 }
 
@@ -113,3 +113,6 @@ resource activityLogAlertVNet 'Microsoft.Insights/activityLogAlerts@2017-04-01' 
 // ----------------------------------------------------------
 output metricAlertADFActionFailureId string = metricAlertADFActionFailure.id
 output metricAlertADFPipelineFailureId string = metricAlertADFPipelineFailure.id
+output activityLogAlertDevdatabphcId string = activityLogAlertDevdatabphc.id
+output activityLogAlertSaId string = activityLogAlertSa.id
+output activityLogAlertVNetId string = activityLogAlertVNet.id

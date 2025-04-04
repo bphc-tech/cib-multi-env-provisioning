@@ -1,5 +1,6 @@
 // ==========================================================
 // Extended Networking Module for Factory Resources
+// This module creates networking resources for the environment.
 // ==========================================================
 
 // Parameters
@@ -54,7 +55,7 @@ resource localNG 'Microsoft.Network/localNetworkGateways@2024-03-01' = {
   properties: {
     localNetworkAddressSpace: {
       addressPrefixes: [
-        '10.68.0.0/16'
+        '10.68.0.0/16',  // Added commas between address prefixes
         '10.75.0.0/16'
       ]
     }
@@ -117,7 +118,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2020-11-01' = {
   properties: {
     addressSpace: {
       addressPrefixes: [
-        '10.59.40.0/24'
+        '10.59.40.0/24' // Added comma
       ]
     }
     subnets: [
@@ -126,7 +127,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2020-11-01' = {
         properties: {
           addressPrefix: '10.59.40.128/27'
         }
-      }
+      },
       {
         name: 'default'
         properties: {

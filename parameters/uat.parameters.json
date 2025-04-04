@@ -47,18 +47,6 @@
     "metricAlerts_EmailOnADFPipelineFailure_name": {
       "value": "EmailOnADFPipelineFailure"
     },
-    "activityLogAlertDevdatabphcName": {
-      "value": "AdmAct_devdatabphc"
-    },
-    "activityLogAlertSaName": {
-      "value": "sa_AdmAct"
-    },
-    "activityLogAlertVNetName": {
-      "value": "AdmAct_VNet"
-    },
-    "alertScope": {
-      "value": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL-UAT"
-    },
     "localNetworkGateways_LocalNetworkGateway_name": {
       "value": "LocalNetworkGateway"
     },
@@ -91,6 +79,18 @@
     },
     "virtualNetworks_Prod_VirtualNetwork_externalid": {
       "value": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL/providers/Microsoft.Network/virtualNetworks/VNet"
+    },
+    "activityLogAlertDevdatabphcName": {
+      "value": "AdmAct_devdatabphc"
+    },
+    "activityLogAlertSaName": {
+      "value": "sa_AdmAct"
+    },
+    "activityLogAlertVNetName": {
+      "value": "AdmAct_VNet"
+    },
+    "alertScope": {
+      "value": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL-UAT/providers/Microsoft.Network/virtualNetworks/VNet"
     }
   }
 }
