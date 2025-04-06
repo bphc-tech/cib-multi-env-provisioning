@@ -3,18 +3,21 @@ name: Azure Deployment
 on:
   push:
     branches:
+      - dev
+      - uat
       - main
   pull_request:
     branches:
+      - dev
+      - uat
       - main
   workflow_dispatch:
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-
     steps:
-      # Step 1: Checkout the repository code
+      # Step 1: Checkout the repository code.
       - name: Checkout code
         uses: actions/checkout@v2
 
@@ -25,20 +28,29 @@ jobs:
           azcliversion: '2.40.0'
           inlineScript: 'echo "Azure CLI is set up"'
 
-      # Step 3: Set environment variables
+      # Step 3: Set environment variables based on the branch.
       - name: Set environment variables
+        id: setenv
         run: |
-          echo "RESOURCE_GROUP=CIB-DL" >> $GITHUB_ENV
-          echo "AZURE_CREDS=$(echo '${{ secrets.AZURE_CREDENTIALS }}' | tr -d '\n')" >> $GITHUB_ENV
-          echo "FACTORY_NAME=data-modernization" >> $GITHUB_ENV
-          echo "PARAM_FILE=parameters/vanilla.parameters.json" >> $GITHUB_ENV
+          if [ "${{ github.ref }}" == "refs/heads/main" ]; then
+            echo "Production deployment"
+            echo "RESOURCE_GROUP=CIB-DL-PROD" >> $GITHUB_ENV
+            echo "AZURE_CREDS=$(echo '${{ secrets.AZURE_CREDENTIALS_PROD }}' | tr -d '\n')" >> $GITHUB_ENV
+            echo "factoryName=data-modernization-prod" >> $GITHUB_ENV
+            echo "paramFile=parameters/prod.parameters.json" >> $GITHUB_ENV
+          elif [ "${{ github.ref }}" == "refs/heads/uat" ] || [ "${{ github.ref }}" == "refs/heads/dev" ]; then
+            echo "UAT deployment"
+            echo "RESOURCE_GROUP=CIB-DL-UAT" >> $GITHUB_ENV
+            echo "AZURE_CREDS=$(echo '${{ secrets.AZURE_CREDENTIALS_DEV }}' | tr -d '\n')" >> $GITHUB_ENV
+            echo "factoryName=data-modernization-uat" >> $GITHUB_ENV
+            echo "paramFile=parameters/uat.parameters.json" >> $GITHUB_ENV
+          fi
 
       # Step 4: Debug credential environment variable
       - name: Debug AZURE_CREDS
         run: |
           if [ -z "$AZURE_CREDS" ]; then
             echo "AZURE_CREDS is empty"
-            exit 1
           else
             echo "AZURE_CREDS is set"
           fi
@@ -53,18 +65,18 @@ jobs:
       - name: Build Bicep Template
         run: az bicep build --file templates/ARMTemplateForFactory.bicep
 
-      # Step 7: Create Resource Group (if needed)
-      - name: Create Resource Group
+      # Step 7: Create the resource group (if needed)
+      - name: Create Resource Group (if needed)
         run: az group create --name ${{ env.RESOURCE_GROUP }} --location "East US"
 
-      # Step 8: Deploy the Bicep template
+      # Step 8: Deploy the Bicep template using parameter file + secrets
       - name: Deploy Bicep Template
         run: |
           az deployment group create \
             --mode Complete \
             --resource-group ${{ env.RESOURCE_GROUP }} \
             --template-file templates/ARMTemplateForFactory.bicep \
-            --parameters @$PARAM_FILE \
+            --parameters @$paramFile \
+            --parameters factoryName="${{ env.factoryName }}" \
             --parameters SharePointOnlineList_Jan28_servicePrincipalKey="${{ secrets.SP_KEY }}" \
-            --parameters factoryName="${{ env.FACTORY_NAME }}" \
             --parameters vpnSharedKey="${{ secrets.VPN_SHARED_KEY }}"
