@@ -1,7 +1,7 @@
 // ==========================================================
 // Web Connections Module
-// Creates Microsoft.Web/connections resources for azureblob connections.
-// Uses managed identity and secure runtime variables for authentication.
+// This module creates Microsoft.Web/connections resources for azureblob connections.
+// It accepts an array of connection names and deploys a connection for each.
 // ==========================================================
 
 @description('Array of connection names for azureblob connections')
@@ -10,14 +10,15 @@ param connectionNames array
 @description('Location for the connections (defaults to eastus)')
 param location string = 'eastus'
 
-@description('Azure Active Directory Tenant ID')
-param tenantId string
-
-@description('Client ID of the managed identity or service principal')
+@description('Client ID for authentication')
 param clientId string
 
-@description('Client secret for the service principal (use secure pipeline secret)')
+@description('Client Secret for authentication')
+@secure()
 param clientSecret string
+
+@description('Tenant ID for authentication')
+param tenantId string
 
 // ----------------------------------------------------------
 // Create a connection resource for each provided connection name
@@ -28,15 +29,14 @@ resource webConnections 'Microsoft.Web/connections@2021-02-01' = [for name in co
   properties: {
     displayName: name
     api: {
-      id: format('/subscriptions/{0}/providers/Microsoft.Web/locations/{1}/managedApis/azureblob', subscription().subscriptionId, location)
+      id: '/subscriptions/{subscriptionId}/providers/Microsoft.Web/locations/eastus/managedApis/azureblob'
     }
     authentication: {
       type: 'ActiveDirectoryOAuth'
-      parameters: {
+      parameterValues: {
         clientId: clientId
         clientSecret: clientSecret
         tenantId: tenantId
-        audience: 'https://management.azure.com/'
       }
     }
   }

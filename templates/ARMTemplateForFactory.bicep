@@ -8,8 +8,16 @@
 @description('Factory name parameter (e.g. "data-modernization")')
 param factoryName string
 
+@secure()
+@description('Shared key for the VPN connection')
+param vpnSharedKey string
+
+@secure()
+@description('Service Principal Key for SharePoint')
+param SharePointOnlineList_Jan28_servicePrincipalKey string
+
 // -----------------------------
-// Parameters
+// Core Parameters
 // -----------------------------
 param connections_azureblob_1_name string = 'azureblob-1'
 param connections_azureblob_2_name string = 'azureblob-2'
@@ -22,10 +30,7 @@ param networkInterfaces_vm2_name string = 'vm2'
 param storageAccounts_devdatabphc_name string = 'databphc'
 param routeTables_RouteTable_name string = 'RouteTable'
 param virtualNetworks_Network_name string = 'VNet'
-param serverfarms_ASP_Network_name string = 'ASP-Network'
 param storageAccounts_testnetwork93cd_name string = 'testnetwork93cd'
-param SharePointOnlineList_Jan28_servicePrincipalKey string
-param sites_SharePointDataExtractionFunction_name string = 'SharePointDataExtractionFunction'
 param publicIPAddresses_GatewayIP_name string = 'GatewayIP'
 param metricAlerts_EmailOnADFActionFailure_name string = 'EmailOnADFActionFailure'
 param metricAlerts_EmailOnADFPipelineFailure_name string = 'EmailOnADFPipelineFailure'
@@ -40,10 +45,6 @@ param factories_data_modernization_externalid string
 param factories_dmi_projects_factory_externalid string
 param storageAccounts_dmiprojectsstorage_externalid string
 param virtualNetworks_Prod_VirtualNetwork_externalid string
-
-@secure()
-@description('Shared key for the VPN connection')
-param vpnSharedKey string
 
 // -----------------------------
 // Module Calls
@@ -64,8 +65,6 @@ module networkModule 'modules/network.bicep' = {
     localNetworkGateways_LocalNetworkGateway_name: localNetworkGateways_LocalNetworkGateway_name
     routeTables_RouteTable_name: routeTables_RouteTable_name
     virtualNetworks_Network_name: virtualNetworks_Network_name
-    serverfarms_ASP_Network_name: serverfarms_ASP_Network_name
-    sites_SharePointDataExtractionFunction_name: sites_SharePointDataExtractionFunction_name
     publicIPAddresses_GatewayIP_name: publicIPAddresses_GatewayIP_name
     metricAlerts_EmailOnADFActionFailure_name: metricAlerts_EmailOnADFActionFailure_name
     metricAlerts_EmailOnADFPipelineFailure_name: metricAlerts_EmailOnADFPipelineFailure_name
@@ -79,6 +78,7 @@ module networkModule 'modules/network.bicep' = {
     factories_dmi_projects_factory_externalid: factories_dmi_projects_factory_externalid
     storageAccounts_dmiprojectsstorage_externalid: storageAccounts_dmiprojectsstorage_externalid
     virtualNetworks_Prod_VirtualNetwork_externalid: virtualNetworks_Prod_VirtualNetwork_externalid
+    vpnSharedKey: vpnSharedKey
   }
 }
 
@@ -144,44 +144,5 @@ module networkInterfacesModule 'modules/networkInterfaces.bicep' = {
     networkInterfaceName: networkInterfaces_vm2_name
     subnetId: resourceId('Microsoft.Network/virtualNetworks/subnets', virtualNetworks_Network_name, 'default')
     location: 'eastus'
-  }
-}
-
-resource appServicePlan 'Microsoft.Web/serverFarms@2021-02-01' = {
-  name: serverfarms_ASP_Network_name
-  location: 'eastus'
-  sku: {
-    name: 'F1'
-    tier: 'Free'
-  }
-  properties: {
-    reserved: false
-  }
-}
-
-resource webApp 'Microsoft.Web/sites@2021-02-01' = {
-  name: sites_SharePointDataExtractionFunction_name
-  location: 'eastus'
-  properties: {
-    serverFarmId: appServicePlan.id
-    siteConfig: {
-      linuxFxVersion: 'DOTNETCORE|3.1'
-    }
-  }
-}
-
-resource vpnConnection 'Microsoft.Network/connections@2020-11-01' = {
-  name: connections_PA_VPN_name
-  location: 'eastus'
-  properties: {
-    connectionType: 'IPSec'
-    virtualNetworkGateway1: {
-      id: resourceId('Microsoft.Network/virtualNetworkGateways', virtualNetworkGateways_VirtualNetworkGateway1_name)
-    }
-    localNetworkGateway2: {
-      id: resourceId('Microsoft.Network/localNetworkGateways', localNetworkGateways_LocalNetworkGateway_name)
-    }
-    routingWeight: 10
-    sharedKey: vpnSharedKey
   }
 }

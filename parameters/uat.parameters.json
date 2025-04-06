@@ -35,14 +35,8 @@
     "virtualNetworks_Network_name": {
       "value": "VNet"
     },
-    "serverfarms_ASP_Network_name": {
-      "value": "ASP-Network"
-    },
     "storageAccounts_testnetwork93cd_name": {
       "value": "testnetwork93cd"
-    },
-    "sites_SharePointDataExtractionFunction_name": {
-      "value": "SharePointDataExtractionFunction"
     },
     "publicIPAddresses_GatewayIP_name": {
       "value": "GatewayIP"
