@@ -1,23 +1,21 @@
 // ==========================================================
 // Updated Deployment Template for Factory Resources
-// Deploying everything to East US for consistency.
-// Removed env references and simplified naming conventions.
-// Includes VPN connection with shared key.
+// Clean, vanilla, no-env version with correct module paths.
 // ==========================================================
 
 @description('Factory name parameter (e.g. "data-modernization")')
 param factoryName string
 
 @secure()
+@description('Service principal key for SharePoint connection')
+param SharePointOnlineList_Jan28_servicePrincipalKey string
+
+@secure()
 @description('Shared key for the VPN connection')
 param vpnSharedKey string
 
-@secure()
-@description('Service Principal Key for SharePoint')
-param SharePointOnlineList_Jan28_servicePrincipalKey string
-
 // -----------------------------
-// Core Parameters
+// Parameters
 // -----------------------------
 param connections_azureblob_1_name string = 'azureblob-1'
 param connections_azureblob_2_name string = 'azureblob-2'
@@ -35,12 +33,12 @@ param publicIPAddresses_GatewayIP_name string = 'GatewayIP'
 param metricAlerts_EmailOnADFActionFailure_name string = 'EmailOnADFActionFailure'
 param metricAlerts_EmailOnADFPipelineFailure_name string = 'EmailOnADFPipelineFailure'
 param localNetworkGateways_LocalNetworkGateway_name string = 'LocalNetworkGateway'
-param privateDnsZones_privatelink_dfs_core_windows_net_name string = 'privatelink.dfs.core.windows.net'
-param privateDnsZones_privatelink_blob_core_windows_net_name string = 'privatelink.blob.core.windows.net'
-param privateDnsZones_privatelink_datafactory_azure_net_name string = 'privatelink.datafactory.azure.net'
-param privateEndpoints_dmiprojectsstorage_private_endpoint_name string = 'dmiprojectsstorage-private-endpoint'
-param virtualNetworkGateways_VirtualNetworkGateway1_name string = 'VirtualNetworkGateway1'
-param privateEndpoints_dmi_projects_factory_private_endpoint_name string = 'dmi-projects-factory-private-endpoint'
+param privateDnsZones_privatelink_dfs_core_windows_net_name string
+param privateDnsZones_privatelink_blob_core_windows_net_name string
+param privateDnsZones_privatelink_datafactory_azure_net_name string
+param privateEndpoints_dmiprojectsstorage_private_endpoint_name string
+param virtualNetworkGateways_VirtualNetworkGateway1_name string
+param privateEndpoints_dmi_projects_factory_private_endpoint_name string
 param factories_data_modernization_externalid string
 param factories_dmi_projects_factory_externalid string
 param storageAccounts_dmiprojectsstorage_externalid string
@@ -49,7 +47,7 @@ param virtualNetworks_Prod_VirtualNetwork_externalid string
 // -----------------------------
 // Module Calls
 // -----------------------------
-module networkModule 'modules/network.bicep' = {
+module networkModule '../modules/network.bicep' = {
   name: 'networkModule'
   params: {
     connections_azureblob_1_name: connections_azureblob_1_name
@@ -82,7 +80,7 @@ module networkModule 'modules/network.bicep' = {
   }
 }
 
-module storageModule 'modules/storage.bicep' = {
+module storageModule '../modules/storage.bicep' = {
   name: 'storageModule'
   params: {
     storageAccount1Name: storageAccounts_devdatabphc_name
@@ -91,7 +89,7 @@ module storageModule 'modules/storage.bicep' = {
   }
 }
 
-module dataFactoryModule 'modules/datafactory.bicep' = {
+module dataFactoryModule '../modules/datafactory.bicep' = {
   name: 'dataFactoryModule'
   params: {
     dataFactoryName: factoryName
@@ -99,7 +97,7 @@ module dataFactoryModule 'modules/datafactory.bicep' = {
   }
 }
 
-module webConnectionsModule 'modules/webconnections.bicep' = {
+module webConnectionsModule '../modules/webconnections.bicep' = {
   name: 'webConnectionsModule'
   params: {
     connectionNames: [
@@ -113,7 +111,7 @@ module webConnectionsModule 'modules/webconnections.bicep' = {
   }
 }
 
-module privateEndpointsModule 'modules/privateEndpoints.bicep' = {
+module privateEndpointsModule '../modules/privateEndpoints.bicep' = {
   name: 'privateEndpointsModule'
   params: {
     privateEndpoint1Name: privateEndpoints_dmi_projects_factory_private_endpoint_name
@@ -125,7 +123,7 @@ module privateEndpointsModule 'modules/privateEndpoints.bicep' = {
   }
 }
 
-module monitoringModule 'modules/monitoring.bicep' = {
+module monitoringModule '../modules/monitoring.bicep' = {
   name: 'monitoringModule'
   params: {
     metricAlertADFActionFailureName: metricAlerts_EmailOnADFActionFailure_name
@@ -138,7 +136,7 @@ module monitoringModule 'modules/monitoring.bicep' = {
   }
 }
 
-module networkInterfacesModule 'modules/networkInterfaces.bicep' = {
+module networkInterfacesModule '../modules/networkInterfaces.bicep' = {
   name: 'networkInterfacesModule'
   params: {
     networkInterfaceName: networkInterfaces_vm2_name
