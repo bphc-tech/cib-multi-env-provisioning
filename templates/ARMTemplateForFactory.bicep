@@ -47,7 +47,7 @@ param virtualNetworks_Prod_VirtualNetwork_externalid string
 // -----------------------------
 // Module Calls
 // -----------------------------
-module networkModule '../modules/network.bicep' = {
+module networkModule 'modules/network.bicep' = {
   name: 'networkModule'
   params: {
     connections_azureblob_1_name: connections_azureblob_1_name
@@ -80,7 +80,7 @@ module networkModule '../modules/network.bicep' = {
   }
 }
 
-module storageModule '../modules/storage.bicep' = {
+module storageModule 'modules/storage.bicep' = {
   name: 'storageModule'
   params: {
     storageAccount1Name: storageAccounts_devdatabphc_name
@@ -89,7 +89,7 @@ module storageModule '../modules/storage.bicep' = {
   }
 }
 
-module dataFactoryModule '../modules/datafactory.bicep' = {
+module dataFactoryModule 'modules/datafactory.bicep' = {
   name: 'dataFactoryModule'
   params: {
     dataFactoryName: factoryName
@@ -97,7 +97,7 @@ module dataFactoryModule '../modules/datafactory.bicep' = {
   }
 }
 
-module webConnectionsModule '../modules/webconnections.bicep' = {
+module webConnectionsModule 'modules/webconnections.bicep' = {
   name: 'webConnectionsModule'
   params: {
     connectionNames: [
@@ -111,7 +111,7 @@ module webConnectionsModule '../modules/webconnections.bicep' = {
   }
 }
 
-module privateEndpointsModule '../modules/privateEndpoints.bicep' = {
+module privateEndpointsModule 'modules/privateEndpoints.bicep' = {
   name: 'privateEndpointsModule'
   params: {
     privateEndpoint1Name: privateEndpoints_dmi_projects_factory_private_endpoint_name
@@ -123,7 +123,7 @@ module privateEndpointsModule '../modules/privateEndpoints.bicep' = {
   }
 }
 
-module monitoringModule '../modules/monitoring.bicep' = {
+module monitoringModule 'modules/monitoring.bicep' = {
   name: 'monitoringModule'
   params: {
     metricAlertADFActionFailureName: metricAlerts_EmailOnADFActionFailure_name
@@ -136,7 +136,7 @@ module monitoringModule '../modules/monitoring.bicep' = {
   }
 }
 
-module networkInterfacesModule '../modules/networkInterfaces.bicep' = {
+module networkInterfacesModule 'modules/networkInterfaces.bicep' = {
   name: 'networkInterfacesModule'
   params: {
     networkInterfaceName: networkInterfaces_vm2_name
