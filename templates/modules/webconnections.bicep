@@ -45,4 +45,6 @@ resource webConnections 'Microsoft.Web/connections@2021-02-01' = [for name in co
 // ----------------------------------------------------------
 // Output the IDs of the created web connections
 // ----------------------------------------------------------
-output connectionIds array = [for name in connectionNames: resourceId('Microsoft.Web/connections', name)]
+output connectionIds array = [for name in connectionNames: {
+  resourceId: resourceId('Microsoft.Web/connections', name)
+}]
