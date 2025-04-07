@@ -1,145 +1,185 @@
 // ==========================================================
-// Updated Deployment Template for Factory Resources
-// Deploying everything to East US for consistency.
-// Removed env references and simplified naming conventions.
-// Includes VPN connection with shared key.
+// Extended Networking Module for Factory Resources
+// This module creates networking resources for the environment.
+// Revised to support secret-based VPN shared key.
 // ==========================================================
 
-@description('Factory name parameter (e.g. "data-modernization")')
-param factoryName string
-
-// -----------------------------
 // Parameters
-// -----------------------------
-param connections_azureblob_1_name string = 'azureblob-1'
-param connections_azureblob_2_name string = 'azureblob-2'
-param connections_azureblob_3_name string = 'azureblob-3'
-param connections_azureblob_4_name string = 'azureblob-4'
-param connections_azureblob_5_name string = 'azureblob-5'
-param actionGroups_Email_Alicia_name string = 'Email_Alicia'
-param connections_PA_VPN_name string = 'PA-VPN'
-param networkInterfaces_vm2_name string = 'vm2'
-param storageAccounts_devdatabphc_name string = 'databphc'
-param routeTables_RouteTable_name string = 'RouteTable'
-param virtualNetworks_Network_name string = 'VNet'
-param storageAccounts_testnetwork93cd_name string = 'testnetwork93cd'
-// Removed unused parameter SharePointOnlineList_Jan28_servicePrincipalKey
-param publicIPAddresses_GatewayIP_name string = 'GatewayIP'
-param metricAlerts_EmailOnADFActionFailure_name string = 'EmailOnADFActionFailure'
-param metricAlerts_EmailOnADFPipelineFailure_name string = 'EmailOnADFPipelineFailure'
-param localNetworkGateways_LocalNetworkGateway_name string = 'LocalNetworkGateway'
-param privateDnsZones_privatelink_dfs_core_windows_net_name string = 'privatelink.${environment().suffixes.storage}'
-param privateDnsZones_privatelink_blob_core_windows_net_name string = 'privatelink.blob.${environment().suffixes.storage}'
-param privateDnsZones_privatelink_datafactory_azure_net_name string = 'privatelink.datafactory.azure.net'
-param privateEndpoints_dmiprojectsstorage_private_endpoint_name string = 'dmiprojectsstorage-private-endpoint'
-param virtualNetworkGateways_VirtualNetworkGateway1_name string = 'VirtualNetworkGateway1'
-param privateEndpoints_dmi_projects_factory_private_endpoint_name string = 'dmi-projects-factory-private-endpoint'
+param connections_azureblob_1_name string
+param connections_azureblob_2_name string
+param connections_azureblob_3_name string
+param connections_azureblob_4_name string
+param connections_azureblob_5_name string
+param actionGroups_Email_Alicia_name string
+param connections_PA_VPN_name string
+param networkInterfaces_vm2_name string
+param storageAccounts_devdatabphc_name string
+param storageAccounts_testnetwork93cd_name string
+param localNetworkGateways_LocalNetworkGateway_name string
+param routeTables_RouteTable_name string
+param virtualNetworks_Network_name string
+param publicIPAddresses_GatewayIP_name string
+param metricAlerts_EmailOnADFActionFailure_name string
+param metricAlerts_EmailOnADFPipelineFailure_name string
+param privateDnsZones_privatelink_dfs_core_windows_net_name string
+param privateDnsZones_privatelink_blob_core_windows_net_name string
+param privateDnsZones_privatelink_datafactory_azure_net_name string
+param privateEndpoints_dmiprojectsstorage_private_endpoint_name string
+param privateEndpoints_dmi_projects_factory_private_endpoint_name string
+param virtualNetworkGateways_VirtualNetworkGateway1_name string
 param factories_data_modernization_externalid string
 param factories_dmi_projects_factory_externalid string
 param storageAccounts_dmiprojectsstorage_externalid string
 param virtualNetworks_Prod_VirtualNetwork_externalid string
+param vpnSharedKey string // NEW: Secure VPN shared key passed from workflow
 
-@secure()
-@description('Shared key for the VPN connection')
-param vpnSharedKey string
+// -------- Resources --------
 
-// -----------------------------
-// Module Calls
-// -----------------------------
-module networkModule '../modules/network.bicep' = {
-  name: 'networkModule'
-  params: {
-    connections_azureblob_1_name: connections_azureblob_1_name
-    connections_azureblob_2_name: connections_azureblob_2_name
-    connections_azureblob_3_name: connections_azureblob_3_name
-    connections_azureblob_4_name: connections_azureblob_4_name
-    connections_azureblob_5_name: connections_azureblob_5_name
-    actionGroups_Email_Alicia_name: actionGroups_Email_Alicia_name
-    connections_PA_VPN_name: connections_PA_VPN_name
-    networkInterfaces_vm2_name: networkInterfaces_vm2_name
-    storageAccounts_devdatabphc_name: storageAccounts_devdatabphc_name
-    storageAccounts_testnetwork93cd_name: storageAccounts_testnetwork93cd_name
-    localNetworkGateways_LocalNetworkGateway_name: localNetworkGateways_LocalNetworkGateway_name
-    routeTables_RouteTable_name: routeTables_RouteTable_name
-    virtualNetworks_Network_name: virtualNetworks_Network_name
-    publicIPAddresses_GatewayIP_name: publicIPAddresses_GatewayIP_name
-    metricAlerts_EmailOnADFActionFailure_name: metricAlerts_EmailOnADFActionFailure_name
-    metricAlerts_EmailOnADFPipelineFailure_name: metricAlerts_EmailOnADFPipelineFailure_name
-    privateDnsZones_privatelink_dfs_core_windows_net_name: privateDnsZones_privatelink_dfs_core_windows_net_name
-    privateDnsZones_privatelink_blob_core_windows_net_name: privateDnsZones_privatelink_blob_core_windows_net_name
-    privateDnsZones_privatelink_datafactory_azure_net_name: privateDnsZones_privatelink_datafactory_azure_net_name
-    privateEndpoints_dmiprojectsstorage_private_endpoint_name: privateEndpoints_dmiprojectsstorage_private_endpoint_name
-    virtualNetworkGateways_VirtualNetworkGateway1_name: virtualNetworkGateways_VirtualNetworkGateway1_name
-    privateEndpoints_dmi_projects_factory_private_endpoint_name: privateEndpoints_dmi_projects_factory_private_endpoint_name
-    factories_data_modernization_externalid: factories_data_modernization_externalid
-    factories_dmi_projects_factory_externalid: factories_dmi_projects_factory_externalid
-    storageAccounts_dmiprojectsstorage_externalid: storageAccounts_dmiprojectsstorage_externalid
-    virtualNetworks_Prod_VirtualNetwork_externalid: virtualNetworks_Prod_VirtualNetwork_externalid
-    vpnSharedKey: vpnSharedKey
-  }
-}
-
-module storageModule '../modules/storage.bicep' = {
-  name: 'storageModule'
-  params: {
-    storageAccount1Name: storageAccounts_devdatabphc_name
-    storageAccount2Name: storageAccounts_testnetwork93cd_name
-    location: 'eastus'
-  }
-}
-
-module dataFactoryModule '../modules/datafactory.bicep' = {
-  name: 'dataFactoryModule'
-  params: {
-    dataFactoryName: factoryName
-    location: 'eastus'
-  }
-}
-
-module webConnectionsModule '../modules/webconnections.bicep' = {
-  name: 'webConnectionsModule'
-  params: {
-    connectionNames: [
-      connections_azureblob_1_name
-      connections_azureblob_2_name
-      connections_azureblob_3_name
-      connections_azureblob_4_name
-      connections_azureblob_5_name
+resource actionGroup 'Microsoft.Insights/actionGroups@2023-09-01-preview' = {
+  name: actionGroups_Email_Alicia_name
+  location: 'Global'
+  properties: {
+    groupShortName: actionGroups_Email_Alicia_name
+    enabled: true
+    emailReceivers: [
+      {
+        name: 'Email0_-EmailAction-'
+        emailAddress: 'AMarkoe@bphc.org'
+        useCommonAlertSchema: true
+      }
     ]
-    location: 'eastus'
   }
 }
 
-module privateEndpointsModule '../modules/privateEndpoints.bicep' = {
-  name: 'privateEndpointsModule'
-  params: {
-    privateEndpoint1Name: privateEndpoints_dmi_projects_factory_private_endpoint_name
-    privateEndpoint2Name: privateEndpoints_dmiprojectsstorage_private_endpoint_name
-    subnetId: resourceId('Microsoft.Network/virtualNetworks/subnets', virtualNetworks_Network_name, 'default')
-    targetResourceId1: factories_dmi_projects_factory_externalid
-    targetResourceId2: storageAccounts_dmiprojectsstorage_externalid
-    location: 'eastus'
+resource localNG 'Microsoft.Network/localNetworkGateways@2024-03-01' = {
+  name: localNetworkGateways_LocalNetworkGateway_name
+  location: 'eastus'
+  properties: {
+    localNetworkAddressSpace: {
+      addressPrefixes: [
+        '10.68.0.0/16',        '10.75.0.0/16'
+      ]
+    }
+    gatewayIpAddress: '140.241.253.162'
   }
 }
 
-module monitoringModule '../modules/monitoring.bicep' = {
-  name: 'monitoringModule'
-  params: {
-    metricAlertADFActionFailureName: metricAlerts_EmailOnADFActionFailure_name
-    metricAlertADFPipelineFailureName: metricAlerts_EmailOnADFPipelineFailure_name
-    activityLogAlertDevdatabphcName: 'AdmAct_devdatabphc'
-    activityLogAlertSaName: 'sa_AdmAct'
-    activityLogAlertVNetName: 'AdmAct_VNet'
-    location: 'global'
-    alertScope: resourceId('Microsoft.Network/virtualNetworks', virtualNetworks_Network_name)
+resource dnsBlob 'Microsoft.Network/privateDnsZones@2024-06-01' = {
+  name: privateDnsZones_privatelink_blob_core_windows_net_name
+  location: 'global'
+  properties: {}
+}
+
+resource dnsDataFactory 'Microsoft.Network/privateDnsZones@2024-06-01' = {
+  name: privateDnsZones_privatelink_datafactory_azure_net_name
+  location: 'global'
+  properties: {}
+}
+
+resource dnsDFS 'Microsoft.Network/privateDnsZones@2024-06-01' = {
+  name: privateDnsZones_privatelink_dfs_core_windows_net_name
+  location: 'global'
+  properties: {}
+}
+
+resource publicIP 'Microsoft.Network/publicIPAddresses@2024-03-01' = {
+  name: publicIPAddresses_GatewayIP_name
+  location: 'eastus'
+  sku: {
+    name: 'Standard'
+    tier: 'Regional'
+  }
+  properties: {
+    publicIPAddressVersion: 'IPv4'
+    publicIPAllocationMethod: 'Static'
+    idleTimeoutInMinutes: 4
   }
 }
 
-module networkInterfacesModule '../modules/networkInterfaces.bicep' = {
-  name: 'networkInterfacesModule'
-  params: {
-    networkInterfaceName: networkInterfaces_vm2_name
-    subnetId: resourceId('Microsoft.Network/virtualNetworks/subnets', virtualNetworks_Network_name, 'default')
-    location: 'eastus'
+resource routeTable 'Microsoft.Network/routeTables@2024-03-01' = {
+  name: routeTables_RouteTable_name
+  location: 'eastus'
+  properties: {
+    disableBgpRoutePropagation: false
+    routes: [
+      {
+        name: 'AllowAzureTraffic'
+        properties: {
+          addressPrefix: '0.0.0.0/0'
+          nextHopType: 'Internet'
+        }
+      }
+    ]
+  }
+}
+
+resource virtualNetwork 'Microsoft.Network/virtualNetworks@2020-11-01' = {
+  name: virtualNetworks_Network_name
+  location: 'eastus'
+  properties: {
+    addressSpace: {
+      addressPrefixes: [
+        '10.59.40.0/24'
+      ]
+    }
+    subnets: [
+      {
+        name: 'GatewaySubnet'
+        properties: {
+          addressPrefix: '10.59.40.128/27'
+        }
+      },      {
+        name: 'default'
+        properties: {
+          addressPrefix: '10.59.40.0/25'
+        }
+      }
+    ]
+  }
+}
+
+var gatewaySubnetId = resourceId('Microsoft.Network/virtualNetworks/subnets', virtualNetworks_Network_name, 'GatewaySubnet')
+var publicIPId = resourceId('Microsoft.Network/publicIPAddresses', publicIPAddresses_GatewayIP_name)
+
+resource virtualNetworkGateway 'Microsoft.Network/virtualNetworkGateways@2020-11-01' = {
+  name: virtualNetworkGateways_VirtualNetworkGateway1_name
+  location: 'eastus'
+  properties: {
+    sku: {
+      name: 'VpnGw1'
+      tier: 'VpnGw1'
+    }
+    gatewayType: 'Vpn'
+    vpnType: 'RouteBased'
+    enableBgp: false
+    ipConfigurations: [
+      {
+        name: 'default'
+        properties: {
+          subnet: {
+            id: gatewaySubnetId
+          }
+          publicIPAddress: {
+            id: publicIPId
+          }
+        }
+      }
+    ]
+  }
+}
+
+resource vpnConnection 'Microsoft.Network/connections@2020-11-01' = {
+  name: connections_PA_VPN_name
+  location: 'eastus'
+  properties: {
+    connectionType: 'IPSec'
+    virtualNetworkGateway1: {
+      id: virtualNetworkGateway.id
+    }
+    localNetworkGateway2: {
+      id: localNG.id
+    }
+    routingWeight: 10
+    sharedKey: vpnSharedKey // Secure shared key passed as param
   }
 }
