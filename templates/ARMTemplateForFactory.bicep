@@ -1,6 +1,8 @@
 // ==========================================================
 // Updated Deployment Template for Factory Resources
-// Clean, vanilla, no-env version with correct module paths.
+// Deploying everything to East US for consistency.
+// Removed env references and simplified naming conventions.
+// Includes (9) modules correctly referenced.
 // ==========================================================
 
 @description('Factory name parameter (e.g. "data-modernization")')
@@ -33,12 +35,12 @@ param publicIPAddresses_GatewayIP_name string = 'GatewayIP'
 param metricAlerts_EmailOnADFActionFailure_name string = 'EmailOnADFActionFailure'
 param metricAlerts_EmailOnADFPipelineFailure_name string = 'EmailOnADFPipelineFailure'
 param localNetworkGateways_LocalNetworkGateway_name string = 'LocalNetworkGateway'
-param privateDnsZones_privatelink_dfs_core_windows_net_name string
-param privateDnsZones_privatelink_blob_core_windows_net_name string
-param privateDnsZones_privatelink_datafactory_azure_net_name string
-param privateEndpoints_dmiprojectsstorage_private_endpoint_name string
-param virtualNetworkGateways_VirtualNetworkGateway1_name string
-param privateEndpoints_dmi_projects_factory_private_endpoint_name string
+param privateDnsZones_privatelink_dfs_core_windows_net_name string = 'privatelink.dfs.core.windows.net'
+param privateDnsZones_privatelink_blob_core_windows_net_name string = 'privatelink.blob.core.windows.net'
+param privateDnsZones_privatelink_datafactory_azure_net_name string = 'privatelink.datafactory.azure.net'
+param privateEndpoints_dmiprojectsstorage_private_endpoint_name string = 'dmiprojectsstorage-private-endpoint'
+param virtualNetworkGateways_VirtualNetworkGateway1_name string = 'VirtualNetworkGateway1'
+param privateEndpoints_dmi_projects_factory_private_endpoint_name string = 'dmi-projects-factory-private-endpoint'
 param factories_data_modernization_externalid string
 param factories_dmi_projects_factory_externalid string
 param storageAccounts_dmiprojectsstorage_externalid string
@@ -47,6 +49,7 @@ param virtualNetworks_Prod_VirtualNetwork_externalid string
 // -----------------------------
 // Module Calls
 // -----------------------------
+
 module networkModule 'modules/network.bicep' = {
   name: 'networkModule'
   params: {
@@ -108,6 +111,9 @@ module webConnectionsModule 'modules/webconnections.bicep' = {
       connections_azureblob_5_name
     ]
     location: 'eastus'
+    clientId: 'your-client-id'
+    clientSecret: 'your-client-secret'
+    tenantId: 'your-tenant-id'
   }
 }
 
@@ -141,6 +147,27 @@ module networkInterfacesModule 'modules/networkInterfaces.bicep' = {
   params: {
     networkInterfaceName: networkInterfaces_vm2_name
     subnetId: resourceId('Microsoft.Network/virtualNetworks/subnets', virtualNetworks_Network_name, 'default')
+    location: 'eastus'
+  }
+}
+
+module vpnConnectionModule 'modules/vpnConnection.bicep' = {
+  name: 'vpnConnectionModule'
+  params: {
+    vpnConnectionName: connections_PA_VPN_name
+    gatewayId: resourceId('Microsoft.Network/virtualNetworkGateways', virtualNetworkGateways_VirtualNetworkGateway1_name)
+    connectionType: 'IPsec'
+    routingWeight: 10
+    enableBgp: false
+    sharedKey: vpnSharedKey
+    location: 'eastus'
+  }
+}
+
+module publicIPAddressesModule 'modules/publicIPAddresses.bicep' = {
+  name: 'publicIPAddressesModule'
+  params: {
+    publicIPAddresses_GatewayIP_name: publicIPAddresses_GatewayIP_name
     location: 'eastus'
   }
 }
