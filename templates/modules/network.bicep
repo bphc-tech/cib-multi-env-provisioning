@@ -23,13 +23,13 @@ param storageAccounts_devdatabphc_name string = 'databphc'
 param routeTables_RouteTable_name string = 'RouteTable'
 param virtualNetworks_Network_name string = 'VNet'
 param storageAccounts_testnetwork93cd_name string = 'testnetwork93cd'
-param SharePointOnlineList_Jan28_servicePrincipalKey string
+// Removed unused parameter SharePointOnlineList_Jan28_servicePrincipalKey
 param publicIPAddresses_GatewayIP_name string = 'GatewayIP'
 param metricAlerts_EmailOnADFActionFailure_name string = 'EmailOnADFActionFailure'
 param metricAlerts_EmailOnADFPipelineFailure_name string = 'EmailOnADFPipelineFailure'
 param localNetworkGateways_LocalNetworkGateway_name string = 'LocalNetworkGateway'
-param privateDnsZones_privatelink_dfs_core_windows_net_name string = 'privatelink.dfs.core.windows.net'
-param privateDnsZones_privatelink_blob_core_windows_net_name string = 'privatelink.blob.core.windows.net'
+param privateDnsZones_privatelink_dfs_core_windows_net_name string = 'privatelink.${environment().suffixes.storage}'
+param privateDnsZones_privatelink_blob_core_windows_net_name string = 'privatelink.blob.${environment().suffixes.storage}'
 param privateDnsZones_privatelink_datafactory_azure_net_name string = 'privatelink.datafactory.azure.net'
 param privateEndpoints_dmiprojectsstorage_private_endpoint_name string = 'dmiprojectsstorage-private-endpoint'
 param virtualNetworkGateways_VirtualNetworkGateway1_name string = 'VirtualNetworkGateway1'
@@ -46,7 +46,7 @@ param vpnSharedKey string
 // -----------------------------
 // Module Calls
 // -----------------------------
-module networkModule 'modules/network.bicep' = {
+module networkModule '../modules/network.bicep' = {
   name: 'networkModule'
   params: {
     connections_azureblob_1_name: connections_azureblob_1_name
@@ -79,7 +79,7 @@ module networkModule 'modules/network.bicep' = {
   }
 }
 
-module storageModule 'modules/storage.bicep' = {
+module storageModule '../modules/storage.bicep' = {
   name: 'storageModule'
   params: {
     storageAccount1Name: storageAccounts_devdatabphc_name
@@ -88,7 +88,7 @@ module storageModule 'modules/storage.bicep' = {
   }
 }
 
-module dataFactoryModule 'modules/datafactory.bicep' = {
+module dataFactoryModule '../modules/datafactory.bicep' = {
   name: 'dataFactoryModule'
   params: {
     dataFactoryName: factoryName
@@ -96,7 +96,7 @@ module dataFactoryModule 'modules/datafactory.bicep' = {
   }
 }
 
-module webConnectionsModule 'modules/webconnections.bicep' = {
+module webConnectionsModule '../modules/webconnections.bicep' = {
   name: 'webConnectionsModule'
   params: {
     connectionNames: [
@@ -110,7 +110,7 @@ module webConnectionsModule 'modules/webconnections.bicep' = {
   }
 }
 
-module privateEndpointsModule 'modules/privateEndpoints.bicep' = {
+module privateEndpointsModule '../modules/privateEndpoints.bicep' = {
   name: 'privateEndpointsModule'
   params: {
     privateEndpoint1Name: privateEndpoints_dmi_projects_factory_private_endpoint_name
@@ -122,7 +122,7 @@ module privateEndpointsModule 'modules/privateEndpoints.bicep' = {
   }
 }
 
-module monitoringModule 'modules/monitoring.bicep' = {
+module monitoringModule '../modules/monitoring.bicep' = {
   name: 'monitoringModule'
   params: {
     metricAlertADFActionFailureName: metricAlerts_EmailOnADFActionFailure_name
@@ -135,7 +135,7 @@ module monitoringModule 'modules/monitoring.bicep' = {
   }
 }
 
-module networkInterfacesModule 'modules/networkInterfaces.bicep' = {
+module networkInterfacesModule '../modules/networkInterfaces.bicep' = {
   name: 'networkInterfacesModule'
   params: {
     networkInterfaceName: networkInterfaces_vm2_name

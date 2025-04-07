@@ -29,11 +29,11 @@ resource webConnections 'Microsoft.Web/connections@2021-02-01' = [for name in co
   properties: {
     displayName: name
     api: {
-      id: '/subscriptions/{subscriptionId}/providers/Microsoft.Web/locations/eastus/managedApis/azureblob'
+      id: resourceId('Microsoft.Web/locations/managedApis', location, 'azureblob')
     }
-    authentication: {
-      type: 'ActiveDirectoryOAuth'
-      parameterValues: {
+    parameterValues: {
+      authentication: {
+        type: 'ActiveDirectoryOAuth'
         clientId: clientId
         clientSecret: clientSecret
         tenantId: tenantId
