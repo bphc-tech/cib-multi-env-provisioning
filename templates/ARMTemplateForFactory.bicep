@@ -31,7 +31,7 @@ param storageAccounts_devdatabphc_name string = 'databphc'
 param routeTables_RouteTable_name string = 'RouteTable'
 param virtualNetworks_Network_name string = 'VNet'
 param storageAccounts_testnetwork93cd_name string = 'testnetwork93cd'
-param publicIPName string = 'GatewayIP'  // Corrected the parameter for public IP name
+param publicIPAddresses_GatewayIP_name string = 'GatewayIP'
 param metricAlerts_EmailOnADFActionFailure_name string = 'EmailOnADFActionFailure'
 param metricAlerts_EmailOnADFPipelineFailure_name string = 'EmailOnADFPipelineFailure'
 param localNetworkGateways_LocalNetworkGateway_name string = 'LocalNetworkGateway'
@@ -66,7 +66,7 @@ module networkModule 'modules/network.bicep' = {
     localNetworkGateways_LocalNetworkGateway_name: localNetworkGateways_LocalNetworkGateway_name
     routeTables_RouteTable_name: routeTables_RouteTable_name
     virtualNetworks_Network_name: virtualNetworks_Network_name
-    publicIPName: publicIPName  // Corrected the public IP reference
+    publicIPAddresses_GatewayIP_name: publicIPAddresses_GatewayIP_name
     metricAlerts_EmailOnADFActionFailure_name: metricAlerts_EmailOnADFActionFailure_name
     metricAlerts_EmailOnADFPipelineFailure_name: metricAlerts_EmailOnADFPipelineFailure_name
     privateDnsZones_privatelink_dfs_core_windows_net_name: privateDnsZones_privatelink_dfs_core_windows_net_name
@@ -167,7 +167,7 @@ module vpnConnectionModule 'modules/vpnConnection.bicep' = {
 module publicIPAddressesModule 'modules/publicIPAddresses.bicep' = {
   name: 'publicIPAddressesModule'
   params: {
-    publicIPName: publicIPName  
+    publicIPAddresses_GatewayIP_name: publicIPAddresses_GatewayIP_name
     location: 'eastus'
   }
 }
