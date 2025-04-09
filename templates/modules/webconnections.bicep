@@ -30,7 +30,8 @@ resource webConnections 'Microsoft.Web/connections@2016-06-01' = [for name in co
   properties: {
     displayName: name
     api: {
-      id: resourceId('Microsoft.Web/locations/managedApis', location, 'azureblob')
+      // Ensure the API id is valid and corresponds to the correct API
+      id: resourceId('Microsoft.Web/locations/managedApis', location, 'azureblob')  // Ensure this is correct
     }
     parameterValues: {
       authentication: {

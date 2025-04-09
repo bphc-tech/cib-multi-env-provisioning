@@ -1,11 +1,11 @@
 // ==========================================================
 // Data Factory Module
 // This module creates a Data Factory to mirror one from DevTest-Network,
-// using a globally unique name (e.g., data-modernization).
+// using a globally unique name (e.g., data-modernization-uat).
 // ==========================================================
 
-@description('Name of the Data Factory (default is data-modernization for a unique global name).')
-param dataFactoryName string = 'data-modernization'
+@description('Name of the Data Factory (default is data-modernization-uat for a unique global name).')
+param dataFactoryName string = 'data-modernization-uat'
 
 @description('Location for the Data Factory (defaults to the resource group location)')
 param location string = resourceGroup().location
