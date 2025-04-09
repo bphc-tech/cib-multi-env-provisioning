@@ -14,11 +14,11 @@ param privateEndpoint2Name string
 @description('Subnet ID for the private endpoints')
 param subnetId string = '/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL-UAT/providers/Microsoft.Network/virtualNetworks/VNet-uat/subnets/default'
 
-@description('Target resource ID for the first private endpoint (for factory)')
-param targetResourceId1 string = '/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL-UAT/providers/Microsoft.DataFactory/factories/dmi-projects-factory-uat'
+//@description('Target resource ID for the first private endpoint (for factory)')
+//param targetResourceId1 string = '/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL-UAT/providers/Microsoft.DataFactory/factories/dmi-projects-factory-uat'
 
-@description('Target resource ID for the second private endpoint (for storage)')
-param targetResourceId2 string = '/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL-UAT/providers/Microsoft.Storage/storageAccounts/dmiprojectsstorage-uat'
+//@description('Target resource ID for the second private endpoint (for storage)')
+//param targetResourceId2 string = '/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL-UAT/providers/Microsoft.Storage/storageAccounts/dmiprojectsstorage-uat'
 
 @description('Location for the private endpoints. Defaulting to eastus to match the VNet region.')
 param location string = 'eastus'
