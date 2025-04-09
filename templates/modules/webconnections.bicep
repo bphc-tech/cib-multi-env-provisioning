@@ -22,8 +22,9 @@ param tenantId string
 
 // ----------------------------------------------------------
 // Create a connection resource for each provided connection name
+// Use an API version that is supported
 // ----------------------------------------------------------
-resource webConnections 'Microsoft.Web/connections@2021-02-01' = [for name in connectionNames: {
+resource webConnections 'Microsoft.Web/connections@2016-06-01' = [for name in connectionNames: {
   name: name
   location: location
   properties: {

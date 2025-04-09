@@ -36,7 +36,7 @@ resource vpnConnection 'Microsoft.Network/connections@2021-03-01' = {
     enableBgp: enableBgp
     sharedKey: sharedKey
     peer: {
-      id: gatewayId
+      id: gatewayId  // Make sure this points to the correct gateway ID
     }
   }
 }
