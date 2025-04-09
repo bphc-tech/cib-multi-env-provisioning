@@ -1,10 +1,11 @@
 // ==========================================================
-// Updated Deployment Template for Factory Resources (UAT)
+// Updated Deployment Template for Factory Resources
 // Deploying everything to East US for consistency.
+// Removed env references and simplified naming conventions.
 // Includes (9) modules correctly referenced.
 // ==========================================================
 
-@description('Factory name parameter (e.g. "data-modernization-uat")')
+@description('Factory name parameter (e.g. "data-modernization")')
 param factoryName string
 
 @secure()
@@ -18,28 +19,28 @@ param vpnSharedKey string
 // -----------------------------
 // Parameters
 // -----------------------------
-param connections_azureblob_1_name string = 'azureblob-1-uat'
-param connections_azureblob_2_name string = 'azureblob-2-uat'
-param connections_azureblob_3_name string = 'azureblob-3-uat'
-param connections_azureblob_4_name string = 'azureblob-4-uat'
-param connections_azureblob_5_name string = 'azureblob-5-uat'
-param actionGroups_Email_Alicia_name string = 'Email_Alicia-uat'
-param connections_PA_VPN_name string = 'PA-VPN-uat'
-param networkInterfaces_vm2_name string = 'vm2-uat'
-param storageAccounts_devdatabphc_name string = 'databphc-uat'
-param routeTables_RouteTable_name string = 'RouteTable-uat'
-param virtualNetworks_Network_name string = 'VNet-uat'
-param storageAccounts_testnetwork93cd_name string = 'testnetwork93cd-uat'
-param publicIPAddresses_GatewayIP_name string = 'GatewayIP-uat'
-param metricAlerts_EmailOnADFActionFailure_name string = 'EmailOnADFActionFailure-uat'
-param metricAlerts_EmailOnADFPipelineFailure_name string = 'EmailOnADFPipelineFailure-uat'
-param localNetworkGateways_LocalNetworkGateway_name string = 'LocalNetworkGateway-uat'
-param privateDnsZones_privatelink_dfs_core_windows_net_name string = 'privatelink.dfs.core.windows.net-uat'
-param privateDnsZones_privatelink_blob_core_windows_net_name string = 'privatelink.blob.core.windows.net-uat'
-param privateDnsZones_privatelink_datafactory_azure_net_name string = 'privatelink.datafactory.azure.net-uat'
-param privateEndpoints_dmiprojectsstorage_private_endpoint_name string = 'dmiprojectsstorage-private-endpoint-uat'
-param virtualNetworkGateways_VirtualNetworkGateway1_name string = 'VirtualNetworkGateway1-uat'
-param privateEndpoints_dmi_projects_factory_private_endpoint_name string = 'dmi-projects-factory-private-endpoint-uat'
+param connections_azureblob_1_name string = 'azureblob-1'
+param connections_azureblob_2_name string = 'azureblob-2'
+param connections_azureblob_3_name string = 'azureblob-3'
+param connections_azureblob_4_name string = 'azureblob-4'
+param connections_azureblob_5_name string = 'azureblob-5'
+param actionGroups_Email_Alicia_name string = 'Email_Alicia'
+param connections_PA_VPN_name string = 'PA-VPN'
+param networkInterfaces_vm2_name string = 'vm2'
+param storageAccounts_devdatabphc_name string = 'databphc1uat' // Updated storage account name
+param routeTables_RouteTable_name string = 'RouteTable'
+param virtualNetworks_Network_name string = 'VNet'
+param storageAccounts_testnetwork93cd_name string = 'testnetwork93cd1' // Updated storage account name
+param publicIPAddresses_GatewayIP_name string = 'GatewayIP'
+param metricAlerts_EmailOnADFActionFailure_name string = 'EmailOnADFActionFailure'
+param metricAlerts_EmailOnADFPipelineFailure_name string = 'EmailOnADFPipelineFailure'
+param localNetworkGateways_LocalNetworkGateway_name string = 'LocalNetworkGateway'
+param privateDnsZones_privatelink_dfs_core_windows_net_name string = 'privatelink.dfs.core.windows.net'
+param privateDnsZones_privatelink_blob_core_windows_net_name string = 'privatelink.blob.core.windows.net'
+param privateDnsZones_privatelink_datafactory_azure_net_name string = 'privatelink.datafactory.azure.net'
+param privateEndpoints_dmiprojectsstorage_private_endpoint_name string = 'dmiprojectsstorage-private-endpoint'
+param virtualNetworkGateways_VirtualNetworkGateway1_name string = 'VirtualNetworkGateway1'
+param privateEndpoints_dmi_projects_factory_private_endpoint_name string = 'dmi-projects-factory-private-endpoint'
 param factories_data_modernization_externalid string
 param factories_dmi_projects_factory_externalid string
 param storageAccounts_dmiprojectsstorage_externalid string

@@ -3,31 +3,31 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "connections_azureblob_1_name": {
-      "value": "azureblob-1-uat"
+      "value": "azureblob1-uat"
     },
     "connections_azureblob_2_name": {
-      "value": "azureblob-2-uat"
+      "value": "azureblob2-uat"
     },
     "connections_azureblob_3_name": {
-      "value": "azureblob-3-uat"
+      "value": "azureblob3-uat"
     },
     "connections_azureblob_4_name": {
-      "value": "azureblob-4-uat"
+      "value": "azureblob4-uat"
     },
     "connections_azureblob_5_name": {
-      "value": "azureblob-5-uat"
+      "value": "azureblob5-uat"
     },
     "actionGroups_Email_Alicia_name": {
-      "value": "Email_Alicia-uat"
+      "value": "Email_Alicia"
     },
     "connections_PA_VPN_name": {
-      "value": "PA-VPN-uat"
+      "value": "PAVPN-uat"
     },
     "networkInterfaces_vm2_name": {
       "value": "vm2-uat"
     },
     "storageAccounts_devdatabphc_name": {
-      "value": "databphc-uat"
+      "value": "databphc1uat"
     },
     "routeTables_RouteTable_name": {
       "value": "RouteTable-uat"
@@ -36,7 +36,7 @@
       "value": "VNet-uat"
     },
     "storageAccounts_testnetwork93cd_name": {
-      "value": "testnetwork93cd-uat"
+      "value": "testnetwork93cd1"
     },
     "publicIPAddresses_GatewayIP_name": {
       "value": "GatewayIP-uat"
