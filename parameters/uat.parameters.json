@@ -3,82 +3,82 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "connections_azureblob_1_name": {
-      "value": "azureblob-1"
+      "value": "azureblob-1-uat"
     },
     "connections_azureblob_2_name": {
-      "value": "azureblob-2"
+      "value": "azureblob-2-uat"
     },
     "connections_azureblob_3_name": {
-      "value": "azureblob-3"
+      "value": "azureblob-3-uat"
     },
     "connections_azureblob_4_name": {
-      "value": "azureblob-4"
+      "value": "azureblob-4-uat"
     },
     "connections_azureblob_5_name": {
-      "value": "azureblob-5"
+      "value": "azureblob-5-uat"
     },
     "actionGroups_Email_Alicia_name": {
-      "value": "Email_Alicia"
+      "value": "Email_Alicia-uat"
     },
     "connections_PA_VPN_name": {
-      "value": "PA-VPN"
+      "value": "PA-VPN-uat"
     },
     "networkInterfaces_vm2_name": {
-      "value": "vm2"
+      "value": "vm2-uat"
     },
     "storageAccounts_devdatabphc_name": {
-      "value": "databphc"
+      "value": "databphc-uat"
     },
     "routeTables_RouteTable_name": {
-      "value": "RouteTable"
+      "value": "RouteTable-uat"
     },
     "virtualNetworks_Network_name": {
-      "value": "VNet"
+      "value": "VNet-uat"
     },
     "storageAccounts_testnetwork93cd_name": {
-      "value": "testnetwork93cd"
+      "value": "testnetwork93cd-uat"
     },
     "publicIPAddresses_GatewayIP_name": {
-      "value": "GatewayIP"
+      "value": "GatewayIP-uat"
     },
     "metricAlerts_EmailOnADFActionFailure_name": {
-      "value": "EmailOnADFActionFailure"
+      "value": "EmailOnADFActionFailure-uat"
     },
     "metricAlerts_EmailOnADFPipelineFailure_name": {
-      "value": "EmailOnADFPipelineFailure"
+      "value": "EmailOnADFPipelineFailure-uat"
     },
     "localNetworkGateways_LocalNetworkGateway_name": {
-      "value": "LocalNetworkGateway"
+      "value": "LocalNetworkGateway-uat"
     },
     "privateDnsZones_privatelink_dfs_core_windows_net_name": {
-      "value": "privatelink.dfs.core.windows.net"
+      "value": "privatelink.dfs.core.windows.net-uat"
     },
     "privateDnsZones_privatelink_blob_core_windows_net_name": {
-      "value": "privatelink.blob.core.windows.net"
+      "value": "privatelink.blob.core.windows.net-uat"
     },
     "privateDnsZones_privatelink_datafactory_azure_net_name": {
-      "value": "privatelink.datafactory.azure.net"
+      "value": "privatelink.datafactory.azure.net-uat"
     },
     "privateEndpoints_dmiprojectsstorage_private_endpoint_name": {
-      "value": "dmiprojectsstorage-private-endpoint"
+      "value": "dmiprojectsstorage-private-endpoint-uat"
     },
     "virtualNetworkGateways_VirtualNetworkGateway1_name": {
-      "value": "VirtualNetworkGateway1"
+      "value": "VirtualNetworkGateway1-uat"
     },
     "privateEndpoints_dmi_projects_factory_private_endpoint_name": {
-      "value": "dmi-projects-factory-private-endpoint"
+      "value": "dmi-projects-factory-private-endpoint-uat"
     },
     "factories_data_modernization_externalid": {
-      "value": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL/providers/Microsoft.DataFactory/factories/data-modernization"
+      "value": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL-UAT/providers/Microsoft.DataFactory/factories/data-modernization-uat"
     },
     "factories_dmi_projects_factory_externalid": {
-      "value": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL/providers/Microsoft.DataFactory/factories/dmi-projects-factory"
+      "value": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL-UAT/providers/Microsoft.DataFactory/factories/dmi-projects-factory-uat"
     },
     "storageAccounts_dmiprojectsstorage_externalid": {
-      "value": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL/providers/Microsoft.Storage/storageAccounts/dmiprojectsstorage"
+      "value": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL-UAT/providers/Microsoft.Storage/storageAccounts/dmiprojectsstorage-uat"
     },
     "virtualNetworks_Prod_VirtualNetwork_externalid": {
-      "value": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL/providers/Microsoft.Network/virtualNetworks/VNet"
+      "value": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL-UAT/providers/Microsoft.Network/virtualNetworks/VNet-uat"
     }
   }
 }
