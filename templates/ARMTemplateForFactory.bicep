@@ -39,9 +39,9 @@ param privateDnsZones_privatelink_blob_core_windows_net_name string = 'privateli
 param privateDnsZones_privatelink_datafactory_azure_net_name string = 'privatelink.datafactory.azure.net-uat'
 //param privateEndpoints_dmiprojectsstorage_private_endpoint_name string = 'dmiprojectsstorage-private-endpoint-uat'
 param virtualNetworkGateways_VirtualNetworkGateway1_name string = 'VirtualNetworkGateway1-uat'
-//param privateEndpoints_dmi_projects_factory_private_endpoint_name string = 'dmi-projects-factory-private-endpoint-uat'
+param privateEndpoints_dmi_projects_factory_private_endpoint_name string = 'dmi-projects-factory-private-endpoint-uat'
 param factories_data_modernization_externalid string
-//param factories_dmi_projects_factory_externalid string
+param factories_dmi_projects_factory_externalid string
 //param storageAccounts_dmiprojectsstorage_externalid string
 param virtualNetworks_Prod_VirtualNetwork_externalid string
 
@@ -73,9 +73,9 @@ module networkModule 'modules/network.bicep' = {
     privateDnsZones_privatelink_datafactory_azure_net_name: privateDnsZones_privatelink_datafactory_azure_net_name
     //privateEndpoints_dmiprojectsstorage_private_endpoint_name: privateEndpoints_dmiprojectsstorage_private_endpoint_name
     virtualNetworkGateways_VirtualNetworkGateway1_name: virtualNetworkGateways_VirtualNetworkGateway1_name
-    //privateEndpoints_dmi_projects_factory_private_endpoint_name: privateEndpoints_dmi_projects_factory_private_endpoint_name
+    privateEndpoints_dmi_projects_factory_private_endpoint_name: privateEndpoints_dmi_projects_factory_private_endpoint_name
     factories_data_modernization_externalid: factories_data_modernization_externalid
-    //factories_dmi_projects_factory_externalid: factories_dmi_projects_factory_externalid
+    factories_dmi_projects_factory_externalid: factories_dmi_projects_factory_externalid
     //storageAccounts_dmiprojectsstorage_externalid: storageAccounts_dmiprojectsstorage_externalid
     virtualNetworks_Prod_VirtualNetwork_externalid: virtualNetworks_Prod_VirtualNetwork_externalid
     vpnSharedKey: vpnSharedKey
@@ -119,10 +119,10 @@ module webConnectionsModule 'modules/webconnections.bicep' = {
 module privateEndpointsModule 'modules/privateEndpoints.bicep' = {
   name: 'privateEndpointsModule'
   params: {
-    //privateEndpoint1Name: privateEndpoints_dmi_projects_factory_private_endpoint_name
+    privateEndpoint1Name: privateEndpoints_dmi_projects_factory_private_endpoint_name
     //privateEndpoint2Name: privateEndpoints_dmiprojectsstorage_private_endpoint_name
     subnetId: resourceId('Microsoft.Network/virtualNetworks/subnets', virtualNetworks_Network_name, 'default')
-    //targetResourceId1: factories_dmi_projects_factory_externalid
+    targetResourceId1: factories_dmi_projects_factory_externalid
     //targetResourceId2: storageAccounts_dmiprojectsstorage_externalid
     location: 'eastus'
   }
