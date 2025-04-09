@@ -69,7 +69,7 @@
       "value": "dmi-projects-factory-private-endpoint-uat"
     },
     "factories_data_modernization_externalid": {
-      "value": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL-UAT/providers/Microsoft.DataFactory/factories/data-modernization-uat-unique"
+      "value": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL-UAT/providers/Microsoft.DataFactory/factories/data-modernization-uat"
     },
     "factories_dmi_projects_factory_externalid": {
       "value": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL-UAT/providers/Microsoft.DataFactory/factories/dmi-projects-factory-uat"
