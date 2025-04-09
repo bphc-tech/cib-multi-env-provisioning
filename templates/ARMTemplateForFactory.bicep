@@ -5,7 +5,7 @@
 // ==========================================================
 
 @description('Factory name parameter (e.g. "data-modernization-uat")')
-param factoryName string
+param factoryName string = 'data-modernization-uat'
 
 @secure()
 @description('Service principal key for SharePoint connection')
