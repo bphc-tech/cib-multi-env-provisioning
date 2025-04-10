@@ -59,23 +59,23 @@
     "privateDnsZones_privatelink_datafactory_azure_net_name": {
       "value": "privatelink.datafactory.azure.net-uat"
     },
-    //"privateEndpoints_dmiprojectsstorage_private_endpoint_name": {
-    //  "value": "dmiprojectsstorage-private-endpoint-uat"
-    //},
+    "privateEndpoints_dmiprojectsstorage_private_endpoint_name": {
+      "value": "dmiprojectsstorage-private-endpoint-uat"
+    },
     "virtualNetworkGateways_VirtualNetworkGateway1_name": {
       "value": "VirtualNetworkGateway1-uat"
     },
-    //"privateEndpoints_dmi_projects_factory_private_endpoint_name": {
-    //  "value": "dmi-projects-factory-private-endpoint-uat"
-    //},
+    "privateEndpoints_dmi_projects_factory_private_endpoint_name": {
+      "value": "dmi-projects-factory-private-endpoint-uat"
+    },
     "factories_data_modernization_externalid": {
       "value": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL-UAT/providers/Microsoft.DataFactory/factories/data-modernization-uat"
     },
     //"factories_dmi_projects_factory_externalid": {
     //  "value": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL-UAT/providers/Microsoft.DataFactory/factories/dmi-projects-factory-uat"
     // },
-    //"storageAccounts_dmiprojectsstorage_externalid": {
-    //  "value": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL-UAT/providers/Microsoft.Storage/storageAccounts/dmiprojectsstorage-uat"
+    "storageAccounts_dmiprojectsstorage_externalid": {
+      "value": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL-UAT/providers/Microsoft.Storage/storageAccounts/dmiprojectsstorage-uat"
     },
     "virtualNetworks_Prod_VirtualNetwork_externalid": {
       "value": "/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL-UAT/providers/Microsoft.Network/virtualNetworks/VNet-uat"

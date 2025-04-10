@@ -46,7 +46,15 @@ jobs:
             echo "paramFile=parameters/uat.parameters.json" >> $GITHUB_ENV
           fi
 
-      # Step 4: Debug credential environment variable
+      # Step 4: Extract Azure credentials from the secret
+      - name: Extract Azure Credentials
+        id: extract-creds
+        run: |
+          echo "CLIENT_ID=$(echo '${{ env.AZURE_CREDS }}' | jq -r '.clientId')" >> $GITHUB_ENV
+          echo "CLIENT_SECRET=$(echo '${{ env.AZURE_CREDS }}' | jq -r '.clientSecret')" >> $GITHUB_ENV
+          echo "TENANT_ID=$(echo '${{ env.AZURE_CREDS }}' | jq -r '.tenantId')" >> $GITHUB_ENV
+
+      # Step 5: Debug credential environment variable
       - name: Debug AZURE_CREDS
         run: |
           if [ -z "$AZURE_CREDS" ]; then
@@ -55,21 +63,21 @@ jobs:
             echo "AZURE_CREDS is set"
           fi
 
-      # Step 5: Azure login
+      # Step 6: Azure login
       - name: Azure Login
         uses: azure/login@v1
         with:
           creds: ${{ env.AZURE_CREDS }}
 
-      # Step 6: Validate the Bicep file compiles
+      # Step 7: Validate the Bicep file compiles
       - name: Build Bicep Template
         run: az bicep build --file templates/ARMTemplateForFactory.bicep
 
-      # Step 7: Create the resource group (if needed)
+      # Step 8: Create the resource group (if needed)
       - name: Create Resource Group (if needed)
         run: az group create --name ${{ env.RESOURCE_GROUP }} --location "East US"
 
-      # Step 8: Deploy the Bicep template using parameter file + secrets
+      # Step 9: Deploy the Bicep template using parameter file + extracted secrets
       - name: Deploy Bicep Template
         run: |
           az deployment group create \
@@ -79,4 +87,8 @@ jobs:
             --parameters @$paramFile \
             --parameters factoryName="${{ env.factoryName }}" \
             --parameters SharePointOnlineList_Jan28_servicePrincipalKey="${{ secrets.SP_KEY }}" \
-            --parameters vpnSharedKey="${{ secrets.VPN_SHARED_KEY }}"
+            --parameters vpnSharedKey="${{ secrets.VPN_SHARED_KEY }}" \
+            --parameters clientId="${{ env.CLIENT_ID }}" \
+            --parameters clientSecret="${{ env.CLIENT_SECRET }}" \
+            --parameters tenantId="${{ env.TENANT_ID }}" \
+            --parameters location="East US"

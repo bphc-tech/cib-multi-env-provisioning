@@ -15,6 +15,17 @@ param SharePointOnlineList_Jan28_servicePrincipalKey string
 @description('Shared key for the VPN connection')
 param vpnSharedKey string
 
+@secure()
+@description('Azure Service Principal Client ID')
+param clientId string
+
+@secure()
+@description('Azure Service Principal Client Secret')
+param clientSecret string
+
+@description('Azure Active Directory Tenant ID')
+param tenantId string
+
 // -----------------------------
 // Parameters
 // -----------------------------
@@ -37,12 +48,12 @@ param localNetworkGateways_LocalNetworkGateway_name string = 'LocalNetworkGatewa
 param privateDnsZones_privatelink_dfs_core_windows_net_name string = 'privatelink.dfs.core.windows.net-uat'
 param privateDnsZones_privatelink_blob_core_windows_net_name string = 'privatelink.blob.core.windows.net-uat'
 param privateDnsZones_privatelink_datafactory_azure_net_name string = 'privatelink.datafactory.azure.net-uat'
-//param privateEndpoints_dmiprojectsstorage_private_endpoint_name string = 'dmiprojectsstorage-private-endpoint-uat'
+param privateEndpoints_dmiprojectsstorage_private_endpoint_name string = 'dmiprojectsstorage-private-endpoint-uat'
 param virtualNetworkGateways_VirtualNetworkGateway1_name string = 'VirtualNetworkGateway1-uat'
 param privateEndpoints_dmi_projects_factory_private_endpoint_name string = 'dmi-projects-factory-private-endpoint-uat'
 param factories_data_modernization_externalid string
 param factories_dmi_projects_factory_externalid string
-//param storageAccounts_dmiprojectsstorage_externalid string
+param storageAccounts_dmiprojectsstorage_externalid string
 param virtualNetworks_Prod_VirtualNetwork_externalid string
 
 // -----------------------------
@@ -71,12 +82,10 @@ module networkModule 'modules/network.bicep' = {
     privateDnsZones_privatelink_dfs_core_windows_net_name: privateDnsZones_privatelink_dfs_core_windows_net_name
     privateDnsZones_privatelink_blob_core_windows_net_name: privateDnsZones_privatelink_blob_core_windows_net_name
     privateDnsZones_privatelink_datafactory_azure_net_name: privateDnsZones_privatelink_datafactory_azure_net_name
-    //privateEndpoints_dmiprojectsstorage_private_endpoint_name: privateEndpoints_dmiprojectsstorage_private_endpoint_name
     virtualNetworkGateways_VirtualNetworkGateway1_name: virtualNetworkGateways_VirtualNetworkGateway1_name
     privateEndpoints_dmi_projects_factory_private_endpoint_name: privateEndpoints_dmi_projects_factory_private_endpoint_name
     factories_data_modernization_externalid: factories_data_modernization_externalid
     factories_dmi_projects_factory_externalid: factories_dmi_projects_factory_externalid
-    //storageAccounts_dmiprojectsstorage_externalid: storageAccounts_dmiprojectsstorage_externalid
     virtualNetworks_Prod_VirtualNetwork_externalid: virtualNetworks_Prod_VirtualNetwork_externalid
     vpnSharedKey: vpnSharedKey
   }
@@ -89,6 +98,9 @@ module storageModule 'modules/storage.bicep' = {
     storageAccount2Name: storageAccounts_testnetwork93cd_name
     location: 'eastus'
   }
+  dependsOn: [
+    networkModule
+  ]
 }
 
 module dataFactoryModule 'modules/datafactory.bicep' = {
@@ -97,6 +109,9 @@ module dataFactoryModule 'modules/datafactory.bicep' = {
     dataFactoryName: factoryName
     location: 'eastus'
   }
+  dependsOn: [
+    networkModule
+  ]
 }
 
 module webConnectionsModule 'modules/webconnections.bicep' = {
@@ -110,22 +125,31 @@ module webConnectionsModule 'modules/webconnections.bicep' = {
       connections_azureblob_5_name
     ]
     location: 'eastus'
-    clientId: 'your-client-id'
-    clientSecret: 'your-client-secret'
-    tenantId: 'your-tenant-id'
+    clientId: clientId
+    clientSecret: clientSecret
+    tenantId: tenantId
   }
+  dependsOn: [
+    storageModule
+    dataFactoryModule
+  ]
 }
 
 module privateEndpointsModule 'modules/privateEndpoints.bicep' = {
   name: 'privateEndpointsModule'
   params: {
     privateEndpoint1Name: privateEndpoints_dmi_projects_factory_private_endpoint_name
-    //privateEndpoint2Name: privateEndpoints_dmiprojectsstorage_private_endpoint_name
+    privateEndpoint2Name: privateEndpoints_dmiprojectsstorage_private_endpoint_name
     subnetId: resourceId('Microsoft.Network/virtualNetworks/subnets', virtualNetworks_Network_name, 'default')
     targetResourceId1: factories_dmi_projects_factory_externalid
-    //targetResourceId2: storageAccounts_dmiprojectsstorage_externalid
+    targetResourceId2: storageAccounts_dmiprojectsstorage_externalid
     location: 'eastus'
   }
+  dependsOn: [
+    networkModule
+    storageModule
+    dataFactoryModule
+  ]
 }
 
 module monitoringModule 'modules/monitoring.bicep' = {
@@ -139,6 +163,9 @@ module monitoringModule 'modules/monitoring.bicep' = {
     location: 'global'
     alertScope: resourceId('Microsoft.Network/virtualNetworks', virtualNetworks_Network_name)
   }
+  dependsOn: [
+    networkModule
+  ]
 }
 
 module networkInterfacesModule 'modules/networkInterfaces.bicep' = {
@@ -148,6 +175,9 @@ module networkInterfacesModule 'modules/networkInterfaces.bicep' = {
     subnetId: '/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL-UAT/providers/Microsoft.Network/virtualNetworks/VNet-uat/subnets/default'
     location: 'eastus'
   }
+  dependsOn: [
+    networkModule
+  ]
 }
 
 module vpnConnectionModule 'modules/vpnConnection.bicep' = {
@@ -161,6 +191,10 @@ module vpnConnectionModule 'modules/vpnConnection.bicep' = {
     sharedKey: vpnSharedKey
     location: 'eastus'
   }
+  dependsOn: [
+    networkModule
+    publicIPAddressesModule
+  ]
 }
 
 module publicIPAddressesModule 'modules/publicIPAddresses.bicep' = {
@@ -169,4 +203,7 @@ module publicIPAddressesModule 'modules/publicIPAddresses.bicep' = {
     publicIPAddresses_GatewayIP_name: publicIPAddresses_GatewayIP_name
     location: 'eastus'
   }
+  dependsOn: [
+    networkModule
+  ]
 }

@@ -31,7 +31,7 @@ param factories_data_modernization_externalid string
 param factories_dmi_projects_factory_externalid string
 param storageAccounts_dmiprojectsstorage_externalid string
 param virtualNetworks_Prod_VirtualNetwork_externalid string
-param vpnSharedKey string // NEW: Secure VPN shared key passed from workflow
+param vpnSharedKey string // Secure VPN shared key passed from workflow
 
 // -------- Resources --------
 
