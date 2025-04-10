@@ -1,28 +1,27 @@
 // ==========================================================
 // Web Connections Module
-// This module creates Microsoft.Web/connections resources for azureblob connections.
+// This module creates Microsoft.Web/connections resources for Azure Blob connections.
 // It accepts an array of connection names and deploys a connection for each.
 // ==========================================================
 
-@description('Array of connection names for azureblob connections')
+@description('Array of connection names for Azure Blob connections.')
 param connectionNames array
 
-@description('Location for the connections (defaults to eastus)')
+@description('Location for the connections (defaults to eastus).')
 param location string = 'eastus'
 
-@description('Client ID for authentication')
+@description('Azure Active Directory Client ID for authentication.')
 param clientId string
 
-@description('Client Secret for authentication')
+@description('Azure Active Directory Client Secret for authentication (secure).')
 @secure()
 param clientSecret string
 
-@description('Tenant ID for authentication')
+@description('Azure Active Directory Tenant ID for authentication.')
 param tenantId string
 
 // ----------------------------------------------------------
 // Create a connection resource for each provided connection name
-// Use an API version that is supported
 // ----------------------------------------------------------
 resource webConnections 'Microsoft.Web/connections@2016-06-01' = [for name in connectionNames: {
   name: name
@@ -30,8 +29,8 @@ resource webConnections 'Microsoft.Web/connections@2016-06-01' = [for name in co
   properties: {
     displayName: name
     api: {
-      // Ensure the API id is valid and corresponds to the correct API
-      id: resourceId('Microsoft.Web/locations/managedApis', location, 'azureblob')  // Ensure this is correct
+      // Ensure the API ID corresponds to the correct Azure Blob API
+      id: resourceId('Microsoft.Web/locations/managedApis', location, 'azureblob')
     }
     parameterValues: {
       authentication: {
@@ -47,6 +46,7 @@ resource webConnections 'Microsoft.Web/connections@2016-06-01' = [for name in co
 // ----------------------------------------------------------
 // Output the IDs of the created web connections
 // ----------------------------------------------------------
+@description('Array of resource IDs for the created web connections.')
 output connectionIds array = [for name in connectionNames: {
   resourceId: resourceId('Microsoft.Web/connections', name)
 }]

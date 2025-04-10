@@ -1,28 +1,28 @@
 // ==========================================================
-// Revised Monitoring Module
-// This module creates metric alerts and activity log alerts.
-// Updated to use valid metrics for Azure Data Factory.
+// Monitoring Module
+// This module creates metric alerts and activity log alerts for monitoring Azure resources.
+// It includes alerts for Azure Data Factory pipeline failures and activity logs.
 // ==========================================================
 
-@description('Name for the metric alert EmailOnADFActionFailure')
+@description('Name for the metric alert to monitor ADF action failures.')
 param metricAlertADFActionFailureName string
 
-@description('Name for the metric alert EmailOnADFPipelineFailure')
+@description('Name for the metric alert to monitor ADF pipeline failures.')
 param metricAlertADFPipelineFailureName string
 
-@description('Name for the activity log alert AdmAct_devdatabphc')
+@description('Name for the activity log alert for the Devdatabphc resource.')
 param activityLogAlertDevdatabphcName string
 
-@description('Name for the activity log alert sa_AdmAct')
+@description('Name for the activity log alert for the Storage Account.')
 param activityLogAlertSaName string
 
-@description('Name for the activity log alert AdmAct_VNet')
+@description('Name for the activity log alert for the Virtual Network.')
 param activityLogAlertVNetName string
 
-@description('Location for alerts (typically global)')
+@description('Location for the alerts (typically global).')
 param location string = 'global'
 
-@description('Resource ID to use as the scope for alerts')
+@description('Resource ID to use as the scope for the alerts.')
 param alertScope string
 
 // ----------------------------------------------------------
@@ -45,6 +45,8 @@ var adfFailureCriteria = {
 // ----------------------------------------------------------
 // Metric Alerts
 // ----------------------------------------------------------
+
+// Metric alert for ADF action failures
 resource metricAlertADFActionFailure 'Microsoft.Insights/metricAlerts@2018-03-01' = {
   name: metricAlertADFActionFailureName
   location: location
@@ -58,6 +60,7 @@ resource metricAlertADFActionFailure 'Microsoft.Insights/metricAlerts@2018-03-01
   }
 }
 
+// Metric alert for ADF pipeline failures
 resource metricAlertADFPipelineFailure 'Microsoft.Insights/metricAlerts@2018-03-01' = {
   name: metricAlertADFPipelineFailureName
   location: location
@@ -74,6 +77,8 @@ resource metricAlertADFPipelineFailure 'Microsoft.Insights/metricAlerts@2018-03-
 // ----------------------------------------------------------
 // Activity Log Alerts
 // ----------------------------------------------------------
+
+// Activity log alert for the Devdatabphc resource
 resource activityLogAlertDevdatabphc 'Microsoft.Insights/activityLogAlerts@2017-04-01' = {
   name: activityLogAlertDevdatabphcName
   location: location
@@ -86,6 +91,7 @@ resource activityLogAlertDevdatabphc 'Microsoft.Insights/activityLogAlerts@2017-
   }
 }
 
+// Activity log alert for the Storage Account
 resource activityLogAlertSa 'Microsoft.Insights/activityLogAlerts@2017-04-01' = {
   name: activityLogAlertSaName
   location: location
@@ -98,6 +104,7 @@ resource activityLogAlertSa 'Microsoft.Insights/activityLogAlerts@2017-04-01' = 
   }
 }
 
+// Activity log alert for the Virtual Network
 resource activityLogAlertVNet 'Microsoft.Insights/activityLogAlerts@2017-04-01' = {
   name: activityLogAlertVNetName
   location: location
@@ -113,8 +120,17 @@ resource activityLogAlertVNet 'Microsoft.Insights/activityLogAlerts@2017-04-01' 
 // ----------------------------------------------------------
 // Outputs
 // ----------------------------------------------------------
+@description('The resource ID of the metric alert for ADF action failures.')
 output metricAlertADFActionFailureId string = metricAlertADFActionFailure.id
+
+@description('The resource ID of the metric alert for ADF pipeline failures.')
 output metricAlertADFPipelineFailureId string = metricAlertADFPipelineFailure.id
+
+@description('The resource ID of the activity log alert for the Devdatabphc resource.')
 output activityLogAlertDevdatabphcId string = activityLogAlertDevdatabphc.id
+
+@description('The resource ID of the activity log alert for the Storage Account.')
 output activityLogAlertSaId string = activityLogAlertSa.id
+
+@description('The resource ID of the activity log alert for the Virtual Network.')
 output activityLogAlertVNetId string = activityLogAlertVNet.id

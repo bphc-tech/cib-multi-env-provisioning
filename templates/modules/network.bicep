@@ -1,40 +1,99 @@
 // ==========================================================
 // Extended Networking Module for Factory Resources
 // This module creates networking resources for the environment.
-// Revised to support secret-based VPN shared key.
+// Revised to support secret-based VPN shared key and ensure modularity.
 // ==========================================================
 
+// -----------------------------
 // Parameters
+// -----------------------------
+@description('Name of the first Azure Blob connection')
 param connections_azureblob_1_name string
+
+@description('Name of the second Azure Blob connection')
 param connections_azureblob_2_name string
+
+@description('Name of the third Azure Blob connection')
 param connections_azureblob_3_name string
+
+@description('Name of the fourth Azure Blob connection')
 param connections_azureblob_4_name string
+
+@description('Name of the fifth Azure Blob connection')
 param connections_azureblob_5_name string
+
+@description('Name of the action group for email notifications')
 param actionGroups_Email_Alicia_name string
+
+@description('Name of the VPN connection')
 param connections_PA_VPN_name string
+
+@description('Name of the network interface for VM2')
 param networkInterfaces_vm2_name string
+
+@description('Name of the first storage account')
 param storageAccounts_devdatabphc_name string
+
+@description('Name of the second storage account')
 param storageAccounts_testnetwork93cd_name string
+
+@description('Name of the local network gateway')
 param localNetworkGateways_LocalNetworkGateway_name string
+
+@description('Name of the route table')
 param routeTables_RouteTable_name string
+
+@description('Name of the virtual network')
 param virtualNetworks_Network_name string
+
+@description('Name of the public IP address for the gateway')
 param publicIPAddresses_GatewayIP_name string
+
+@description('Name of the metric alert for ADF action failure')
 param metricAlerts_EmailOnADFActionFailure_name string
+
+@description('Name of the metric alert for ADF pipeline failure')
 param metricAlerts_EmailOnADFPipelineFailure_name string
+
+@description('Name of the private DNS zone for DFS')
 param privateDnsZones_privatelink_dfs_core_windows_net_name string
+
+@description('Name of the private DNS zone for Blob storage')
 param privateDnsZones_privatelink_blob_core_windows_net_name string
+
+@description('Name of the private DNS zone for Data Factory')
 param privateDnsZones_privatelink_datafactory_azure_net_name string
+
+@description('Name of the private endpoint for the storage account')
 param privateEndpoints_dmiprojectsstorage_private_endpoint_name string
+
+@description('Name of the private endpoint for the Data Factory')
 param privateEndpoints_dmi_projects_factory_private_endpoint_name string
+
+@description('Name of the virtual network gateway')
 param virtualNetworkGateways_VirtualNetworkGateway1_name string
+
+@description('External ID for the modernization factory')
 param factories_data_modernization_externalid string
+
+@description('External ID for the projects factory')
 param factories_dmi_projects_factory_externalid string
+
+@description('External ID for the storage account')
 param storageAccounts_dmiprojectsstorage_externalid string
+
+@description('External ID for the production virtual network')
 param virtualNetworks_Prod_VirtualNetwork_externalid string
-param vpnSharedKey string // Secure VPN shared key passed from workflow
 
-// -------- Resources --------
+@secure()
+@description('Shared key for the VPN connection')
+param vpnSharedKey string
 
+// -----------------------------
+// Resources
+// -----------------------------
+
+// Action Group for email notifications
 resource actionGroup 'Microsoft.Insights/actionGroups@2023-09-01-preview' = {
   name: actionGroups_Email_Alicia_name
   location: 'Global'
@@ -43,7 +102,7 @@ resource actionGroup 'Microsoft.Insights/actionGroups@2023-09-01-preview' = {
     enabled: true
     emailReceivers: [
       {
-        name: 'Email0_-EmailAction-'
+        name: 'EmailReceiver'
         emailAddress: 'AMarkoe@bphc.org'
         useCommonAlertSchema: true
       }
@@ -51,19 +110,22 @@ resource actionGroup 'Microsoft.Insights/actionGroups@2023-09-01-preview' = {
   }
 }
 
+// Local Network Gateway
 resource localNG 'Microsoft.Network/localNetworkGateways@2024-03-01' = {
   name: localNetworkGateways_LocalNetworkGateway_name
   location: 'eastus'
   properties: {
     localNetworkAddressSpace: {
       addressPrefixes: [
-        '10.68.0.0/16',        '10.75.0.0/16'
+        '10.68.0.0/16',
+        '10.75.0.0/16'
       ]
     }
     gatewayIpAddress: '140.241.253.162'
   }
 }
 
+// Private DNS Zones
 resource dnsBlob 'Microsoft.Network/privateDnsZones@2024-06-01' = {
   name: privateDnsZones_privatelink_blob_core_windows_net_name
   location: 'global'
@@ -82,6 +144,7 @@ resource dnsDFS 'Microsoft.Network/privateDnsZones@2024-06-01' = {
   properties: {}
 }
 
+// Public IP Address for the Gateway
 resource publicIP 'Microsoft.Network/publicIPAddresses@2024-03-01' = {
   name: publicIPAddresses_GatewayIP_name
   location: 'eastus'
@@ -96,6 +159,7 @@ resource publicIP 'Microsoft.Network/publicIPAddresses@2024-03-01' = {
   }
 }
 
+// Route Table
 resource routeTable 'Microsoft.Network/routeTables@2024-03-01' = {
   name: routeTables_RouteTable_name
   location: 'eastus'
@@ -113,6 +177,7 @@ resource routeTable 'Microsoft.Network/routeTables@2024-03-01' = {
   }
 }
 
+// Virtual Network
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2020-11-01' = {
   name: virtualNetworks_Network_name
   location: 'eastus'
@@ -128,7 +193,8 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2020-11-01' = {
         properties: {
           addressPrefix: '10.59.40.128/27'
         }
-      },      {
+      }
+      {
         name: 'default'
         properties: {
           addressPrefix: '10.59.40.0/25'
@@ -138,9 +204,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2020-11-01' = {
   }
 }
 
-var gatewaySubnetId = resourceId('Microsoft.Network/virtualNetworks/subnets', virtualNetworks_Network_name, 'GatewaySubnet')
-var publicIPId = resourceId('Microsoft.Network/publicIPAddresses', publicIPAddresses_GatewayIP_name)
-
+// Virtual Network Gateway
 resource virtualNetworkGateway 'Microsoft.Network/virtualNetworkGateways@2020-11-01' = {
   name: virtualNetworkGateways_VirtualNetworkGateway1_name
   location: 'eastus'
@@ -157,10 +221,10 @@ resource virtualNetworkGateway 'Microsoft.Network/virtualNetworkGateways@2020-11
         name: 'default'
         properties: {
           subnet: {
-            id: gatewaySubnetId
+            id: resourceId('Microsoft.Network/virtualNetworks/subnets', virtualNetworks_Network_name, 'GatewaySubnet')
           }
           publicIPAddress: {
-            id: publicIPId
+            id: resourceId('Microsoft.Network/publicIPAddresses', publicIPAddresses_GatewayIP_name)
           }
         }
       }
@@ -168,6 +232,7 @@ resource virtualNetworkGateway 'Microsoft.Network/virtualNetworkGateways@2020-11
   }
 }
 
+// VPN Connection
 resource vpnConnection 'Microsoft.Network/connections@2020-11-01' = {
   name: connections_PA_VPN_name
   location: 'eastus'
@@ -180,6 +245,6 @@ resource vpnConnection 'Microsoft.Network/connections@2020-11-01' = {
       id: localNG.id
     }
     routingWeight: 10
-    sharedKey: vpnSharedKey // Secure shared key passed as param
+    sharedKey: vpnSharedKey
   }
 }

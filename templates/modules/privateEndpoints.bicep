@@ -1,24 +1,23 @@
 // ==========================================================
 // Private Endpoints Module
 // This module creates private endpoints for the factory and storage resources.
-// IMPORTANT: Replace the placeholder values for 'subnetId', 'targetResourceId1', and 'targetResourceId2'
-// with the actual values from your environment.
+// It ensures secure connectivity to Azure services via private links.
 // ==========================================================
 
-@description('Name for the first private endpoint')
+@description('Name for the first private endpoint (e.g., for the Data Factory).')
 param privateEndpoint1Name string
 
-@description('Name for the second private endpoint')
+@description('Name for the second private endpoint (e.g., for the Storage Account).')
 param privateEndpoint2Name string
 
-@description('Subnet ID for the private endpoints')
-param subnetId string = '/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL-UAT/providers/Microsoft.Network/virtualNetworks/VNet-uat/subnets/default'
+@description('Subnet ID for the private endpoints. This should be the subnet where the private endpoints will be created.')
+param subnetId string
 
-@description('Target resource ID for the first private endpoint (for factory)')
-param targetResourceId1 string = '/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL-UAT/providers/Microsoft.DataFactory/factories/data-modernization-uat'
+@description('Target resource ID for the first private endpoint (e.g., the Data Factory resource ID).')
+param targetResourceId1 string
 
-@description('Target resource ID for the second private endpoint (for storage)')
-param targetResourceId2 string = '/subscriptions/694b4cac-9702-4274-97ff-3c3e1844a8dd/resourceGroups/CIB-DL-UAT/providers/Microsoft.Storage/storageAccounts/testnetwork93cd1'
+@description('Target resource ID for the second private endpoint (e.g., the Storage Account resource ID).')
+param targetResourceId2 string
 
 @description('Location for the private endpoints. Defaulting to eastus to match the VNet region.')
 param location string = 'eastus'
@@ -74,5 +73,8 @@ resource privateEndpoint2 'Microsoft.Network/privateEndpoints@2021-03-01' = {
 // ----------------------------------------------------------
 // Output the IDs of the created private endpoints
 // ----------------------------------------------------------
+@description('The resource ID of the first private endpoint (e.g., for the Data Factory).')
 output privateEndpoint1Id string = privateEndpoint1.id
+
+@description('The resource ID of the second private endpoint (e.g., for the Storage Account).')
 output privateEndpoint2Id string = privateEndpoint2.id
