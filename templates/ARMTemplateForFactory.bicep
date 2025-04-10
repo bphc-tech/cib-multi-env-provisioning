@@ -26,6 +26,9 @@ param clientSecret string
 @description('Azure Active Directory Tenant ID')
 param tenantId string
 
+@description('Location for all resources (e.g., eastus).')
+param location string = 'eastus'
+
 // -----------------------------
 // Parameters
 // -----------------------------
@@ -142,6 +145,7 @@ module networkModule 'modules/network.bicep' = {
     storageAccounts_dmiprojectsstorage_externalid: storageAccounts_dmiprojectsstorage_externalid
     virtualNetworks_Prod_VirtualNetwork_externalid: virtualNetworks_Prod_VirtualNetwork_externalid
     vpnSharedKey: vpnSharedKey
+    location: location
   }
 }
 
@@ -151,7 +155,7 @@ module storageModule 'modules/storage.bicep' = {
   params: {
     storageAccount1Name: storageAccounts_devdatabphc_name
     storageAccount2Name: storageAccounts_testnetwork93cd_name
-    location: 'eastus'
+    location: location
   }
   dependsOn: [
     networkModule
@@ -163,7 +167,7 @@ module dataFactoryModule 'modules/datafactory.bicep' = {
   name: 'dataFactoryModule'
   params: {
     dataFactoryName: factoryName
-    location: 'eastus'
+    location: location
   }
   dependsOn: [
     networkModule
@@ -181,7 +185,7 @@ module webConnectionsModule 'modules/webconnections.bicep' = {
       connections_azureblob_4_name
       connections_azureblob_5_name
     ]
-    location: 'eastus'
+    location: location
     clientId: clientId
     clientSecret: clientSecret
     tenantId: tenantId
@@ -201,7 +205,7 @@ module privateEndpointsModule 'modules/privateEndpoints.bicep' = {
     subnetId: resourceId('Microsoft.Network/virtualNetworks/subnets', virtualNetworks_Network_name, 'default')
     targetResourceId1: factories_dmi_projects_factory_externalid
     targetResourceId2: storageAccounts_dmiprojectsstorage_externalid
-    location: 'eastus'
+    location: location
   }
   dependsOn: [
     networkModule
@@ -219,7 +223,7 @@ module monitoringModule 'modules/monitoring.bicep' = {
     activityLogAlertDevdatabphcName: 'AdmAct_devdatabphc'
     activityLogAlertSaName: 'sa_AdmAct'
     activityLogAlertVNetName: 'AdmAct_VNet'
-    location: 'global'
+    location: location
     alertScope: resourceId('Microsoft.Network/virtualNetworks', virtualNetworks_Network_name)
   }
   dependsOn: [
@@ -233,7 +237,7 @@ module networkInterfacesModule 'modules/networkInterfaces.bicep' = {
   params: {
     networkInterfaceName: networkInterfaces_vm2_name
     subnetId: resourceId('Microsoft.Network/virtualNetworks/subnets', virtualNetworks_Network_name, 'default')
-    location: 'eastus'
+    location: location
   }
   dependsOn: [
     networkModule
@@ -250,7 +254,7 @@ module vpnConnectionModule 'modules/vpnConnection.bicep' = {
     routingWeight: 10
     enableBgp: false
     sharedKey: vpnSharedKey
-    location: 'eastus'
+    location: location
   }
   dependsOn: [
     networkModule
@@ -263,7 +267,7 @@ module publicIPAddressesModule 'modules/publicIPAddresses.bicep' = {
   name: 'publicIPAddressesModule'
   params: {
     publicIPAddresses_GatewayIP_name: publicIPAddresses_GatewayIP_name
-    location: 'eastus'
+    location: location
   }
   dependsOn: [
     networkModule
