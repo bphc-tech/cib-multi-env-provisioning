@@ -59,14 +59,14 @@ param networkInterfaces_vm2_name string = 'vm2-uat'
 @description('Name of the first storage account')
 param storageAccounts_devdatabphc_name string = 'databphc-uat'
 
+@description('Name of the second storage account')
+param storageAccounts_testnetwork93cd_name string = 'testnetwork93cd-uat'
+
 @description('Name of the route table')
 param routeTables_RouteTable_name string = 'RouteTable-uat'
 
 @description('Name of the virtual network')
 param virtualNetworks_Network_name string = 'VNet-uat'
-
-@description('Name of the second storage account')
-param storageAccounts_testnetwork93cd_name string = 'testnetwork93cd-uat'
 
 @description('Name of the public IP address for the gateway')
 param publicIPAddresses_GatewayIP_name string = 'GatewayIP-uat'
@@ -76,9 +76,6 @@ param metricAlerts_EmailOnADFActionFailure_name string = 'EmailOnADFActionFailur
 
 @description('Name of the metric alert for ADF pipeline failure')
 param metricAlerts_EmailOnADFPipelineFailure_name string = 'EmailOnADFPipelineFailure-uat'
-
-@description('Name of the local network gateway')
-param localNetworkGateways_LocalNetworkGateway_name string = 'LocalNetworkGateway-uat'
 
 @description('Name of the private DNS zone for DFS')
 param privateDnsZones_privatelink_dfs_core_windows_net_name string = 'privatelink.dfs.core.windows.net-uat'
@@ -92,23 +89,8 @@ param privateDnsZones_privatelink_datafactory_azure_net_name string = 'privateli
 @description('Name of the private endpoint for the storage account')
 param privateEndpoints_dmiprojectsstorage_private_endpoint_name string = 'dmiprojectsstorage-private-endpoint-uat'
 
-@description('Name of the virtual network gateway')
-param virtualNetworkGateways_VirtualNetworkGateway1_name string = 'VirtualNetworkGateway1-uat'
-
 @description('Name of the private endpoint for the Data Factory')
 param privateEndpoints_dmi_projects_factory_private_endpoint_name string = 'dmi-projects-factory-private-endpoint-uat'
-
-@description('External ID for the modernization factory')
-param factories_data_modernization_externalid string
-
-@description('External ID for the projects factory')
-param factories_dmi_projects_factory_externalid string
-
-@description('External ID for the storage account')
-param storageAccounts_dmiprojectsstorage_externalid string
-
-@description('External ID for the production virtual network')
-param virtualNetworks_Prod_VirtualNetwork_externalid string
 
 // -----------------------------
 // Module Calls
@@ -128,7 +110,6 @@ module networkModule 'modules/network.bicep' = {
     networkInterfaces_vm2_name: networkInterfaces_vm2_name
     storageAccounts_devdatabphc_name: storageAccounts_devdatabphc_name
     storageAccounts_testnetwork93cd_name: storageAccounts_testnetwork93cd_name
-    localNetworkGateways_LocalNetworkGateway_name: localNetworkGateways_LocalNetworkGateway_name
     routeTables_RouteTable_name: routeTables_RouteTable_name
     virtualNetworks_Network_name: virtualNetworks_Network_name
     publicIPAddresses_GatewayIP_name: publicIPAddresses_GatewayIP_name
@@ -139,10 +120,11 @@ module networkModule 'modules/network.bicep' = {
     privateDnsZones_privatelink_datafactory_azure_net_name: privateDnsZones_privatelink_datafactory_azure_net_name
     privateEndpoints_dmiprojectsstorage_private_endpoint_name: privateEndpoints_dmiprojectsstorage_private_endpoint_name
     privateEndpoints_dmi_projects_factory_private_endpoint_name: privateEndpoints_dmi_projects_factory_private_endpoint_name
-    virtualNetworkGateways_VirtualNetworkGateway1_name: virtualNetworkGateways_VirtualNetworkGateway1_name
     factories_data_modernization_externalid: factories_data_modernization_externalid
     factories_dmi_projects_factory_externalid: factories_dmi_projects_factory_externalid
+    localNetworkGateways_LocalNetworkGateway_name: localNetworkGateways_LocalNetworkGateway_name
     storageAccounts_dmiprojectsstorage_externalid: storageAccounts_dmiprojectsstorage_externalid
+    virtualNetworkGateways_VirtualNetworkGateway1_name: virtualNetworkGateways_VirtualNetworkGateway1_name
     virtualNetworks_Prod_VirtualNetwork_externalid: virtualNetworks_Prod_VirtualNetwork_externalid
     vpnSharedKey: vpnSharedKey
     location: location
@@ -203,12 +185,11 @@ module privateEndpointsModule 'modules/privateEndpoints.bicep' = {
     privateEndpoint1Name: privateEndpoints_dmi_projects_factory_private_endpoint_name
     privateEndpoint2Name: privateEndpoints_dmiprojectsstorage_private_endpoint_name
     subnetId: resourceId('Microsoft.Network/virtualNetworks/subnets', virtualNetworks_Network_name, 'default')
-    targetResourceId1: factories_dmi_projects_factory_externalid
-    targetResourceId2: storageAccounts_dmiprojectsstorage_externalid
+    targetResourceId1: dataFactoryModule.outputs.dataFactoryId
+    targetResourceId2: storageModule.outputs.storage1Id
     location: location
   }
   dependsOn: [
-    networkModule
     storageModule
     dataFactoryModule
   ]

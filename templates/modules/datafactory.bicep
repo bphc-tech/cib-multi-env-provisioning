@@ -2,11 +2,11 @@
 // Data Factory Module
 // This module creates an Azure Data Factory instance.
 // It mirrors the configuration of a Data Factory from DevTest-Network
-// and uses a globally unique name (e.g., data-modernization-uat).
+// and uses a globally unique name (e.g., dmi-projects-factory-uat).
 // ==========================================================
 
-@description('Name of the Data Factory (e.g., data-modernization-uat).')
-param dataFactoryName string = 'data-modernization-uat'
+@description('Name of the Data Factory (e.g., dmi-projects-factory-uat).')
+param dataFactoryName string = 'dmi-projects-factory-uat'
 
 @description('Location for the Data Factory (defaults to the resource group location).')
 param location string = resourceGroup().location

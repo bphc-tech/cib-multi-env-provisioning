@@ -5,10 +5,10 @@
 // ==========================================================
 
 @description('Name for storage account 1')
-param storageAccount1Name string
+param storageAccount1Name string = 'dmiprojectsstorage-uat'
 
 @description('Name for storage account 2')
-param storageAccount2Name string
+param storageAccount2Name string = 'dmiprojectsstorage-secondary-uat'
 
 @description('Location for storage accounts (defaults to the resource group location)')
 param location string = resourceGroup().location
