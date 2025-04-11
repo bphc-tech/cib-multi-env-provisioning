@@ -49,7 +49,7 @@ var adfFailureCriteria = {
 // Metric alert for ADF action failures
 resource metricAlertADFActionFailure 'Microsoft.Insights/metricAlerts@2018-03-01' = {
   name: metricAlertADFActionFailureName
-  location: location
+  location: 'global' // Explicitly set to 'global'
   properties: {
     severity: 3
     enabled: true
@@ -63,7 +63,7 @@ resource metricAlertADFActionFailure 'Microsoft.Insights/metricAlerts@2018-03-01
 // Metric alert for ADF pipeline failures
 resource metricAlertADFPipelineFailure 'Microsoft.Insights/metricAlerts@2018-03-01' = {
   name: metricAlertADFPipelineFailureName
-  location: location
+  location: 'global' // Explicitly set to 'global'
   properties: {
     severity: 3
     enabled: true
