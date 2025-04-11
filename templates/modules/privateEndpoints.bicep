@@ -44,9 +44,7 @@ resource privateEndpoint1 'Microsoft.Network/privateEndpoints@2021-03-01' = {
       }
     ]
   }
-  dependsOn: [
-    targetResourceId1 // Ensure the Data Factory is deployed before this private endpoint
-  ]
+  dependsOn: [] // Remove invalid string references
 }
 
 // ----------------------------------------------------------
@@ -71,9 +69,7 @@ resource privateEndpoint2 'Microsoft.Network/privateEndpoints@2021-03-01' = {
       }
     ]
   }
-  dependsOn: [
-    targetResourceId2 // Ensure the Storage Account is deployed before this private endpoint
-  ]
+  dependsOn: [] // Remove invalid string references
 }
 
 // ----------------------------------------------------------
