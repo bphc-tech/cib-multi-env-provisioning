@@ -99,7 +99,7 @@ param vpnSharedKey string
 // Action Group for email notifications
 resource actionGroup 'Microsoft.Insights/actionGroups@2023-09-01-preview' = {
   name: actionGroups_Email_Alicia_name
-  location: location // Use the location parameter
+  location: 'global' // Explicitly set to 'global' to avoid conflicts
   properties: {
     groupShortName: actionGroups_Email_Alicia_name
     enabled: true
@@ -130,19 +130,19 @@ resource localNG 'Microsoft.Network/localNetworkGateways@2024-03-01' = {
 // Private DNS Zones
 resource dnsBlob 'Microsoft.Network/privateDnsZones@2024-06-01' = {
   name: privateDnsZones_privatelink_blob_core_windows_net_name
-  location: location // Use the location parameter
+  location: 'global' // Explicitly set to 'global'
   properties: {}
 }
 
 resource dnsDataFactory 'Microsoft.Network/privateDnsZones@2024-06-01' = {
   name: privateDnsZones_privatelink_datafactory_azure_net_name
-  location: location // Use the location parameter
+  location: 'global' // Explicitly set to 'global'
   properties: {}
 }
 
 resource dnsDFS 'Microsoft.Network/privateDnsZones@2024-06-01' = {
   name: privateDnsZones_privatelink_dfs_core_windows_net_name
-  location: location // Use the location parameter
+  location: 'global' // Explicitly set to 'global'
   properties: {}
 }
 
@@ -237,7 +237,7 @@ resource virtualNetworkGateway 'Microsoft.Network/virtualNetworkGateways@2020-11
 // VPN Connection
 resource vpnConnection 'Microsoft.Network/connections@2020-11-01' = {
   name: connections_PA_VPN_name
-  location: location // Using location parameter to avert error in arm template
+  location: location // Use the location parameter
   properties: {
     connectionType: 'IPSec'
     virtualNetworkGateway1: {
