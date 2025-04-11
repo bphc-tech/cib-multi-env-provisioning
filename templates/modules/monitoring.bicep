@@ -81,7 +81,7 @@ resource metricAlertADFPipelineFailure 'Microsoft.Insights/metricAlerts@2018-03-
 // Activity log alert for the Devdatabphc resource
 resource activityLogAlertDevdatabphc 'Microsoft.Insights/activityLogAlerts@2017-04-01' = {
   name: activityLogAlertDevdatabphcName
-  location: location
+  location: 'global' // Explicitly set to 'global'
   properties: {
     scopes: [alertScope]
     condition: {
@@ -94,7 +94,7 @@ resource activityLogAlertDevdatabphc 'Microsoft.Insights/activityLogAlerts@2017-
 // Activity log alert for the Storage Account
 resource activityLogAlertSa 'Microsoft.Insights/activityLogAlerts@2017-04-01' = {
   name: activityLogAlertSaName
-  location: location
+  location: 'global' // Explicitly set to 'global'
   properties: {
     scopes: [alertScope]
     condition: {
@@ -107,7 +107,7 @@ resource activityLogAlertSa 'Microsoft.Insights/activityLogAlerts@2017-04-01' = 
 // Activity log alert for the Virtual Network
 resource activityLogAlertVNet 'Microsoft.Insights/activityLogAlerts@2017-04-01' = {
   name: activityLogAlertVNetName
-  location: location
+  location: 'global' // Explicitly set to 'global'
   properties: {
     scopes: [alertScope]
     condition: {
