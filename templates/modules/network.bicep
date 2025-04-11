@@ -7,6 +7,9 @@
 // -----------------------------
 // Parameters
 // -----------------------------
+@description('Location for the resources.')
+param location string
+
 @description('Name of the first Azure Blob connection')
 param connections_azureblob_1_name string
 
@@ -96,7 +99,7 @@ param vpnSharedKey string
 // Action Group for email notifications
 resource actionGroup 'Microsoft.Insights/actionGroups@2023-09-01-preview' = {
   name: actionGroups_Email_Alicia_name
-  location: 'Global'
+  location: location // Use the location parameter
   properties: {
     groupShortName: actionGroups_Email_Alicia_name
     enabled: true
@@ -113,11 +116,11 @@ resource actionGroup 'Microsoft.Insights/actionGroups@2023-09-01-preview' = {
 // Local Network Gateway
 resource localNG 'Microsoft.Network/localNetworkGateways@2024-03-01' = {
   name: localNetworkGateways_LocalNetworkGateway_name
-  location: 'eastus'
+  location: location // Use the location parameter
   properties: {
     localNetworkAddressSpace: {
       addressPrefixes: [
-        '10.68.0.0/16',        '10.75.0.0/16'
+        '10.68.0.0/16', '10.75.0.0/16'
       ]
     }
     gatewayIpAddress: '140.241.253.162'
@@ -127,26 +130,26 @@ resource localNG 'Microsoft.Network/localNetworkGateways@2024-03-01' = {
 // Private DNS Zones
 resource dnsBlob 'Microsoft.Network/privateDnsZones@2024-06-01' = {
   name: privateDnsZones_privatelink_blob_core_windows_net_name
-  location: 'global'
+  location: location // Use the location parameter
   properties: {}
 }
 
 resource dnsDataFactory 'Microsoft.Network/privateDnsZones@2024-06-01' = {
   name: privateDnsZones_privatelink_datafactory_azure_net_name
-  location: 'global'
+  location: location // Use the location parameter
   properties: {}
 }
 
 resource dnsDFS 'Microsoft.Network/privateDnsZones@2024-06-01' = {
   name: privateDnsZones_privatelink_dfs_core_windows_net_name
-  location: 'global'
+  location: location // Use the location parameter
   properties: {}
 }
 
 // Public IP Address for the Gateway
 resource publicIP 'Microsoft.Network/publicIPAddresses@2024-03-01' = {
   name: publicIPAddresses_GatewayIP_name
-  location: 'eastus'
+  location: location // Use the location parameter
   sku: {
     name: 'Standard'
     tier: 'Regional'
@@ -161,7 +164,7 @@ resource publicIP 'Microsoft.Network/publicIPAddresses@2024-03-01' = {
 // Route Table
 resource routeTable 'Microsoft.Network/routeTables@2024-03-01' = {
   name: routeTables_RouteTable_name
-  location: 'eastus'
+  location: location // Use the location parameter
   properties: {
     disableBgpRoutePropagation: false
     routes: [
@@ -179,7 +182,7 @@ resource routeTable 'Microsoft.Network/routeTables@2024-03-01' = {
 // Virtual Network
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2020-11-01' = {
   name: virtualNetworks_Network_name
-  location: 'eastus'
+  location: location // Use the location parameter
   properties: {
     addressSpace: {
       addressPrefixes: [
@@ -206,7 +209,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2020-11-01' = {
 // Virtual Network Gateway
 resource virtualNetworkGateway 'Microsoft.Network/virtualNetworkGateways@2020-11-01' = {
   name: virtualNetworkGateways_VirtualNetworkGateway1_name
-  location: 'eastus'
+  location: location // Use the location parameter
   properties: {
     sku: {
       name: 'VpnGw1'
@@ -234,7 +237,7 @@ resource virtualNetworkGateway 'Microsoft.Network/virtualNetworkGateways@2020-11
 // VPN Connection
 resource vpnConnection 'Microsoft.Network/connections@2020-11-01' = {
   name: connections_PA_VPN_name
-  location: 'eastus'
+  location: location // Using location parameter to avert error in arm template
   properties: {
     connectionType: 'IPSec'
     virtualNetworkGateway1: {
