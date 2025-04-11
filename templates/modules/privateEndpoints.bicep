@@ -44,7 +44,7 @@ resource privateEndpoint1 'Microsoft.Network/privateEndpoints@2021-03-01' = {
       }
     ]
   }
-  dependsOn: [] // Remove invalid string references
+  dependsOn: [] // Dependencies are handled in the main template
 }
 
 // ----------------------------------------------------------
@@ -69,7 +69,7 @@ resource privateEndpoint2 'Microsoft.Network/privateEndpoints@2021-03-01' = {
       }
     ]
   }
-  dependsOn: [] // Remove invalid string references
+  dependsOn: [] // Dependencies are handled in the main template
 }
 
 // ----------------------------------------------------------
