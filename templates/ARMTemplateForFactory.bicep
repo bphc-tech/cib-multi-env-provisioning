@@ -92,6 +92,24 @@ param privateEndpoints_dmiprojectsstorage_private_endpoint_name string = 'dmipro
 @description('Name of the private endpoint for the Data Factory')
 param privateEndpoints_dmi_projects_factory_private_endpoint_name string = 'dmi-projects-factory-private-endpoint-uat'
 
+@description('External ID for the modernization factory')
+param factories_data_modernization_externalid string
+
+@description('External ID for the projects factory')
+param factories_dmi_projects_factory_externalid string
+
+@description('Name of the local network gateway')
+param localNetworkGateways_LocalNetworkGateway_name string
+
+@description('External ID for the storage account')
+param storageAccounts_dmiprojectsstorage_externalid string
+
+@description('Name of the virtual network gateway')
+param virtualNetworkGateways_VirtualNetworkGateway1_name string
+
+@description('External ID for the production virtual network')
+param virtualNetworks_Prod_VirtualNetwork_externalid string
+
 // -----------------------------
 // Module Calls
 // -----------------------------
