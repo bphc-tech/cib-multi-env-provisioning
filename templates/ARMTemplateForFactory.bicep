@@ -249,6 +249,7 @@ module vpnConnectionModule 'modules/vpnConnection.bicep' = {
   params: {
     vpnConnectionName: connections_PA_VPN_name
     gatewayId: resourceId('Microsoft.Network/virtualNetworkGateways', virtualNetworkGateways_VirtualNetworkGateway1_name)
+    localGatewayId: resourceId('Microsoft.Network/localNetworkGateways', localNetworkGateways_LocalNetworkGateway_name)
     connectionType: 'IPsec'
     routingWeight: 10
     enableBgp: false

@@ -6,8 +6,11 @@
 @description('Name of the VPN connection.')
 param vpnConnectionName string
 
-@description('Resource ID of the local network gateway or remote gateway.')
+@description('Resource ID of the virtual network gateway.')
 param gatewayId string
+
+@description('Resource ID of the local network gateway or remote gateway.')
+param localGatewayId string
 
 @description('The connection type for the VPN connection (e.g., IPsec, ExpressRoute, etc.).')
 param connectionType string = 'IPsec'
@@ -36,8 +39,11 @@ resource vpnConnection 'Microsoft.Network/connections@2021-03-01' = {
     routingWeight: routingWeight
     enableBgp: enableBgp
     sharedKey: sharedKey
-    peer: {
-      id: gatewayId  // Ensure this points to the correct gateway ID
+    virtualNetworkGateway1: {
+      id: gatewayId  // Ensure this points to the correct virtual network gateway ID
+    }
+    localNetworkGateway2: {
+      id: localGatewayId  // Ensure this points to the correct local network gateway ID
     }
   }
 }
