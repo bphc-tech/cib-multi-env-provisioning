@@ -29,15 +29,16 @@ resource webConnections 'Microsoft.Web/connections@2016-06-01' = [for name in co
   properties: {
     displayName: name
     api: {
-      // Ensure the API ID corresponds to the correct Azure Blob API
-      id: resourceId('Microsoft.Web/locations/managedApis', location, 'azureblob')
+      // Correct API ID for Azure Blob
+      id: '/subscriptions/${subscription().subscriptionId}/providers/Microsoft.Web/locations/${location}/managedApis/azureblob'
     }
     parameterValues: {
       authentication: {
         type: 'ActiveDirectoryOAuth'
         clientId: clientId
-        clientSecret: clientSecret
-        tenantId: tenantId
+        secret: clientSecret
+        tenant: tenantId
+        audience: 'https://storage.azure.com/'
       }
     }
   }
