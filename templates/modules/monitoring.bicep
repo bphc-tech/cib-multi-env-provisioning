@@ -26,14 +26,14 @@ param location string = 'global'
 param alertScope string
 
 // ----------------------------------------------------------
-// Define valid ADF metric alert criteria (Failed Runs)
+// Define valid ADF metric alert criteria (Pipeline Failed Runs)
 // ----------------------------------------------------------
 var adfFailureCriteria = {
   'odata.type': 'Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria'
   allOf: [
     {
-      name: 'FailedRunsCriteria'
-      metricName: 'FailedRuns' // Correct metric name
+      name: 'PipelineFailedRunsCriteria'
+      metricName: 'PipelineFailedRuns' // Correct metric name for ADF
       operator: 'GreaterThan'
       threshold: 0
       timeAggregation: 'Total'
