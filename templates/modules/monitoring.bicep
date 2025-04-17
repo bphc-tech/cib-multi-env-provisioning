@@ -26,14 +26,14 @@ param location string = 'global'
 param alertScope string
 
 // ----------------------------------------------------------
-// Define valid ADF metric alert criteria (Pipeline Failed Runs)
+// Define valid ADF metric alert criteria (Failed Runs)
 // ----------------------------------------------------------
 var adfFailureCriteria = {
   'odata.type': 'Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria'
   allOf: [
     {
-      name: 'PipelineFailedRuns'
-      metricName: 'PipelineFailedRuns'
+      name: 'FailedRunsCriteria'
+      metricName: 'FailedRuns' // Correct metric name
       operator: 'GreaterThan'
       threshold: 0
       timeAggregation: 'Total'
@@ -85,7 +85,16 @@ resource activityLogAlertDevdatabphc 'Microsoft.Insights/activityLogAlerts@2017-
   properties: {
     scopes: [alertScope]
     condition: {
-      allOf: [] // Define actual conditions if needed
+      allOf: [
+        {
+          field: 'category'
+          equals: 'Administrative'
+        }
+        {
+          field: 'status'
+          equals: 'Failed'
+        }
+      ]
     }
     actions: [] // Define actual actions if needed
   }
@@ -98,7 +107,16 @@ resource activityLogAlertSa 'Microsoft.Insights/activityLogAlerts@2017-04-01' = 
   properties: {
     scopes: [alertScope]
     condition: {
-      allOf: []
+      allOf: [
+        {
+          field: 'category'
+          equals: 'Administrative'
+        }
+        {
+          field: 'status'
+          equals: 'Failed'
+        }
+      ]
     }
     actions: []
   }
@@ -111,7 +129,16 @@ resource activityLogAlertVNet 'Microsoft.Insights/activityLogAlerts@2017-04-01' 
   properties: {
     scopes: [alertScope]
     condition: {
-      allOf: []
+      allOf: [
+        {
+          field: 'category'
+          equals: 'Administrative'
+        }
+        {
+          field: 'status'
+          equals: 'Failed'
+        }
+      ]
     }
     actions: []
   }

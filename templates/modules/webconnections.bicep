@@ -25,12 +25,12 @@ param tenantId string
 // ----------------------------------------------------------
 resource webConnections 'Microsoft.Web/connections@2016-06-01' = [for name in connectionNames: {
   name: name
-  location: location
+  location: toLower(location) // Ensure location is in lowercase
   properties: {
     displayName: name
     api: {
       // Correct API ID for Azure Blob
-      id: '/subscriptions/${subscription().subscriptionId}/providers/Microsoft.Web/locations/${location}/managedApis/azureblob'
+      id: '/subscriptions/${subscription().subscriptionId}/providers/Microsoft.Web/locations/${toLower(location)}/managedApis/azureblob'
     }
     parameterValues: {
       authentication: {
