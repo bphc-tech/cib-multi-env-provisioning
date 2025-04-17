@@ -10,15 +10,12 @@ param connectionNames array
 @description('Location for the connections (defaults to eastus).')
 param location string = 'eastus'
 
-@description('Azure Active Directory Client ID for authentication.')
-param clientId string
-
-@description('Azure Active Directory Client Secret for authentication (secure).')
 @secure()
-param clientSecret string
+@description('Azure Blob storage key for storage account databphc1uat. This value should come from the GitHub secret DATABPHC1UAT_STORAGE_KEY.')
+param DATABPHC1UAT_STORAGE_KEY string
 
-@description('Azure Active Directory Tenant ID for authentication.')
-param tenantId string
+@description('Storage account ID for the connection.')
+param storageid string = 'databphc1uat'
 
 // ----------------------------------------------------------
 // Create a connection resource for each provided connection name
@@ -29,16 +26,14 @@ resource webConnections 'Microsoft.Web/connections@2016-06-01' = [for name in co
   properties: {
     displayName: name
     api: {
-      // Correct API ID for Azure Blob
+      // API ID for Azure Blob
       id: '/subscriptions/${subscription().subscriptionId}/providers/Microsoft.Web/locations/${toLower(location)}/managedApis/azureblob'
     }
     parameterValues: {
       authentication: {
-        type: 'ActiveDirectoryOAuth'
-        clientId: clientId
-        secret: clientSecret
-        tenant: tenantId
-        audience: 'https://storage.azure.com/'
+        type: 'Key'
+        storageId: storageid
+        key: DATABPHC1UAT_STORAGE_KEY
       }
     }
   }
@@ -48,6 +43,4 @@ resource webConnections 'Microsoft.Web/connections@2016-06-01' = [for name in co
 // Output the IDs of the created web connections
 // ----------------------------------------------------------
 @description('Array of resource IDs for the created web connections.')
-output connectionIds array = [for name in connectionNames: {
-  resourceId: resourceId('Microsoft.Web/connections', name)
-}]
+output connectionIds array = [for name in connectionNames: resourceId('Microsoft.Web/connections', name)]

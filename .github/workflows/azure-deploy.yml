@@ -41,12 +41,12 @@ jobs:
           elif [ "${{ github.ref }}" == "refs/heads/uat" ] || [ "${{ github.ref }}" == "refs/heads/dev" ]; then
             echo "UAT deployment"
             echo "RESOURCE_GROUP=CIB-DL-UAT" >> $GITHUB_ENV
-            echo "AZURE_CREDS=$(echo '${{ secrets.AZURE_CREDENTIALS_DEV }}' | tr -d '\n')" >> $GITHUB_ENV
+            echo "AZURE_CREDS=$(echo '${{ secrets.AZURE_CREDS_DEV }}' | tr -d '\n')" >> $GITHUB_ENV
             echo "factoryName=data-modernization-uat" >> $GITHUB_ENV
             echo "paramFile=parameters/uat.parameters.json" >> $GITHUB_ENV
           fi
 
-      # Step 4: Extract Azure credentials from the secret
+      # Step 4: Extract Azure credentials from the secret.
       - name: Extract Azure Credentials
         id: extract-creds
         run: |
@@ -54,7 +54,7 @@ jobs:
           echo "CLIENT_SECRET=$(echo '${{ env.AZURE_CREDS }}' | jq -r '.clientSecret')" >> $GITHUB_ENV
           echo "TENANT_ID=$(echo '${{ env.AZURE_CREDS }}' | jq -r '.tenantId')" >> $GITHUB_ENV
 
-      # Step 5: Debug credential environment variable
+      # Step 5: Debug credential environment variable.
       - name: Debug AZURE_CREDS
         run: |
           if [ -z "$AZURE_CREDS" ]; then
@@ -63,21 +63,21 @@ jobs:
             echo "AZURE_CREDS is set"
           fi
 
-      # Step 6: Azure login
+      # Step 6: Azure login.
       - name: Azure Login
         uses: azure/login@v1
         with:
           creds: ${{ env.AZURE_CREDS }}
 
-      # Step 7: Validate the Bicep file compiles
+      # Step 7: Validate the Bicep file compiles.
       - name: Build Bicep Template
         run: az bicep build --file templates/ARMTemplateForFactory.bicep
 
-      # Step 8: Create the resource group (if needed)
+      # Step 8: Create the resource group (if needed).
       - name: Create Resource Group (if needed)
         run: az group create --name ${{ env.RESOURCE_GROUP }} --location "East US"
 
-      # Step 9: Deploy the Bicep template using parameter file + extracted secrets
+      # Step 9: Deploy the Bicep template using parameter file + extracted secrets and new parameters.
       - name: Deploy Bicep Template
         run: |
           az deployment group create \
@@ -91,4 +91,6 @@ jobs:
             --parameters clientId="${{ env.CLIENT_ID }}" \
             --parameters clientSecret="${{ env.CLIENT_SECRET }}" \
             --parameters tenantId="${{ env.TENANT_ID }}" \
-            --parameters location="East US"
+            --parameters location="East US" \
+            --parameters DATABPHC1UAT_STORAGE_KEY="${{ secrets.DATABPHC1UAT_STORAGE_KEY }}" \
+            --parameters storageid="${{ secrets.STORAGEID }}"

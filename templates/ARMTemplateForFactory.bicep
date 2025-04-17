@@ -110,6 +110,14 @@ param virtualNetworkGateways_VirtualNetworkGateway1_name string
 @description('External ID for the production virtual network')
 param virtualNetworks_Prod_VirtualNetwork_externalid string
 
+// New parameters for Web Connections module authentication
+@secure()
+@description('Azure Blob storage key for storage account databphc1uat. This value should come from the GitHub secret DATABPHC1UAT_STORAGE_KEY.')
+param DATABPHC1UAT_STORAGE_KEY string
+
+@description('Storage account ID for the web connection (defaults to "databphc1uat").')
+param storageid string = 'databphc1uat'
+
 // -----------------------------
 // Module Calls
 // -----------------------------
@@ -186,9 +194,8 @@ module webConnectionsModule 'modules/webconnections.bicep' = {
       connections_azureblob_5_name
     ]
     location: location
-    clientId: clientId
-    clientSecret: clientSecret
-    tenantId: tenantId
+    DATABPHC1UAT_STORAGE_KEY: DATABPHC1UAT_STORAGE_KEY
+    storageid: storageid
   }
   dependsOn: [
     storageModule
@@ -214,7 +221,6 @@ module privateEndpointsModule 'modules/privateEndpoints.bicep' = {
 }
 
 // Monitoring Module (revised)
-// Ensure that your modules/monitoring.bicep has been updated per our revisions.
 module monitoringModule 'modules/monitoring.bicep' = {
   name: 'monitoringModule'
   params: {
@@ -224,7 +230,7 @@ module monitoringModule 'modules/monitoring.bicep' = {
     activityLogAlertSaName: 'sa_AdmAct'
     activityLogAlertVNetName: 'AdmAct_VNet'
     location: location
-    alertScope: dataFactoryModule.outputs.dataFactoryId // Using the Data Factory as scope for alerts
+    alertScope: dataFactoryModule.outputs.dataFactoryId
   }
   dependsOn: [
     dataFactoryModule
