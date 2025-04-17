@@ -88,10 +88,9 @@ jobs:
             --parameters factoryName="${{ env.factoryName }}" \
             --parameters SharePointOnlineList_Jan28_servicePrincipalKey="${{ secrets.SP_KEY }}" \
             --parameters vpnSharedKey="${{ secrets.VPN_SHARED_KEY }}" \
+            --parameters clientId="${{ env.CLIENT_ID }}" \
+            --parameters clientSecret="${{ env.CLIENT_SECRET }}" \
+            --parameters tenantId="${{ env.TENANT_ID }}" \
             --parameters location="East US" \
             --parameters DATABPHC1UAT_STORAGE_KEY="${{ secrets.DATABPHC1UAT_STORAGE_KEY }}" \
             --parameters storageid="${{ secrets.STORAGEID }}"
-
-      #      --parameters clientId="${{ env.CLIENT_ID }}" \
-      #      --parameters clientSecret="${{ env.CLIENT_SECRET }}" \
-      #      --parameters tenantId="${{ env.TENANT_ID }}" \
