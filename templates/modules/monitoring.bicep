@@ -33,7 +33,7 @@ var adfFailureCriteria = {
   allOf: [
     {
       name: 'PipelineFailedRunsCriteria'
-      metricName: 'PipelineFailedRuns' // Correct metric name for ADF
+      metricName: 'PipelineFailedRuns' // Updated metric name for ADF
       operator: 'GreaterThan'
       threshold: 0
       timeAggregation: 'Total'
@@ -49,7 +49,7 @@ var adfFailureCriteria = {
 // Metric alert for ADF action failures
 resource metricAlertADFActionFailure 'Microsoft.Insights/metricAlerts@2018-03-01' = {
   name: metricAlertADFActionFailureName
-  location: 'global' // Explicitly set to 'global'
+  location: 'global'
   properties: {
     severity: 3
     enabled: true
@@ -63,7 +63,7 @@ resource metricAlertADFActionFailure 'Microsoft.Insights/metricAlerts@2018-03-01
 // Metric alert for ADF pipeline failures
 resource metricAlertADFPipelineFailure 'Microsoft.Insights/metricAlerts@2018-03-01' = {
   name: metricAlertADFPipelineFailureName
-  location: 'global' // Explicitly set to 'global'
+  location: 'global'
   properties: {
     severity: 3
     enabled: true
@@ -81,7 +81,7 @@ resource metricAlertADFPipelineFailure 'Microsoft.Insights/metricAlerts@2018-03-
 // Activity log alert for the Devdatabphc resource
 resource activityLogAlertDevdatabphc 'Microsoft.Insights/activityLogAlerts@2017-04-01' = {
   name: activityLogAlertDevdatabphcName
-  location: 'global' // Explicitly set to 'global'
+  location: 'global'
   properties: {
     scopes: [alertScope]
     condition: {
@@ -96,14 +96,14 @@ resource activityLogAlertDevdatabphc 'Microsoft.Insights/activityLogAlerts@2017-
         }
       ]
     }
-    actions: [] // Define actual actions if needed
+    actions: []
   }
 }
 
 // Activity log alert for the Storage Account
 resource activityLogAlertSa 'Microsoft.Insights/activityLogAlerts@2017-04-01' = {
   name: activityLogAlertSaName
-  location: 'global' // Explicitly set to 'global'
+  location: 'global'
   properties: {
     scopes: [alertScope]
     condition: {
@@ -125,7 +125,7 @@ resource activityLogAlertSa 'Microsoft.Insights/activityLogAlerts@2017-04-01' = 
 // Activity log alert for the Virtual Network
 resource activityLogAlertVNet 'Microsoft.Insights/activityLogAlerts@2017-04-01' = {
   name: activityLogAlertVNetName
-  location: 'global' // Explicitly set to 'global'
+  location: 'global'
   properties: {
     scopes: [alertScope]
     condition: {

@@ -213,7 +213,8 @@ module privateEndpointsModule 'modules/privateEndpoints.bicep' = {
   ]
 }
 
-// Monitoring Module
+// Monitoring Module (revised)
+// Ensure that your modules/monitoring.bicep has been updated per our revisions.
 module monitoringModule 'modules/monitoring.bicep' = {
   name: 'monitoringModule'
   params: {
@@ -223,7 +224,7 @@ module monitoringModule 'modules/monitoring.bicep' = {
     activityLogAlertSaName: 'sa_AdmAct'
     activityLogAlertVNetName: 'AdmAct_VNet'
     location: location
-    alertScope: dataFactoryModule.outputs.dataFactoryId // Reference the ADF resource ID
+    alertScope: dataFactoryModule.outputs.dataFactoryId // Using the Data Factory as scope for alerts
   }
   dependsOn: [
     dataFactoryModule
