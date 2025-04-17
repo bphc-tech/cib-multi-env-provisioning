@@ -1,14 +1,15 @@
 // ==========================================================
 // Monitoring Module
-// This module creates metric alerts and activity log alerts for monitoring Azure resources.
-// It includes alerts for Azure Data Factory pipeline failures and activity logs.
+// This module creates alerts for Azure Data Factory.
+// It creates a metric alert for ADF action failures and activity log alerts for ADF pipeline failures 
+// as well as for other resources.
 // ==========================================================
 
 @description('Name for the metric alert to monitor ADF action failures.')
 param metricAlertADFActionFailureName string
 
-@description('Name for the metric alert to monitor ADF pipeline failures.')
-param metricAlertADFPipelineFailureName string
+@description('Name for the activity log alert to monitor ADF pipeline failures.')
+param activityLogAlertADFPipelineFailureName string
 
 @description('Name for the activity log alert for the Devdatabphc resource.')
 param activityLogAlertDevdatabphcName string
@@ -26,14 +27,14 @@ param location string = 'global'
 param alertScope string
 
 // ----------------------------------------------------------
-// Define valid ADF metric alert criteria (Pipeline Failed Runs)
+// Define valid ADF metric alert criteria for ADF action failures
 // ----------------------------------------------------------
-var adfFailureCriteria = {
+var adfActionCriteria = {
   'odata.type': 'Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria'
   allOf: [
     {
-      name: 'PipelineFailedRunsCriteria'
-      metricName: 'PipelineFailedRuns' // Updated metric name for ADF
+      name: 'FailedRunsCriteria'
+      metricName: 'FailedRuns' // Use valid metric "FailedRuns" (not "PipelineFailedRuns")
       operator: 'GreaterThan'
       threshold: 0
       timeAggregation: 'Total'
@@ -43,10 +44,8 @@ var adfFailureCriteria = {
 }
 
 // ----------------------------------------------------------
-// Metric Alerts
+// Metric Alert for ADF Action Failures
 // ----------------------------------------------------------
-
-// Metric alert for ADF action failures
 resource metricAlertADFActionFailure 'Microsoft.Insights/metricAlerts@2018-03-01' = {
   name: metricAlertADFActionFailureName
   location: 'global'
@@ -56,29 +55,43 @@ resource metricAlertADFActionFailure 'Microsoft.Insights/metricAlerts@2018-03-01
     scopes: [alertScope]
     evaluationFrequency: 'PT5M'
     windowSize: 'PT15M'
-    criteria: adfFailureCriteria
+    criteria: adfActionCriteria
   }
 }
 
-// Metric alert for ADF pipeline failures
-resource metricAlertADFPipelineFailure 'Microsoft.Insights/metricAlerts@2018-03-01' = {
-  name: metricAlertADFPipelineFailureName
+// ----------------------------------------------------------
+// Activity Log Alert for ADF Pipeline Failures
+// ----------------------------------------------------------
+resource activityLogAlertADFPipelineFailure 'Microsoft.Insights/activityLogAlerts@2017-04-01' = {
+  name: activityLogAlertADFPipelineFailureName
   location: 'global'
   properties: {
-    severity: 3
-    enabled: true
     scopes: [alertScope]
-    evaluationFrequency: 'PT5M'
-    windowSize: 'PT15M'
-    criteria: adfFailureCriteria
+    condition: {
+      allOf: [
+        {
+          field: 'category'
+          equals: 'Administrative'
+        }
+        {
+          field: 'operationName'
+          equals: 'Microsoft.DataFactory/factories/pipelines/run/action'
+        }
+        {
+          field: 'status'
+          equals: 'Failed'
+        }
+      ]
+    }
+    actions: []
+    enabled: true
+    description: 'Alert when an ADF pipeline run fails.'
   }
 }
 
 // ----------------------------------------------------------
-// Activity Log Alerts
+// Activity Log Alert for the Devdatabphc Resource
 // ----------------------------------------------------------
-
-// Activity log alert for the Devdatabphc resource
 resource activityLogAlertDevdatabphc 'Microsoft.Insights/activityLogAlerts@2017-04-01' = {
   name: activityLogAlertDevdatabphcName
   location: 'global'
@@ -100,7 +113,9 @@ resource activityLogAlertDevdatabphc 'Microsoft.Insights/activityLogAlerts@2017-
   }
 }
 
-// Activity log alert for the Storage Account
+// ----------------------------------------------------------
+// Activity Log Alert for the Storage Account
+// ----------------------------------------------------------
 resource activityLogAlertSa 'Microsoft.Insights/activityLogAlerts@2017-04-01' = {
   name: activityLogAlertSaName
   location: 'global'
@@ -122,7 +137,9 @@ resource activityLogAlertSa 'Microsoft.Insights/activityLogAlerts@2017-04-01' = 
   }
 }
 
-// Activity log alert for the Virtual Network
+// ----------------------------------------------------------
+// Activity Log Alert for the Virtual Network
+// ----------------------------------------------------------
 resource activityLogAlertVNet 'Microsoft.Insights/activityLogAlerts@2017-04-01' = {
   name: activityLogAlertVNetName
   location: 'global'
@@ -150,8 +167,8 @@ resource activityLogAlertVNet 'Microsoft.Insights/activityLogAlerts@2017-04-01' 
 @description('The resource ID of the metric alert for ADF action failures.')
 output metricAlertADFActionFailureId string = metricAlertADFActionFailure.id
 
-@description('The resource ID of the metric alert for ADF pipeline failures.')
-output metricAlertADFPipelineFailureId string = metricAlertADFPipelineFailure.id
+@description('The resource ID of the activity log alert for ADF pipeline failures.')
+output activityLogAlertADFPipelineFailureId string = activityLogAlertADFPipelineFailure.id
 
 @description('The resource ID of the activity log alert for the Devdatabphc resource.')
 output activityLogAlertDevdatabphcId string = activityLogAlertDevdatabphc.id
