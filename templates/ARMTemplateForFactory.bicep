@@ -219,7 +219,7 @@ module monitoringModule 'modules/monitoring.bicep' = {
   name: 'monitoringModule'
   params: {
     metricAlertADFActionFailureName: metricAlerts_EmailOnADFActionFailure_name
-    metricAlertADFPipelineFailureName: metricAlerts_EmailOnADFPipelineFailure_name
+    activityLogAlertADFPipelineFailureName: metricAlerts_EmailOnADFPipelineFailure_name
     activityLogAlertDevdatabphcName: 'AdmAct_devdatabphc'
     activityLogAlertSaName: 'sa_AdmAct'
     activityLogAlertVNetName: 'AdmAct_VNet'
