@@ -35,18 +35,25 @@ jobs:
           if [ "${{ github.ref }}" == "refs/heads/main" ]; then
             echo "Production deployment"
             echo "RESOURCE_GROUP=CIB-DL-PROD" >> $GITHUB_ENV
-            echo "AZURE_CREDS=$(echo '${{ secrets.AZURE_CREDENTIALS_PROD }}' | tr -d '\n')" >> $GITHUB_ENV
             echo "factoryName=data-modernization-prod" >> $GITHUB_ENV
             echo "paramFile=parameters/prod.parameters.json" >> $GITHUB_ENV
           elif [ "${{ github.ref }}" == "refs/heads/uat" ] || [ "${{ github.ref }}" == "refs/heads/dev" ]; then
             echo "UAT deployment"
             echo "RESOURCE_GROUP=CIB-DL-UAT" >> $GITHUB_ENV
-            echo "AZURE_CREDS=$(echo '${{ secrets.AZURE_CREDS_DEV }}' | tr -d '\n')" >> $GITHUB_ENV
             echo "factoryName=data-modernization-uat" >> $GITHUB_ENV
             echo "paramFile=parameters/uat.parameters.json" >> $GITHUB_ENV
           fi
 
-      # Step 4: Extract Azure credentials from the secret.
+      # Step 4: Set Azure credentials based on the environment.
+      - name: Set Azure Credentials
+        run: |
+          if [ "${{ env.RESOURCE_GROUP }}" = "CIB-DL-PROD" ]; then
+            echo "AZURE_CREDS=${{ secrets.AZURE_CREDENTIALS_PROD }}" >> $GITHUB_ENV
+          else
+            echo "AZURE_CREDS=${{ secrets.AZURE_CREDS_DEV }}" >> $GITHUB_ENV
+          fi
+
+      # Step 5: Extract Azure credentials from the secret.
       - name: Extract Azure Credentials
         id: extract-creds
         run: |
@@ -54,7 +61,7 @@ jobs:
           echo "CLIENT_SECRET=$(echo '${{ env.AZURE_CREDS }}' | jq -r '.clientSecret')" >> $GITHUB_ENV
           echo "TENANT_ID=$(echo '${{ env.AZURE_CREDS }}' | jq -r '.tenantId')" >> $GITHUB_ENV
 
-      # Step 5: Debug credential environment variable.
+      # Step 6: Debug credential environment variable.
       - name: Debug AZURE_CREDS
         run: |
           if [ -z "$AZURE_CREDS" ]; then
@@ -63,21 +70,28 @@ jobs:
             echo "AZURE_CREDS is set"
           fi
 
-      # Step 6: Azure login.
-      - name: Azure Login
+      # Step 7: Azure login.
+      - name: Azure Login - Prod
+        if: env.RESOURCE_GROUP == 'CIB-DL-PROD'
         uses: azure/login@v1
         with:
-          creds: ${{ env.AZURE_CREDS }}
+          creds: ${{ secrets.AZURE_CREDENTIALS_PROD }}
 
-      # Step 7: Validate the Bicep file compiles.
+      - name: Azure Login - Dev
+        if: env.RESOURCE_GROUP != 'CIB-DL-PROD'
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDS_DEV }}
+
+      # Step 8: Validate the Bicep file compiles.
       - name: Build Bicep Template
         run: az bicep build --file templates/ARMTemplateForFactory.bicep
 
-      # Step 8: Create the resource group (if needed).
+      # Step 9: Create the resource group (if needed).
       - name: Create Resource Group (if needed)
         run: az group create --name ${{ env.RESOURCE_GROUP }} --location "East US"
 
-      # Step 9: Deploy the Bicep template using parameter file + extracted secrets and new parameters.
+      # Step 10: Deploy the Bicep template using the parameter file and new secret parameters.
       - name: Deploy Bicep Template
         run: |
           az deployment group create \
