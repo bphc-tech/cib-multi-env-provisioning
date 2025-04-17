@@ -1,8 +1,8 @@
 // ==========================================================
 // Monitoring Module
-// This module creates alerts for Azure Data Factory.
-// It creates a metric alert for ADF action failures and activity log alerts for ADF pipeline failures 
-// as well as for other resources.
+// This module creates alerts for Azure Data Factory and related resources.
+// It defines a metric alert for ADF action failures and activity log alerts
+// for ADF pipeline failures as well as for other resource failures.
 // ==========================================================
 
 @description('Name for the metric alert to monitor ADF action failures.')
@@ -27,14 +27,14 @@ param location string = 'global'
 param alertScope string
 
 // ----------------------------------------------------------
-// Define valid ADF metric alert criteria for ADF action failures
+// Define valid alert criteria for ADF action failures using metrics
 // ----------------------------------------------------------
 var adfActionCriteria = {
   'odata.type': 'Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria'
   allOf: [
     {
       name: 'FailedRunsCriteria'
-      metricName: 'FailedRuns' // Use valid metric "FailedRuns" (not "PipelineFailedRuns")
+      metricName: 'FailedRuns' // Use valid metric "FailedRuns"
       operator: 'GreaterThan'
       threshold: 0
       timeAggregation: 'Total'
@@ -52,7 +52,9 @@ resource metricAlertADFActionFailure 'Microsoft.Insights/metricAlerts@2018-03-01
   properties: {
     severity: 3
     enabled: true
-    scopes: [alertScope]
+    scopes: [
+      alertScope
+    ]
     evaluationFrequency: 'PT5M'
     windowSize: 'PT15M'
     criteria: adfActionCriteria
@@ -66,7 +68,9 @@ resource activityLogAlertADFPipelineFailure 'Microsoft.Insights/activityLogAlert
   name: activityLogAlertADFPipelineFailureName
   location: 'global'
   properties: {
-    scopes: [alertScope]
+    scopes: [
+      alertScope
+    ]
     condition: {
       allOf: [
         {
@@ -96,7 +100,9 @@ resource activityLogAlertDevdatabphc 'Microsoft.Insights/activityLogAlerts@2017-
   name: activityLogAlertDevdatabphcName
   location: 'global'
   properties: {
-    scopes: [alertScope]
+    scopes: [
+      alertScope
+    ]
     condition: {
       allOf: [
         {
@@ -120,7 +126,9 @@ resource activityLogAlertSa 'Microsoft.Insights/activityLogAlerts@2017-04-01' = 
   name: activityLogAlertSaName
   location: 'global'
   properties: {
-    scopes: [alertScope]
+    scopes: [
+      alertScope
+    ]
     condition: {
       allOf: [
         {
@@ -144,7 +152,9 @@ resource activityLogAlertVNet 'Microsoft.Insights/activityLogAlerts@2017-04-01' 
   name: activityLogAlertVNetName
   location: 'global'
   properties: {
-    scopes: [alertScope]
+    scopes: [
+      alertScope
+    ]
     condition: {
       allOf: [
         {
@@ -164,17 +174,17 @@ resource activityLogAlertVNet 'Microsoft.Insights/activityLogAlerts@2017-04-01' 
 // ----------------------------------------------------------
 // Outputs
 // ----------------------------------------------------------
-@description('The resource ID of the metric alert for ADF action failures.')
+@description('Resource ID of the metric alert for ADF action failures.')
 output metricAlertADFActionFailureId string = metricAlertADFActionFailure.id
 
-@description('The resource ID of the activity log alert for ADF pipeline failures.')
+@description('Resource ID of the activity log alert for ADF pipeline failures.')
 output activityLogAlertADFPipelineFailureId string = activityLogAlertADFPipelineFailure.id
 
-@description('The resource ID of the activity log alert for the Devdatabphc resource.')
+@description('Resource ID of the activity log alert for the Devdatabphc resource.')
 output activityLogAlertDevdatabphcId string = activityLogAlertDevdatabphc.id
 
-@description('The resource ID of the activity log alert for the Storage Account.')
+@description('Resource ID of the activity log alert for the Storage Account.')
 output activityLogAlertSaId string = activityLogAlertSa.id
 
-@description('The resource ID of the activity log alert for the Virtual Network.')
+@description('Resource ID of the activity log alert for the Virtual Network.')
 output activityLogAlertVNetId string = activityLogAlertVNet.id
